@@ -58,7 +58,8 @@ So that this works:
 
 4. **Each word lights up as it's spoken.** This is low priority.
 5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
-6. **Voice and wording preferences** come later (`07-preferences.feature`).
+6. **The analog clock is the largest display** in both portrait and landscape.
+7. **Voice and wording preferences** come later (`07-preferences.feature`).
 
 ## Assumptions (change any of these if they're wrong)
 
@@ -67,9 +68,8 @@ So that this works:
 3. **Words use digits** ("12 minutes past 9"), matching the example given. Speech says the numbers naturally.
 4. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
 5. **Speech uses a voice built into the device**, so it works offline.
-6. **The analog clock is the largest display** in both portrait and landscape.
-7. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
+6. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
 
 ## Open questions
 
-- Should the analog clock be the largest display? (Assumed yes.)
+None at the moment.
