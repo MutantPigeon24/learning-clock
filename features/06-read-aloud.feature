@@ -42,10 +42,26 @@ Feature: Read the time aloud
   Scenario: Showing that the app is speaking
     When the app is reading the time aloud
     Then the button shows that speech is playing
-    And the words on screen are highlighted while they are spoken
 
   Scenario: No voice is available on the device
     Given the device has no voice the app can use
     When my child looks at the clock screen
     Then the read-aloud button is shown as unavailable
     And every other feature still works
+
+  # Low priority: build this after everything else works.
+  @low-priority
+  Rule: Each word lights up as it is spoken
+
+    Scenario: Following the words while they are spoken
+      Given the current time is 09:12
+      When my child presses the read-aloud button
+      Then each word of "It is 12 minutes past 9 in the morning." is highlighted as it is spoken
+      And only one word is highlighted at a time
+      And no word is highlighted once the reading finishes
+
+    Scenario: The device's voice can't say where each word is
+      Given the device's voice doesn't report when each word is spoken
+      When my child presses the read-aloud button
+      Then the time is still read aloud
+      And no words are highlighted

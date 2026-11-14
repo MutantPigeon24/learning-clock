@@ -4,13 +4,16 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 
 | File | Covers |
 |------|--------|
-| `00-learning-clock.feature` | Overall goal, offline use, what's on the clock screen |
+| `00-learning-clock.feature` | Overall goal, offline use, what's on the clock screen, portrait and landscape |
 | `01-current-time.feature` | Getting the device's time and keeping it current |
 | `02-analog-clock.feature` | Analog clock face and hands |
 | `03-digital-clocks.feature` | 12-hour (AM/PM) and 24-hour digital clocks |
-| `04-time-in-words.feature` | The written sentence, e.g. "It is 12 minutes past 9 in the morning." |
+| `04-time-in-words.feature` | The written sentence, e.g. "It is 45 minutes past 9 in the morning." |
 | `05-time-of-day-scene.feature` | Sunrise / day / sunset / night background |
-| `06-read-aloud.feature` | Button that speaks the time |
+| `06-read-aloud.feature` | Button that speaks the time; word-by-word highlight (low priority) |
+| `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
+
+Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
 
 ## Platform
 
@@ -37,19 +40,36 @@ So that this works:
 - If Chrome's data for the app is ever cleared, or the app is uninstalled, it can't be reinstalled until the repo is made public again.
 - Every update means repeating steps 1–3.
 
+## Decisions (answered by the owner)
+
+1. **No second hand** on the analog clock.
+2. **Always "minutes past".** The child hasn't learnt fractions yet, so the sentence never uses "quarter", "half" or "to". For example, 9:45 is "45 minutes past 9" and 11:45 is "45 minutes past 11 in the morning". A future preference can switch to the "quarter / half / past / to" style.
+3. **The scene and the part-of-day words change at the same times**, so the picture and the sentence always agree. These times are the default. A future preference can change them, or set the scene separately.
+
+   | Time | Words | Scene |
+   |---|---|---|
+   | 05:00–06:59 | in the morning | sunrise |
+   | 07:00–11:59 | in the morning | day |
+   | 12:00–16:59 | in the afternoon | day |
+   | 17:00–19:59 | in the evening | sunset |
+   | 20:00–04:59 | at night | night |
+
+   Exactly 12:00 is "midday" and exactly 00:00 is "midnight".
+
+4. **Each word lights up as it's spoken.** This is low priority.
+5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
+6. **The analog clock is the largest display** in both portrait and landscape.
+7. **Voice and wording preferences** come later (`07-preferences.feature`).
+
 ## Assumptions (change any of these if they're wrong)
 
-1. **Wording follows the "past / to" convention.** Minutes 1–30 are "past" the hour and 31–59 are "to" the next hour, with "quarter past", "half past" and "quarter to".
-2. **Parts of the day:** morning 05:00–11:59, afternoon 12:00–16:59, evening 17:00–20:59, night 21:00–04:59. Exactly 12:00 is "midday" and exactly 00:00 is "midnight".
-3. **Scene times are fixed** (sunrise 05:00, day 07:00, sunset 18:00, night 20:00), not real sunrise and sunset times, so the app never needs location access.
-4. **No seconds are shown** on either digital clock, and the analog clock has no second hand.
-5. **Words use digits** ("12 minutes past 9"), matching the example given. Speech says the numbers naturally.
-6. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
-7. **Speech uses a voice built into the device**, so it works offline.
+1. **Scene times are fixed**, not real sunrise and sunset times, so the app never needs location access.
+2. **No seconds are shown** on either digital clock.
+3. **Words use digits** ("12 minutes past 9"), matching the example given. Speech says the numbers naturally.
+4. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
+5. **Speech uses a voice built into the device**, so it works offline.
+6. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
 
 ## Open questions
 
-- Should the analog clock have a second hand? It makes the clock feel alive, but it can distract.
-- Should the scene and the "part of day" words share the same boundaries? At the moment 18:00 is "evening" in words while the scene changes to sunset.
-- Should the app highlight each word as it's spoken? It helps with reading, but it's harder to build and depends on the device's voice. Treat it as a nice-to-have.
-- How should the screen be laid out on the tablet: portrait, landscape or both? With four displays plus a button, the analog clock should probably be the largest.
+None at the moment.

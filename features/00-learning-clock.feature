@@ -102,8 +102,15 @@ Feature: Learning to tell time
       Given the tablet is held in <orientation>
       When my child looks at the clock screen
       Then every display fits on screen without scrolling
+      And the analog clock is the largest display
 
       Examples:
         | orientation |
         | landscape   |
         | portrait    |
+
+    Scenario: Turning the tablet
+      Given the clock screen is showing
+      When my child turns the tablet between portrait and landscape
+      Then the layout rearranges to fit the new shape
+      And the clocks keep showing the current time without restarting

@@ -13,6 +13,11 @@ Feature: Analog clock display
     Then the hour hand is shorter and thicker than the minute hand
     And the two hands are different colours
 
+  Scenario: Showing only the hour and minute hands
+    When my child looks at the analog clock
+    Then they see an hour hand and a minute hand
+    And there is no second hand
+
   Scenario Outline: Moving the hour hand smoothly between hours
     Given the current time is <time>
     When my child looks at the analog clock
