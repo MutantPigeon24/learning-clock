@@ -44,14 +44,7 @@ So that this works:
 
 1. **No second hand** on the analog clock.
 2. **Always "minutes past".** The child hasn't learnt fractions yet, so the sentence never uses "quarter", "half" or "to". For example, 9:45 is "45 minutes past 9" and 11:45 is "45 minutes past 11 in the morning". A future preference can switch to the "quarter / half / past / to" style.
-3. **The scene and the part-of-day words change at the same times**, so the picture and the sentence always agree. These times are a default for now. A future preference can change them, or set the scene separately.
-4. **Each word lights up as it's spoken.** This is low priority.
-5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
-6. **Voice and wording preferences** come later (`07-preferences.feature`).
-
-## Assumptions (change any of these if they're wrong)
-
-1. **Parts of the day and scenes** (shared boundaries):
+3. **The scene and the part-of-day words change at the same times**, so the picture and the sentence always agree. These times are the default. A future preference can change them, or set the scene separately.
 
    | Time | Words | Scene |
    |---|---|---|
@@ -62,15 +55,21 @@ So that this works:
    | 20:00–04:59 | at night | night |
 
    Exactly 12:00 is "midday" and exactly 00:00 is "midnight".
-2. **Scene times are fixed**, not real sunrise and sunset times, so the app never needs location access.
-3. **No seconds are shown** on either digital clock.
-4. **Words use digits** ("12 minutes past 9"), matching the example given. Speech says the numbers naturally.
-5. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
-6. **Speech uses a voice built into the device**, so it works offline.
-7. **The analog clock is the largest display** in both portrait and landscape.
-8. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
+
+4. **Each word lights up as it's spoken.** This is low priority.
+5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
+6. **Voice and wording preferences** come later (`07-preferences.feature`).
+
+## Assumptions (change any of these if they're wrong)
+
+1. **Scene times are fixed**, not real sunrise and sunset times, so the app never needs location access.
+2. **No seconds are shown** on either digital clock.
+3. **Words use digits** ("12 minutes past 9"), matching the example given. Speech says the numbers naturally.
+4. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
+5. **Speech uses a voice built into the device**, so it works offline.
+6. **The analog clock is the largest display** in both portrait and landscape.
+7. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
 
 ## Open questions
 
-- Are the shared part-of-day times in the table above right? Evening now starts at 17:00 and night at 20:00. Before, night started at 21:00.
 - Should the analog clock be the largest display? (Assumed yes.)
