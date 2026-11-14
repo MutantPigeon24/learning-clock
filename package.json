@@ -1,0 +1,12 @@
+{
+  "name": "learning-clock",
+  "private": true,
+  "type": "module",
+  "description": "Offline tablet app that helps a young child learn to tell the time.",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
