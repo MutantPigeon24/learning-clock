@@ -5,19 +5,11 @@
 
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import { brokenStorage, fakeStorage } from './support/fake-storage.js';
 import { LOOK_IDS, LOOKS, contrastRatio } from '../src/colours.js';
 import { BADGES, cornerArt, LOOK_STYLES, lookStyleSheet, MOTIF_SPOTS, MOTIFS, ringArt } from '../src/look-art.js';
 import { LOOK_STORAGE_KEY, loadLookChoice, lookPicker, readLookChoice, saveLookChoice } from '../src/look-choice.js';
 
-/** A pretend localStorage. */
-function fakeStorage(initial = {}) {
-  const items = new Map(Object.entries(initial));
-  return {
-    items,
-    getItem: (k) => (items.has(k) ? items.get(k) : null),
-    setItem: (k, v) => items.set(k, String(v)),
-  };
-}
 
 describe('Opening the look picker', () => {
   test('six tiles in order, with the look in use marked', () => {
@@ -70,21 +62,23 @@ describe('Keeping the look', () => {
   });
 
   test('a pair the look hides is kept, for when the child changes look again', () => {
-    assert.deepEqual(loadLookChoice('{"look":"sky","pair":"red-blue"}'), { look: 'sky', pair: 'red-blue' });
+    assert.deepEqual(loadLookChoice({ look: 'sky', pair: 'red-blue' }), { look: 'sky', pair: 'red-blue' });
   });
 
   test('the first time, or with anything unknown or damaged, the defaults are used', () => {
     const defaults = { look: 'sky', pair: 'theme' };
-    for (const text of [null, undefined, '', 'not json', 'null', '5', '[]', '{"look":"pirate","pair":"green-gold"}', '{"look":7}']) {
-      assert.deepEqual(loadLookChoice(text), defaults, String(text));
+    for (const saved of [null, undefined, '', 'text', 5, [], { look: 'pirate', pair: 'green-gold' }, { look: 7 }]) {
+      assert.deepEqual(loadLookChoice(saved), defaults, JSON.stringify(saved));
     }
-    assert.deepEqual(loadLookChoice('{"look":"space","pair":"nope"}'), { look: 'space', pair: 'theme' });
+    assert.deepEqual(loadLookChoice({ look: 'space', pair: 'nope' }), { look: 'space', pair: 'theme' });
+    for (const text of ['not json', 'null', '"sky"']) {
+      assert.deepEqual(readLookChoice(fakeStorage({ [LOOK_STORAGE_KEY]: text })), defaults, text);
+    }
   });
 
   test('a blocked or full store never stops the app', () => {
-    const broken = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('full'); } };
-    assert.deepEqual(readLookChoice(broken), { look: 'sky', pair: 'theme' });
-    assert.doesNotThrow(() => saveLookChoice(broken, { look: 'dino', pair: 'theme' }));
+    assert.deepEqual(readLookChoice(brokenStorage), { look: 'sky', pair: 'theme' });
+    assert.doesNotThrow(() => saveLookChoice(brokenStorage, { look: 'dino', pair: 'theme' }));
     assert.deepEqual(readLookChoice(null), { look: 'sky', pair: 'theme' });
   });
 

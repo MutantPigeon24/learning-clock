@@ -8,7 +8,7 @@
 // run `npm run stamp` to update it. Changing BUILD changes this file, which is
 // how the browser notices a new version.
 
-const BUILD = '5681cf9bd982';
+const BUILD = 'b2f0dbd61deb';
 const CACHE_PREFIX = 'learning-clock-';
 const CACHE = CACHE_PREFIX + BUILD;
 const START_PAGE = './index.html';
@@ -24,13 +24,17 @@ const FILES = [
   './src/clock-face.js',
   './src/clock-view.js',
   './src/colours.js',
+  './src/grown-up-check.js',
+  './src/grown-up-panel.js',
   './src/layout.js',
   './src/look-art.js',
   './src/look-choice.js',
   './src/look-picker.js',
+  './src/panel.js',
   './src/pwa.js',
   './src/set-clock.js',
   './src/settings.js',
+  './src/storage.js',
   './src/time.js',
 ];
 

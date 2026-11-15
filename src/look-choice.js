@@ -3,45 +3,33 @@
 // picker shows.
 
 import { LOOK_IDS, LOOKS, PAIRS, pairInUse, pairsFor } from './colours.js';
+import { readStored, writeStored } from './storage.js';
 
 export const LOOK_STORAGE_KEY = 'learning-clock:look';
 const DEFAULT_CHOICE = Object.freeze({ look: 'sky', pair: 'theme' });
 
 /**
- * A valid { look, pair } from whatever was stored (a JSON string, or
- * nothing). Anything missing, unknown or damaged takes the default. A pair
- * the look hides is kept, so it comes back when the child changes to a look
- * that allows it; pairInUse shows the look's own colours meanwhile.
+ * A valid { look, pair } from whatever was stored. Anything missing, unknown
+ * or damaged takes the default. A pair the look hides is kept, so it comes
+ * back when the child changes to a look that allows it; pairInUse shows the
+ * look's own colours meanwhile.
  */
-export function loadLookChoice(text) {
-  let saved = {};
-  try {
-    saved = JSON.parse(text ?? '{}') ?? {};
-  } catch {
-    // damaged: use the defaults
-  }
+export function loadLookChoice(saved) {
+  const choice = saved && typeof saved === 'object' ? saved : {};
   return {
-    look: LOOK_IDS.includes(saved.look) ? saved.look : DEFAULT_CHOICE.look,
-    pair: PAIRS.some((p) => p.id === saved.pair) ? saved.pair : DEFAULT_CHOICE.pair,
+    look: LOOK_IDS.includes(choice.look) ? choice.look : DEFAULT_CHOICE.look,
+    pair: PAIRS.some((p) => p.id === choice.pair) ? choice.pair : DEFAULT_CHOICE.pair,
   };
 }
 
-/** Reads the choice from storage (localStorage). Never throws. */
+/** Reads the choice from storage (see storage.js). */
 export function readLookChoice(storage) {
-  try {
-    return loadLookChoice(storage?.getItem(LOOK_STORAGE_KEY));
-  } catch {
-    return { ...DEFAULT_CHOICE };
-  }
+  return loadLookChoice(readStored(storage, LOOK_STORAGE_KEY));
 }
 
-/** Keeps the choice in storage. Fails quietly, so a full or blocked store never stops the app. */
+/** Keeps the choice in storage. */
 export function saveLookChoice(storage, choice) {
-  try {
-    storage?.setItem(LOOK_STORAGE_KEY, JSON.stringify({ look: choice.look, pair: choice.pair }));
-  } catch {
-    // the choice just isn't kept this time
-  }
+  writeStored(storage, LOOK_STORAGE_KEY, { look: choice.look, pair: choice.pair });
 }
 
 /**

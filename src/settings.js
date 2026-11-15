@@ -2,6 +2,10 @@
 // choices and its default. Settings are kept on the tablet, so loadSettings
 // turns whatever was stored into a complete, valid set.
 
+import { readStored, writeStored } from './storage.js';
+
+export const SETTINGS_STORAGE_KEY = 'learning-clock:settings';
+
 export const SETTINGS = Object.freeze([
   {
     key: 'wording',
@@ -62,4 +66,31 @@ export function loadSettings(stored) {
       return [s.key, ok ? saved[s.key] : s.default];
     }),
   );
+}
+
+/** Reads the settings from storage (see storage.js). */
+export function readSettings(storage) {
+  return loadSettings(readStored(storage, SETTINGS_STORAGE_KEY));
+}
+
+/** Keeps the settings in storage. */
+export function saveSettings(storage, settings) {
+  writeStored(storage, SETTINGS_STORAGE_KEY, loadSettings(settings));
+}
+
+/**
+ * The rows of the settings panel: each setting with its choices and the one
+ * in use. `hidden` leaves out settings for features that aren't built yet.
+ */
+export function settingRows(settings, hidden = []) {
+  return SETTINGS.filter((s) => !hidden.includes(s.key)).map((s) => ({
+    key: s.key,
+    label: s.label,
+    choices: s.choices.map((c) => ({ value: c.value, label: c.label, selected: c.value === settings[s.key] })),
+  }));
+}
+
+/** True when two sets of settings are the same. */
+export function sameSettings(a, b) {
+  return SETTINGS.every((s) => a[s.key] === b[s.key]);
 }
