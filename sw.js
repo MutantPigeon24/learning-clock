@@ -8,7 +8,7 @@
 // run `npm run stamp` to update it. Changing BUILD changes this file, which is
 // how the browser notices a new version.
 
-const BUILD = '7dc7dabf951c';
+const BUILD = '049b91620a44';
 const CACHE_PREFIX = 'learning-clock-';
 const CACHE = CACHE_PREFIX + BUILD;
 const START_PAGE = './index.html';
@@ -20,6 +20,14 @@ const FILES = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
+  './fonts/andika-400.woff2',
+  './fonts/andika-700.woff2',
+  './fonts/audiowide.woff2',
+  './fonts/baloo-2.woff2',
+  './fonts/bangers.woff2',
+  './fonts/chewy.woff2',
+  './fonts/grandstander-800.woff2',
+  './fonts/sniglet-800.woff2',
   './src/app.js',
   './src/clock-face.js',
   './src/clock-view.js',

@@ -3,9 +3,64 @@
    clockHubLayout in src/layout.js. Colours (--card, --ink, ...) are set from
    the look in src/colours.js. The layout is picked by data-shape on .layout. */
 
+/* --- Fonts ---------------------------------------------------------------------
+   Stored with the app (fonts/, licences in fonts/licences/), so they work
+   offline. Baloo 2 is the screen's font. Andika, made for early readers with a
+   child-style "a" and "g", is for the sentence. Each look's own font is only
+   for its name in the look picker (LOOK_STYLES.dfont in src/look-art.js). */
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('fonts/baloo-2.woff2') format('woff2');
+  font-weight: 400 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Andika';
+  src: url('fonts/andika-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Andika';
+  src: url('fonts/andika-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grandstander';
+  src: url('fonts/grandstander-800.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sniglet';
+  src: url('fonts/sniglet-800.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bangers';
+  src: url('fonts/bangers.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Chewy';
+  src: url('fonts/chewy.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Audiowide';
+  src: url('fonts/audiowide.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Baloo 2', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--ink, #0B2545);
   background: var(--soft, #DCEBFF);
   -webkit-text-size-adjust: 100%;
@@ -23,6 +78,11 @@ body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
+}
+
+/* Buttons don't take the page's font by themselves. */
+button {
+  font-family: inherit;
 }
 
 .visually-hidden {
@@ -180,6 +240,7 @@ body {
 
 .sentence {
   margin: 0;
+  font-family: 'Andika', 'Baloo 2', system-ui, sans-serif;
   font-size: var(--fs);
   line-height: 1.3;
   font-weight: 700;
@@ -451,6 +512,10 @@ button:focus-visible,
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* When the word doesn't fit, the speaker picture alone (src/app.js decides). */
+.speak-button[data-picture-only] .speak-label {
+  display: none;
+}
 .speak-button .icon-speaking,
 .speak-button .icon-no-voice,
 .speak-button[data-state='speaking'] .icon-speaker,
@@ -641,6 +706,8 @@ button:focus-visible,
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.02em;
+  /* Some look fonts come in one weight only: never fake a bold one. */
+  font-synthesis: none;
 }
 .layout[data-small] .look-tiles { gap: 12px; }
 .layout[data-small] .look-tile { gap: 4px; padding: 8px 4px; border-radius: 16px; }
