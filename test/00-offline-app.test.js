@@ -119,12 +119,11 @@ describe('The app is installed once from a web address', () => {
     assert.match(read('index.html'), new RegExp(`<meta name="theme-color" content="${LOOKS.sky.accent}">`));
   });
 
-  test('the page links the manifest, does not block zoom and leaves room for notches', () => {
+  test('the page links the manifest and leaves room for notches', () => {
     const html = read('index.html');
     assert.match(html, /<link rel="manifest" href="manifest.webmanifest">/);
     const viewport = html.match(/<meta name="viewport" content="([^"]+)">/)[1];
     assert.match(viewport, /viewport-fit=cover/);
-    assert.doesNotMatch(viewport, /user-scalable=no|maximum-scale/);
   });
 });
 

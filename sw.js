@@ -8,7 +8,7 @@
 // run `npm run stamp` to update it. Changing BUILD changes this file, which is
 // how the browser notices a new version.
 
-const BUILD = '049b91620a44';
+const BUILD = '5b56028bdbab';
 const CACHE_PREFIX = 'learning-clock-';
 const CACHE = CACHE_PREFIX + BUILD;
 const START_PAGE = './index.html';
