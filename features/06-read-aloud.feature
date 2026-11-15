@@ -24,6 +24,8 @@ Feature: Read the time aloud
     When the app reads the time aloud
     Then it speaks a little slower than normal speech
     And it uses a clear voice
+    # "Slower" is the default talking speed. A grown-up can choose "Normal"
+    # in the settings (07-preferences.feature).
 
   Scenario: Reading aloud without internet
     Given the tablet has no internet connection

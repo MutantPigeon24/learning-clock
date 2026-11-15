@@ -5,8 +5,11 @@ Feature: Time written in words
 
   # This sentence is also what the read-aloud button speaks (see 06-read-aloud.feature).
   # The child hasn't learnt fractions yet, so the default wording never uses
-  # "quarter", "half" or "to". A future preference can switch to that style
+  # "quarter", "half" or "to". A grown-up setting can switch to that style
   # (see 07-preferences.feature).
+  # The hour in the sentence takes the hour colour and the minutes the minute
+  # colour while the hour and minute helpers are on
+  # (11-hour-and-minute-colours.feature).
 
   Rule: The time is always said as minutes past the hour
 
