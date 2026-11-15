@@ -10,7 +10,8 @@ import { cornerDayStyle, orbSpot, orbValues, sceneHoles, sceneMarkup, sceneTimin
 import { readLookChoice, saveLookChoice } from './look-choice.js';
 import { setUpLookPicker } from './look-picker.js';
 import { clockHubLayout } from './layout.js';
-import { readSettings, saveSettings } from './settings.js';
+import { readSettings, saveSettings, SPEECH_RATE } from './settings.js';
+import { createReader } from './read-aloud.js';
 import { deviceStorage } from './storage.js';
 import { setUpGrownUpPanel } from './grown-up-panel.js';
 import { dragHandTo, handKeyStep, moveHandByKey, moveTime, nearestHand, realClock, shownTime, swapAmPm } from './set-clock.js';
@@ -20,7 +21,7 @@ import { startOffline } from './pwa.js';
 
 const CENTRE = VIEWBOX / 2;
 // Settings for features that aren't built yet stay out of the settings panel.
-const UNBUILT_SETTINGS = ['talkingSpeed']; // read-aloud
+const UNBUILT_SETTINGS = [];
 
 const storage = deviceStorage();
 let settings = readSettings(storage);
@@ -272,6 +273,52 @@ $('back-to-now').addEventListener('click', () => {
   $('now-sign').focus(); // the button has gone, so keep the focus in the same place
 });
 
+// --- Reading the time aloud ---------------------------------------------------
+
+const speakButton = $('speak-button');
+const SPEAK_LABELS = {
+  ready: ['Hear it', 'Hear the time'],
+  speaking: ['Speaking', 'Hear the time again'],
+  none: ['No voice', 'Hear the time. Not available: this device has no voice.'],
+};
+
+/** Shows what the reader is doing on the button: ready, speaking or no voice. */
+function showSpeech({ voice, speaking }) {
+  const state = voice === 'none' ? 'none' : speaking ? 'speaking' : 'ready';
+  const [label, name] = SPEAK_LABELS[state];
+  speakButton.dataset.state = state;
+  $('speak-label').textContent = label;
+  speakButton.setAttribute('aria-label', name);
+  if (state === 'none') speakButton.setAttribute('aria-disabled', 'true');
+  else speakButton.removeAttribute('aria-disabled');
+}
+
+const reader = createReader({
+  synth: window.speechSynthesis,
+  Utterance: window.SpeechSynthesisUtterance,
+  language: navigator.language,
+  onChange: showSpeech,
+});
+showSpeech(reader.state());
+
+let toastTimer;
+function showToast(message) {
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
+}
+
+// It says exactly the sentence shown, for the time shown. Pressing again
+// starts again from the beginning. Nothing is ever spoken by itself.
+speakButton.addEventListener('click', () => {
+  const { words } = clockView(state, new Date(), options());
+  if (!reader.speak(words, SPEECH_RATE[settings.talkingSpeed])) {
+    showToast('No voice on this device yet. A grown-up can add one in the device settings.');
+  }
+});
+
 // --- Keeping the time current -----------------------------------------------
 
 let timer;
@@ -287,6 +334,7 @@ function scheduleNextMinute() {
 }
 
 document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') reader.stop(); // never talk from the background
   if (document.visibilityState === 'visible') {
     render();
     scheduleNextMinute();
