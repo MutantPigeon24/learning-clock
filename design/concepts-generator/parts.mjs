@@ -1,5 +1,5 @@
 // Shared pieces for the Learning Clock concept artboards.
-import { MOTIFS, PAINT, LIGHT, SKY, ringDress, scene, badge } from './theme-art.mjs';
+import { MOTIFS, PAINT, LIGHT, SKY, ORB, ringDress, scene, badge } from './theme-art.mjs';
 import { LOOKS, LOOK_IDS, PAIRS, hiddenPairs } from '../../src/colours.js';
 import { LOOK_STYLES } from '../../src/look-art.js';
 
@@ -250,6 +250,7 @@ const SCENES = ${JSON.stringify(SCENES)};
 const PAINT = ${JSON.stringify(PAINT)};
 const CLASH = ${JSON.stringify(CLASH)};
 const LIGHT = ${JSON.stringify(LIGHT)};
+const ORB = ${JSON.stringify(ORB)};
 const PAIRS = ${JSON.stringify(PAIRS)};
 const DEFAULT_THEME = '${cfg.theme}';
 const DEFAULT_TIME = '${cfg.time}';
@@ -407,7 +408,7 @@ class Component extends DCLogic {
     const sentence = parts.map(p => typeof p === 'string' ? p : p[1]).join('');
     const tParts = parts.map(p => typeof p === 'string' ? { tx: p, style: '' } : { tx: p[1], style: helpers ? 'color:' + (p[0] === 'h' ? lk.h : lk.m) + ';font-weight:800' : '' });
     const scName = sceneOf(t);
-    const sc = Object.assign({}, SCENES[scName], (PAINT[th.id] || PAINT.sky)[scName], LIGHT[scName], { name: scName, dur: st.drag ? '0.4s' : '2.5s', stag: st.drag ? 0 : 1 });
+    const sc = Object.assign({}, SCENES[scName], (PAINT[th.id] || PAINT.sky)[scName], LIGHT[scName], { at: ORB[scName], name: scName, dur: st.drag ? '0.4s' : '2.5s', stag: st.drag ? 0 : 1 });
     const on = 'background:' + th.accent + ';color:' + th.onAccent;
     const off = 'background:transparent;color:' + th.sub;
     const ov = {};

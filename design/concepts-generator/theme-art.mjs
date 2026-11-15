@@ -1,5 +1,5 @@
 import { cornerArt, ringArt, BADGES, MOTIFS } from '../../src/look-art.js';
-import { PAINT, LIGHT, SKY, cornerDayStyle, sceneMarkup } from '../../src/scene-art.js';
+import { PAINT, LIGHT, SKY, SCENE_NAMES, cornerDayStyle, orbSpot, orbValues, sceneMarkup, skyBand } from '../../src/scene-art.js';
 
 export { BADGES, MOTIFS, PAINT, LIGHT, SKY };
 
@@ -17,9 +17,36 @@ const show = (id, inner, extra = '') => `<g style="display:{{ bd.${id} }}${extra
 export const hole = (name, unit = '') => `{{ sc.${name} }}${unit}`;
 const T = `transition:${hole('dur')}`;
 
+// Where Clock Hub's cards, clock and top corner picture sit in each frame,
+// measured in the app at the frame's size: [left, top, right, bottom].
+// The app finds the open sky above the cards from these and puts the sun and
+// moon there (src/scene-art.js); the canvas does the same per frame.
+// To measure again, run this in the app's page at each size:
+//   const r = (el) => { const b = el.getBoundingClientRect(); return [b.left, b.top, b.right, b.bottom].map(Math.round); };
+//   ({ clock: r(document.querySelector('.clock-area')), cards: [...document.querySelectorAll('.layout > .card')].map(r), corner: r(document.querySelector('.corner-top')) })
+const HUB_SCREENS = {
+  D: { size: [1440, 900], clock: [36, 36, 767, 864], cards: [[817, 218, 1404, 386], [817, 500, 1098, 655], [1123, 500, 1404, 655]], corner: [1238, 4, 1436, 202] },
+  L: { size: [1280, 800], clock: [32, 32, 682, 768], cards: [[726, 197, 1248, 345], [726, 446, 976, 583], [998, 446, 1248, 583]], corner: [1100, 4, 1276, 180] },
+  P: { size: [800, 1280], clock: [32, 118, 768, 839], cards: [[32, 861, 768, 962], [32, 984, 389, 1142], [411, 984, 768, 1142]], corner: [620, 4, 796, 180] },
+  A: { size: [915, 412], clock: [24, 16, 344, 396], cards: [[368, 111, 891, 166], [368, 209, 624, 301], [636, 209, 891, 301]], corner: [806, 2, 913, 109] },
+  B: { size: [412, 915], clock: [24, 80, 388, 665], cards: [[24, 677, 388, 732], [24, 744, 200, 835], [212, 744, 388, 835]], corner: [303, 2, 410, 109] },
+  M: { size: [1000, 900], clock: [36, 36, 614, 744], cards: [[664, 439, 964, 712], [664, 68, 964, 228], [664, 253, 964, 414]], corner: [798, 4, 996, 202] },
+  S: { size: [470, 470], clock: [24, 19, 260, 386], cards: [[286, 231, 446, 374], [286, 31, 446, 118], [286, 131, 446, 218]], corner: [346, 2, 468, 124] },
+};
+const box = ([left, top, right, bottom]) => ({ left, top, right, bottom });
+
+// The sun or moon's values (ox, oy, os) in each scene and Clock Hub frame: ORB[scene][frame].
+export const ORB = Object.fromEntries(SCENE_NAMES.map((name) => [name, Object.fromEntries(Object.entries(HUB_SCREENS).map(([frame, m]) => {
+  const band = skyBand({ clock: box(m.clock), cards: m.cards.map(box), corner: box(m.corner) });
+  const [w, h] = m.size;
+  return [frame, orbValues(orbSpot(band, name, Math.min(w, h)), w, h)];
+}))]));
+
 // The sky and every look's landscape; the look in use shows through display:{{ bd.<id> }}.
-export function scene(id) {
-  return sceneMarkup(id, hole, undefined, show);
+// With a frame (Clock Hub's), the sun and moon go in that frame's open sky: {{ sc.at.<frame>.ox }}.
+export function scene(id, frame = null) {
+  const v = frame ? (name, unit = '') => (name === 'ox' || name === 'oy' || name === 'os' ? `{{ sc.at.${frame}.${name} }}${unit}` : hole(name, unit)) : hole;
+  return sceneMarkup(id, v, undefined, show);
 }
 
 // ---------- corner props (200 × 200) ----------
