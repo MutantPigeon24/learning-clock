@@ -58,3 +58,57 @@ The "Change the look" journey and rule 6 on the first board have been updated to
 
 - A new look is one entry in `THEMES` plus one kit in `theme-art.mjs`: paint, landscape, corners, ring, badge and motif. A new screen (calendar, quizzes, rewards) reuses the kit: card style, label font, badge and characters.
 - **For the real app:** each look's pictures should be separate SVG files loaded only for the chosen look. On the canvas all six are inlined in every frame, which is why each artboard is about 600 KB. The scene lighting uses CSS filters. If that's slow on the tablet, render the four scene versions ahead of time.
+
+## 6. Check against the design skills (15 Nov 2026)
+
+The six concepts, the generator and the logic in `src/` were checked against four skills: **kids-app-ui-design** (children's UI), **web-design-guidelines** (Vercel's Web Interface Guidelines), **analog-clock-and-calendar-logic** and **offline-pwa-android**. Sizes below were measured from the generated artboards.
+
+Skipped web rules, and why: hydration and React advice (no framework); preconnect to CDNs (offline app, so nothing may load from the web); URL state and deep links (one screen); Title Case, `&` and terse labels (the children's guidance wins: plain whole words); `Intl` date formats (the clock teaches one fixed format on purpose).
+
+### 6.1 What already meets the standards
+
+- **Themes** are token sets named by picture, and children change the look without a check. Every look × colour pair is checked in code (lowest 4.73 : 1). Pairs avoid red/green, and colour is never the only clue (short thick hour hand, long thin minute hand, the word "minutes").
+- **The scene follows the time.** The skill says to keep the scene apart from the theme. Our rule, "the time picks the scene, the look paints it", keeps what matters: the picture never disagrees with the words.
+- **Grown-up check** (`src/grown-up-check.js`): 6–9 tables, two-digit answers checked as soon as two digits are in, a new question never has the last answer, and the pad never locks.
+- **Settings** (`src/settings.js`): one list read by the screen and the tests, a safe loader, and a reset that covers only the grown-up settings.
+- **Helpers** are one grown-up setting, on by default. Turning them off hides the ring, the colours and the colour picker.
+- **Layout:** `src/layout.js` uses the skill's ratios (1.2 and 0.85). Five screen sizes are drawn. On wide screens every concept keeps 320 px or more beside the clock for the other displays.
+- **Clock logic** (`src/set-clock.js`): short-way-round dragging, the hour hand keeps the minutes, snap on release, AM/PM switch, a tie goes to the hour hand, wall-time maths, grips on both hands.
+- **Markup:** icon buttons have `aria-label`, pictures are `aria-hidden`, panels are `role="dialog"`, the digits use `tabular-nums`, button labels don't wrap, and the clock face has `touch-action: none` and no text selection.
+
+### 6.2 Fixed on the canvas
+
+All ten are **Done** in the generator and republished to the canvas.
+
+1. **Reset kept the look:** "Reset to defaults" reset the child's look and colours too. Now it resets only the grown-up settings, as decided. It also happened at once with no way back, so an **Undo** button now shows next to "Settings are back to the defaults." until the panel closes. This is in `07-preferences.feature`.
+2. **Settings for features that aren't built** ("Seasons on the calendar", "Parts of the day") are gone from the settings panel. The journeys board now lists them under "Later".
+3. **Focus ring:** the dark inner ring was lost on buttons with their own shadow, leaving yellow only (about 1.4 : 1 on white). The focus ring now wins over them. In the app, keep button styles in CSS classes rather than inline.
+4. **Gaps between children's buttons** are 12 px or more on every screen (they were 7–11 px on phones), and the look and colour pickers use 12 px too.
+5. **Edges:** buttons sit 24 px or more in from the left and right edges on phones (they were 14–16 px), clear of Android's back gesture. This took about 16 px off the phone clocks.
+6. **Clock Buddy's look and "Now" buttons** are 64 px on the tablet (they were 60 px).
+7. **Number pad:** 1–9 in rows, then 0 in the middle of the bottom row with delete on the right, like a phone.
+8. **A touch alone** no longer turns the Now sign into "Back to now". Only moving a hand to a different minute or hour does.
+9. **Overlapping hands:** a tie now picks up the hour hand, like `nearestHand`.
+10. **Unused checks removed:** the "hold for 3 seconds" and "numbers in words" checks are gone. The canvas question also never repeats the last answer now, like `newQuestion`.
+
+Also done while there: the scrolling panels have `overscroll-behavior: contain`, "Not quite. Try again." is in the live region, and the journeys board no longer mentions "My time".
+
+### 6.3 Gaps in the designs: drawn for Clock Hub
+
+The owner chose **Concept 1, Clock Hub**, on 15 Nov. All six gaps are now **Done** for it on the canvas. (The shared parts mean the other concepts would get them too if republished, but only Clock Hub is kept up to date.)
+
+1. **In-between screens.** Two new frames, both named in `00-learning-clock.feature`: a desktop window made narrow (1000 × 900) and a small square window (470 × 470). The layout puts the clock and AM/PM switch beside a strip of the 12-hour clock, the 24-hour clock and the words, with all the buttons and the lock in one row along the bottom. The clock stays the biggest thing: 578 px and 236 px. The generator now picks wide, tall or in between with the app's own `layoutFor`.
+2. **No voice.** The read-aloud button stays in the same place and size but turns flat, dashed and grey, with a crossed-out speaker and "No voice". Tapping it explains that a grown-up can add a voice in the device settings. Try it with the "voice" tweak.
+3. **Pressed states.** Every button moves down 3 px onto its shadow and darkens a little while pressed. Buttons also have `touch-action: manipulation`, no grey tap flash, and a slight lighten on hover where there is a mouse.
+4. **Keyboard.** Each hand is a slider (`role="slider"`, "Hour hand" or "Minute hand", with a value such as "9:45 AM"). The arrow keys move 1 minute or 1 hour; page up and page down move the minute hand 5 minutes. A focused hand gets the two-tone focus ring round its grip. This is a new rule in `08-set-the-clock.feature`, with `handKeyStep` and `moveHandByKey` in `src/set-clock.js` and 16 new tests.
+5. **Ring numbers.** The 0–55 numbers never go below 16 px on screen: small clocks get a larger font. Clock Hub's are 17 px or more on phones and 16 px on the small square window.
+6. **Less motion.** When the device asks for less motion, every transition stops, so scene changes are instant. Try it with the "motion" tweak.
+
+### 6.4 For the build (carry into the real app)
+
+- **Fonts:** bundle every font locally; the canvas loads them from Google Fonts. Ten families are used across the concepts, so trim to the chosen concept's body font plus the six label fonts, or fewer. Andika (Colour Links, and the Buddy's sentence) is the only body font made for early readers, with a child-style "a" and "g". Consider it for the sentence and digits in whichever concept is chosen. Bangers (Hero) is all capitals and Audiowide (Space) is hard to read; keep them for look names, not for labels a child must read.
+- **Scene changes:** the canvas animates gradient colours, `fill` and CSS `filter` (`parts.mjs:131–137`, `theme-art.mjs:289` and `330`). These redraw every frame. Draw the four scenes as layers and cross-fade them with `opacity` only. This also answers the speed worry in section 5.
+- **Panels:** move focus into the panel when it opens and back when it closes, close on Escape, and keep focus inside while open. Keep `overscroll-behavior: contain` and the live region from the canvas.
+- **Page setup:** a viewport tag that does **not** block zoom; `env(safe-area-inset-*)` padding for phones with notches; `<meta name="theme-color">` per look; `color-scheme: dark` for Space; `touch-action: manipulation` and a deliberate `-webkit-tap-highlight-color` on buttons.
+- **Hand picking:** `nearestHand` measures in units of the face's radius (0.5 and 0.8). With the ring on, the face is smaller than the SVG, so divide the finger's position by the face radius, not by half the SVG width.
+- **Small things:** "o'clock" uses a straight apostrophe; the display could use ’ (the spoken text doesn't care, but the tests compare exact strings, so change both together). The slower talking speed is 0.8; the skill suggests 0.85–0.9 for young listeners, so try both on the tablet.

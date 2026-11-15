@@ -104,6 +104,26 @@ export function nearestHand(wall, point) {
   return toMinute < toHour ? 'minute' : 'hour';
 }
 
+/**
+ * How far a key moves the time when a hand has the keyboard focus, in minutes,
+ * or 0 for any other key (so Tab and the rest work as normal). The arrow keys
+ * move the minute hand 1 minute and the hour hand 1 hour. Page up and page
+ * down move the minute hand 5 minutes (the gap between two numbers on the
+ * clock) and the hour hand 1 hour. Keys are KeyboardEvent.key values.
+ */
+export function handKeyStep(hand, key) {
+  const forward = key === 'ArrowRight' || key === 'ArrowUp';
+  const back = key === 'ArrowLeft' || key === 'ArrowDown';
+  const jump = key === 'PageUp' ? 1 : key === 'PageDown' ? -1 : 0;
+  if (hand === 'hour') return 60 * (forward ? 1 : back ? -1 : jump);
+  return forward ? 1 : back ? -1 : 5 * jump;
+}
+
+/** The time after a key press on a hand. The hands stay in step, as when dragging. */
+export function moveHandByKey(wall, hand, key) {
+  return addMinutes(wall, handKeyStep(hand, key));
+}
+
 // --- Real time or set by hand ----------------------------------------------
 
 /** The clock following the device's real time. Also used for "back to now". */

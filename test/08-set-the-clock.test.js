@@ -8,7 +8,9 @@ import {
   changeTime,
   dragHourHand,
   dragMinuteHand,
+  handKeyStep,
   isSetByHand,
+  moveHandByKey,
   nearestHand,
   pointerAngle,
   realClock,
@@ -92,6 +94,34 @@ test('the hand closest to the finger is the one that moves', () => {
   const together = wallAt('12:00');
   assert.equal(nearestHand(together, { x: 0, y: -0.75 }), 'minute');
   assert.equal(nearestHand(together, { x: 0, y: -0.3 }), 'hour');
+});
+
+// --- Rule: The hands can also be moved with a keyboard ----------------------
+
+const KEYS = { 'right arrow': 'ArrowRight', 'left arrow': 'ArrowLeft', 'up arrow': 'ArrowUp', 'down arrow': 'ArrowDown', 'page up': 'PageUp', 'page down': 'PageDown' };
+
+for (const row of examples(FEATURE, 'Moving a hand with the keyboard')) {
+  test(`${row.key} on the ${row.hand} hand at ${row.start}`, () => {
+    const key = KEYS[row.key];
+    assert.ok(key, `unknown key "${row.key}"`);
+    const end = moveHandByKey(wallAt(row.start), row.hand, key);
+    assert.equal(hhmm(end), row.end);
+    const state = changeTime(realClock(), new Date(), (shown) => moveHandByKey(shown, row.hand, key));
+    assert.equal(isSetByHand(state), true);
+  });
+}
+
+test('other keys leave the clock alone', () => {
+  for (const hand of ['hour', 'minute']) {
+    for (const key of ['Tab', 'Enter', ' ', 'Home', 'a', 'Escape']) {
+      assert.equal(handKeyStep(hand, key), 0, `${key} on the ${hand} hand`);
+    }
+  }
+  assert.deepEqual(moveHandByKey(wallAt('09:45'), 'minute', 'Tab'), wallAt('09:45'));
+});
+
+test('a key past midnight changes the date too', () => {
+  assert.deepEqual(moveHandByKey(wallAt('00:00'), 'minute', 'ArrowLeft'), { year: 2026, month: 11, day: 14, hours: 23, minutes: 59 });
 });
 
 // --- Rule: Moving the minute hand also moves the hour hand ------------------

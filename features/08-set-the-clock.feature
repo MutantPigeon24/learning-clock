@@ -37,6 +37,47 @@ Feature: Setting the clock by dragging the hands
       When they let go between two minute marks
       Then the minute hand settles on the nearest whole minute
 
+  Rule: The hands can also be moved with a keyboard
+
+    # For a desktop keyboard, and for children who use switches or a screen
+    # reader. Each hand is a slider that the Tab key reaches: the hour hand
+    # first, then the minute hand. Page up and page down move the minute hand
+    # 5 minutes, the gap between two numbers on the clock.
+    Scenario Outline: Moving a hand with the keyboard
+      Given the clock is showing <start>
+      When someone puts the keyboard focus on the <hand> hand and presses <key>
+      Then the time is <end>
+      And the time counts as set by hand, so the "Back to now" button appears
+
+      Examples:
+        | start | hand   | key         | end   |
+        | 09:45 | minute | right arrow | 09:46 |
+        | 09:45 | minute | up arrow    | 09:46 |
+        | 09:45 | minute | left arrow  | 09:44 |
+        | 09:45 | minute | down arrow  | 09:44 |
+        | 09:45 | minute | page up     | 09:50 |
+        | 09:45 | minute | page down   | 09:40 |
+        | 09:59 | minute | right arrow | 10:00 |
+        | 11:59 | minute | right arrow | 12:00 |
+        | 00:00 | minute | left arrow  | 23:59 |
+        | 09:45 | hour   | right arrow | 10:45 |
+        | 09:45 | hour   | left arrow  | 08:45 |
+        | 09:45 | hour   | page up     | 10:45 |
+        | 11:30 | hour   | up arrow    | 12:30 |
+        | 23:30 | hour   | right arrow | 00:30 |
+
+    Scenario: Other keys leave the clock alone
+      Given the keyboard focus is on a hand
+      When someone presses a key that isn't an arrow, page up or page down
+      Then the time doesn't change
+      And the Tab key still moves the focus on as normal
+
+    Scenario: Seeing and hearing which hand has the focus
+      When a hand has the keyboard focus
+      Then a thick focus ring, dark inside and yellow outside like the buttons', circles its grip
+      And a screen reader calls it "Hour hand" or "Minute hand"
+      And reads its value as the time shown, such as "9:45 AM"
+
   Rule: Moving the minute hand also moves the hour hand
 
     Scenario Outline: Dragging the minute hand

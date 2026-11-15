@@ -91,6 +91,7 @@ Feature: Grown-up settings
       When they press "Reset to defaults"
       Then every setting goes back to its default
       And the look and the hour and minute colours my child picked stay the same
+      And an "Undo" button puts the settings back as they were, until the settings are closed
 
     Scenario: Settings that can't be read
       Given the settings stored on the tablet are missing or damaged
