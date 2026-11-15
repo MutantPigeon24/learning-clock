@@ -106,8 +106,8 @@ These hold whichever concept is chosen. **All of them are now in the feature fil
 
 ## Likely next steps
 Each of these is its own PR. Add every new file to `FILES` in `sw.js` and run `npm run stamp`.
-1. Fix anything the child's real use shows. Each fix that should reach the tablet means another install: public, Pages on, open the installed app online, close it fully and open it again, private again, then tag `v2`.
-2. Leave `@low-priority` and `@future` until the rest works.
+1. **Now (from 15 Nov): the owner is watching the child use `v1` for a few days** before anything new is built. Fix anything that real use shows. Each fix that should reach the tablet means another install: public, Pages on, open the installed app online, close it fully and open it again, private again, then tag `v2`.
+2. Then the calendar (`09`, `@future`), which is ready to start: the owner's answers to its questions are in `features/README.md`. Word highlighting (`06`) and the `@future` settings in `07` can wait.
 3. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
 
 ## Repo rules
