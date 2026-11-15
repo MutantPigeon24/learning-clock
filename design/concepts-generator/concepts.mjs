@@ -1,4 +1,5 @@
 import { corners } from './theme-art.mjs';
+import { clockHubLayout } from '../../src/layout.js';
 import { FRAMES, MID_FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, overlays, toast, logic, icon, SAY } from './parts.mjs';
 
 const R = Math.round;
@@ -6,47 +7,33 @@ const abs = (z, inner, extra = '') => `<div style="position:absolute;inset:0;pad
 
 // ---------- Concept 1 · Clock Hub ----------
 function c1(f, z) {
-  const { pad, px, gap, btn, small, fs, fl, r, ampH, cp, W, H } = z;
+  const { gap, btn, small, fs, fl, r, ampH, cp, W, H } = z;
   const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${r}px;box-shadow:0 ${R(4 + 4 * z.S)}px 0 rgba(0,0,0,.14);{{ th.cardFx }}`;
-  const words = (w) => `<div style="${card};padding:${cp}px"><p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div>`;
-  const digi = (cardW) => {
-    const fd = fdFor(z, cardW);
+  const words = () => `<div style="${card};padding:${cp}px"><p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div>`;
+  const digi = (fd) => {
     return `<div style="display:flex;gap:${gap}px">
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('12-hour', fl)}${digits12(fd, z)}</div>
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div></div>`;
   };
   const header = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:${gap}px"><div style="display:flex;gap:${z.bg}px">${calBtn(z.kid)}${lockBtn(f, small)}</div></div>`;
   const tools = `<div style="display:flex;gap:${gap}px">${speakBtn(btn, z, { grow: true })}${nowBtn(btn, z)}${themeBtn(f, btn)}</div>`;
+  // The clock's size and the digit size come from the app (src/layout.js).
+  const { clock: cs, side, digits: fd } = clockHubLayout(W, H);
   if (z.wide) {
-    const cs = H - 2 * pad - ampH - gap;
-    const rightW = W - 2 * px - cs - 2 * gap;
     return abs(z, `<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px;flex:none">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>
-<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:${gap}px">${header}${words(rightW)}${digi((rightW - gap) / 2)}${tools}</div>`, `gap:${2 * gap}px`);
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:${gap}px">${header}${words()}${digi(fd)}${tools}</div>`, `gap:${2 * gap}px`);
   }
   if (z.mid) {
     // In between: the clock (with AM/PM) beside a strip of two rows, the two digital
     // clocks and the words. The buttons, with the lock, run along the bottom.
-    const inner = W - 2 * px;
-    const topH = H - 2 * pad - btn - gap;
-    const minSide = z.phone ? 160 : 300;
-    const digH = (fd) => fl * 1.3 + fd + 2 * cp + 8;
-    const colH = (side) => { const fd = Math.min(z.fd, fdFor(z, side)); return 2 * digH(fd) + wordsH(z, side) + 2 * gap; };
-    let cs = Math.min(topH - ampH - gap, inner - minSide - 2 * gap);
-    while (cs > 120 && colH(inner - cs - 2 * gap) > topH) cs -= 2;
-    const side = inner - cs - 2 * gap;
-    const fd = Math.min(z.fd, fdFor(z, side));
     const strip = `<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:${gap}px">
 <div style="${card};padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('12-hour', fl)}${digits12(fd, z)}</div>
-<div style="${card};padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div>${words(side)}</div>`;
+<div style="${card};padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div>${words()}</div>`;
     const bar = `<div style="display:flex;align-items:center;gap:${z.bg}px">${speakBtn(btn, z, { grow: true })}${nowBtn(btn, z, { label: !z.phone })}${themeBtn(f, btn)}${calBtn(btn)}${lockBtn(f, small)}</div>`;
     return abs(z, `<div style="flex:1;min-height:0;display:flex;align-items:center;gap:${2 * gap}px">
 <div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px;flex:none">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>${strip}</div>${bar}`, `flex-direction:column;gap:${gap}px`);
   }
-  const inner = W - 2 * px;
-  const fd = fdFor(z, (inner - gap) / 2);
-  const rest = 2 * pad + z.kid + ampH + wordsH(z, inner) + (fl * 1.3 + fd + 2 * cp + 8) + btn + 6 * gap;
-  const cs = Math.min(inner, H - rest);
-  return abs(z, `${header}<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>${words(inner)}${digi((inner - gap) / 2)}${tools}`, `flex-direction:column;justify-content:space-between;gap:${gap}px`);
+  return abs(z, `${header}<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>${words()}${digi(fd)}${tools}`, `flex-direction:column;justify-content:space-between;gap:${gap}px`);
 }
 
 // ---------- Concept 2 · Storybook ----------

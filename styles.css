@@ -1,48 +1,358 @@
-/* Placeholder styles until the Clock Hub clock screen is built. Colours are
-   Sky's, from src/colours.js. */
+/* The Clock Hub clock screen.
+   Sizes (--pad, --clock, --fd, ...) are set by src/app.js from
+   clockHubLayout in src/layout.js. Colours (--card, --ink, ...) are set from
+   the look in src/colours.js. The layout is picked by data-shape on .layout. */
 
 :root {
   color-scheme: light;
-  font-family: system-ui, sans-serif;
-  color: #0B2545;
-  background: #DCEBFF;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink, #0B2545);
+  background: var(--soft, #DCEBFF);
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
 body {
   height: 100%;
   margin: 0;
-}
-
-body {
+  overflow: hidden;
   overscroll-behavior: none;
 }
 
-.shell {
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The safe area (notches, rounded corners) is padding on .screen; the
+   layout's own spacing is padding on .layout. */
+.screen {
+  position: fixed;
+  inset: 0;
   box-sizing: border-box;
-  min-height: 100%;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.layout {
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--pad) var(--px);
   display: grid;
-  place-content: center;
-  gap: 16px;
-  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
-    max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
-  text-align: center;
+  gap: var(--gap);
+  align-content: space-between;
 }
 
-.shell-title {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #3D5A80;
+/* Wide: the clock beside a column of header, words, digital clocks, buttons. */
+.layout[data-shape='wide'] {
+  /* The clock's track includes one extra gap, so there are two gaps between
+     the clock and the cards, as clockHubLayout allows for. */
+  grid-template-columns: calc(var(--clock) + var(--gap)) 1fr 1fr;
+  /* Spacer rows share out the height, so the cards keep their own height
+     and sit spread out beside the clock. */
+  grid-template-rows: auto minmax(var(--gap), 1fr) auto minmax(var(--gap), 1fr) auto minmax(var(--gap), 1fr) auto;
+  grid-template-areas:
+    'clock header header'
+    'clock . .'
+    'clock words words'
+    'clock . .'
+    'clock twelve twentyfour'
+    'clock . .'
+    'clock tools tools';
+  row-gap: 0;
+  align-content: stretch;
+}
+.layout[data-shape='wide'] .clock-area {
+  justify-self: start;
 }
 
-.shell-time {
+/* Tall: everything stacked, the two digital clocks side by side. The clock
+   takes all the height the other rows leave, as a square that fits. */
+.layout[data-shape='tall'] {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  align-content: stretch;
+  grid-template-areas:
+    'header header'
+    'clock clock'
+    'words words'
+    'twelve twentyfour'
+    'tools tools';
+}
+
+/* In between: the clock beside a strip of the digital clocks and the words,
+   centred on the clock, with the buttons along the bottom. */
+.layout[data-shape='in between'] {
+  grid-template-columns: var(--clock) 1fr;
+  grid-template-rows: 1fr auto auto auto 1fr auto;
+  grid-template-areas:
+    'clock .'
+    'clock twelve'
+    'clock twentyfour'
+    'clock words'
+    'clock .'
+    'tools tools';
+  column-gap: calc(2 * var(--gap));
+  row-gap: 0;
+  align-content: stretch;
+}
+.layout[data-shape='in between'] :is(.twenty-four, .words, .tools) {
+  margin-top: var(--gap);
+}
+.layout[data-shape='tall'] .clock-area {
+  container-type: size;
+  --clock: min(100cqw, calc(100cqh - var(--amp-h) - var(--gap)));
+}
+.layout[data-shape='in between'] .header {
+  display: none;
+}
+
+.header { grid-area: header; height: var(--kid); }
+.clock-area { grid-area: clock; }
+.words { grid-area: words; }
+.twelve { grid-area: twelve; }
+.twenty-four { grid-area: twentyfour; }
+.tools { grid-area: tools; }
+
+/* --- Cards ------------------------------------------------------------- */
+
+.card {
+  box-sizing: border-box;
+  min-width: 0;
   margin: 0;
-  font-size: clamp(3rem, 14vmin, 8rem);
-  font-weight: 700;
+  padding: var(--cp);
+  border-radius: var(--r);
+  background: var(--card);
+  color: var(--ink);
+  border: 3px solid var(--soft);
+  box-shadow: 0 calc(4px + 4px * var(--s)) 0 rgba(0, 0, 0, 0.14);
+}
+
+/* Each look's own card style (design/concepts-generator/parts.mjs, cardFx).
+   Only Sky's for now; the others come with the look picker. */
+[data-look='sky'] .card {
+  border-color: #CFE2FB;
+  background-image: linear-gradient(180deg, #FFFFFF 55%, #EDF5FF);
+}
+
+.digital {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-label {
+  margin: 0;
+  font-size: calc(var(--fl) * 1.1);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  color: var(--sub);
+}
+
+.digits {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--fd) * 0.14);
+  white-space: nowrap;
+}
+
+.digits-time {
+  font-size: var(--fd);
+  font-weight: 800;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
-.shell-words {
+.digits-period {
+  font-size: max(16px, calc(var(--fd) * 0.42));
+  font-weight: 800;
+  line-height: 1;
+  color: var(--sub);
+}
+
+.sentence {
   margin: 0;
-  font-size: clamp(1.25rem, 4vmin, 2rem);
+  font-size: var(--fs);
+  line-height: 1.3;
+  font-weight: 700;
+}
+.sentence .linked {
+  font-weight: 800;
+}
+
+/* --- The analog clock ---------------------------------------------------- */
+
+.clock-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.clock {
+  width: var(--clock);
+  height: var(--clock);
+}
+
+.clock-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.clock-face.dragging {
+  cursor: grabbing;
+}
+.clock-face text {
+  text-anchor: middle;
+  dominant-baseline: central;
+  font-weight: 800;
+}
+.ring-band { fill: var(--soft); }
+.face-disc { fill: var(--face); stroke: var(--rim); }
+.ticks { stroke: var(--tick); }
+.hour-numbers { font-size: 19px; }
+.hand { outline: none; }
+.focus-ring { display: none; fill: none; }
+.hand:focus-visible .focus-ring { display: inline; }
+
+/* --- Buttons ------------------------------------------------------------- */
+
+button {
+  font: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+.now-sign:focus-visible {
+  outline: 4px solid #FFD43B;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px #0B1035;
+}
+
+/* The AM/PM switch: both shown, the one that applies filled in. */
+.ampm {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  width: calc(var(--clock) * 0.5);
+  height: var(--amp-h);
+  border-radius: calc(var(--amp-h) / 2);
+  border: 3px solid var(--ctl);
+  background: var(--card);
+  cursor: pointer;
+  flex: none;
+}
+.ampm-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: max(6px, calc(var(--amp-h) / 2 - 6px));
+  font-size: max(18px, calc(var(--amp-h) * 0.38));
+  font-weight: 800;
+  color: var(--sub);
+}
+.ampm-option.on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.ampm:active {
+  transform: translateY(2px);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  min-height: var(--btn);
+}
+
+/* The "Now" sign and the "Back to now" button share one place and size. */
+.now-sign,
+.back-to-now {
+  box-sizing: border-box;
+  height: var(--btn);
+  min-width: var(--btn);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--btn) * 0.1);
+  border-radius: calc(var(--btn) / 2);
+  border: max(3px, calc(var(--btn) * 0.05)) solid transparent;
+  background: var(--card);
+  color: var(--ink);
+  font-size: max(16px, calc(var(--btn) * 0.27));
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.now-sign {
+  padding: 0 calc(var(--btn) * 0.24);
+  opacity: 0.92;
+}
+.now-sign[hidden],
+.back-to-now[hidden] {
+  display: none;
+}
+.now-dot {
+  width: max(12px, calc(var(--btn) * 0.2));
+  height: max(12px, calc(var(--btn) * 0.2));
+  border-radius: 50%;
+  background: #1F9D55;
+  box-shadow: 0 0 0 max(4px, calc(var(--btn) * 0.06)) rgba(31, 157, 85, 0.22);
+  flex: none;
+}
+
+.back-to-now {
+  padding: 0 calc(var(--btn) * 0.26);
+  border-color: var(--ctl);
+  box-shadow: 0 4px 0 rgba(11, 37, 69, 0.22);
+  cursor: pointer;
+}
+.back-to-now svg {
+  width: calc(var(--btn) * 0.5);
+  height: calc(var(--btn) * 0.5);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.back-to-now:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(11, 37, 69, 0.22);
+}
+
+/* A small in-between screen: the sign and button show only their picture,
+   with the word under the dot. */
+.layout[data-shape='in between'][data-small] .back-to-now {
+  padding: 0;
+}
+.layout[data-shape='in between'][data-small] .back-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.layout[data-shape='in between'][data-small] .now-sign {
+  flex-direction: column;
+  padding: 0;
+  gap: calc(var(--btn) * 0.06);
+  font-size: max(14px, calc(var(--btn) * 0.22));
 }

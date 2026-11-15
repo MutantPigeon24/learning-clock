@@ -1,7 +1,6 @@
 // Shared pieces for the Learning Clock concept artboards.
 import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
 import { LOOKS, PAIRS, hiddenPairs } from '../../src/colours.js';
-import { layoutFor } from '../../src/layout.js';
 
 export { PAIRS };
 
@@ -51,28 +50,8 @@ export const MID_FRAMES = [
   { id: 'S', W: 470, H: 470, label: 'In between · small square window · 470 × 470' },
 ];
 
-export function sizes(W, H) {
-  const S = Math.min(W, H) / 800;
-  const r = (v) => Math.round(v);
-  const lay = layoutFor(W, H); // the app's rule: wide, tall or in between; small below 480 px
-  return {
-    W, H, S, wide: lay.shape === 'wide', mid: lay.shape === 'in between', phone: lay.small,
-    pad: r(Math.max(14, 32 * S)), px: r(Math.max(24, 32 * S)), gap: r(Math.max(12, 22 * S)), bg: r(Math.max(12, 13 * S)), btn: r(Math.max(52, 84 * S)),
-    small: r(Math.max(48, 60 * S)), kid: r(Math.max(Math.min(W, H) < 480 ? 52 : 64, 60 * S)), fs: r(Math.max(18, 36 * S)), fd: r(Math.max(30, 72 * S)),
-    fl: r(Math.max(14, 20 * S)), r: r(Math.max(16, 28 * S)), ampH: r(Math.max(48, 64 * S)),
-    cp: r(Math.max(12, 24 * S)), chip: r(Math.max(14, 18 * S)),
-  };
-}
-
-// Height of the sentence card for a given width, conservatively.
-export function wordsH(z, width, fs = z.fs, cp = z.cp) {
-  const lines = Math.max(1, Math.ceil((fs * 0.53 * 42) / Math.max(60, width - 2 * cp)));
-  return Math.round(lines * fs * 1.3 + 2 * cp);
-}
-export function fdFor(z, cardW, cp = z.cp, max = z.fd) {
-  const chipW = z.chip * 2.2 + 12; // room for the AM or PM text
-  return Math.floor(Math.min(max, (cardW - 2 * cp - chipW - 10) / 2.75));
-}
+// Sizes come from the app's own layout code, so the canvas and the app agree.
+export { screenSizes as sizes, wordsCardHeight as wordsH, digitSize as fdFor } from '../../src/layout.js';
 
 const ICONS = {
   speaker: '<path d="M4 9.5v5h4l5 4v-13l-5 4z"></path><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5"></path>',
