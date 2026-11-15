@@ -22,3 +22,5 @@ OUT=out node design/concepts-generator/main.mjs 1       # Concept1.dc.html … u
 ```
 
 Then publish the changed files to the canvas artifact (`project/<file>`). The artifact keeps its own copy, so this folder is only the source.
+
+Concept 1, Clock Hub, is the chosen one. Its board also has the two in-between frames (`MID_FRAMES` in `parts.mjs`) and is the only one kept up to date on the canvas. Each board has tweaks for the look, the colour pair, the helpers, the time, whether the device has a voice, and less motion.

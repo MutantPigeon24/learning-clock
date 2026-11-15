@@ -1,6 +1,7 @@
 // Shared pieces for the Learning Clock concept artboards.
 import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
 import { LOOKS, PAIRS, hiddenPairs } from '../../src/colours.js';
+import { layoutFor } from '../../src/layout.js';
 
 export { PAIRS };
 
@@ -44,12 +45,18 @@ export const FRAMES = [
   { id: 'B', W: 412, H: 915, label: 'Phone · portrait · 412 × 915' },
   { id: 'D', W: 1440, H: 900, label: 'Desktop · browser window · 1440 × 900' },
 ];
+// "In between" shapes (width ÷ height between 0.85 and 1.2), from 00-learning-clock.feature.
+export const MID_FRAMES = [
+  { id: 'M', W: 1000, H: 900, label: 'In between · desktop window made narrow · 1000 × 900' },
+  { id: 'S', W: 470, H: 470, label: 'In between · small square window · 470 × 470' },
+];
 
 export function sizes(W, H) {
   const S = Math.min(W, H) / 800;
   const r = (v) => Math.round(v);
+  const lay = layoutFor(W, H); // the app's rule: wide, tall or in between; small below 480 px
   return {
-    W, H, S, wide: W / H >= 1.2, phone: Math.min(W, H) < 480,
+    W, H, S, wide: lay.shape === 'wide', mid: lay.shape === 'in between', phone: lay.small,
     pad: r(Math.max(14, 32 * S)), px: r(Math.max(24, 32 * S)), gap: r(Math.max(12, 22 * S)), bg: r(Math.max(12, 13 * S)), btn: r(Math.max(52, 84 * S)),
     small: r(Math.max(48, 60 * S)), kid: r(Math.max(Math.min(W, H) < 480 ? 52 : 64, 60 * S)), fs: r(Math.max(18, 36 * S)), fd: r(Math.max(30, 72 * S)),
     fl: r(Math.max(14, 20 * S)), r: r(Math.max(16, 28 * S)), ampH: r(Math.max(48, 64 * S)),
@@ -69,6 +76,7 @@ export function fdFor(z, cardW, cp = z.cp, max = z.fd) {
 
 const ICONS = {
   speaker: '<path d="M4 9.5v5h4l5 4v-13l-5 4z"></path><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5"></path>',
+  speakerOff: '<path d="M4 9.5v5h4l5 4v-13l-5 4z"></path><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"></path>',
   speaking: '<path d="M4 9.5v5h4l5 4v-13l-5 4z"></path><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5"></path><path d="M19 7a7 7 0 0 1 0 10"></path>',
   now: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"></path><path d="M3.5 4.5v4.5H8"></path><path d="M12 8v4.2l2.8 1.8"></path>',
   palette: '<path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.2-1-1.6-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"></path><circle cx="7.5" cy="11.5" r="1.3"></circle><circle cx="10" cy="7.3" r="1.3"></circle><circle cx="14.8" cy="7.3" r="1.3"></circle>',
@@ -106,18 +114,23 @@ export function clock(size, o = {}) {
       ringNums += `<text x="${(c + rr * Math.sin(a)).toFixed(1)}" y="${(c - rr * Math.cos(a)).toFixed(1)}" text-anchor="middle" dominant-baseline="central">${k * 5}</text>`;
     }
   }
+  // Ring numbers are small text: never under 16 px on screen, however small the clock.
+  const ringFs = Math.max(13, Math.ceil((16 * vb * 10) / size) / 10);
   const hourC = o.hourC || '{{ lf.h }}', minC = o.minC || '{{ lf.m }}';
+  // Focus ring round a grip: dark inside, yellow outside, like the buttons'.
+  const kring = (cy, rr) => `<g class="kring"><circle cx="${c}" cy="${cy}" r="${rr + 4}" fill="none" stroke="#0B1035" stroke-width="3"></circle><circle cx="${c}" cy="${cy}" r="${rr + 8}" fill="none" stroke="#FFD43B" stroke-width="4.5"></circle></g>`;
+  const slider = (name, min, max, now, key, inner) => `<g class="hand" role="slider" tabIndex="0" aria-label="${name}" aria-valuemin="${min}" aria-valuemax="${max}" aria-valuenow="{{ ${now} }}" aria-valuetext="{{ t.valText }}" onKeyDown="{{ ${key} }}">${inner}</g>`;
   const numC = o.numC || '{{ lf.h }}';
   return `<svg width="${Math.round(size)}" height="${Math.round(size)}" viewBox="0 0 ${vb} ${vb}" role="group" aria-label="{{ t.aria }}" onPointerDown="{{ onDown }}" onPointerMove="{{ onMove }}" onPointerUp="{{ onUp }}" onPointerCancel="{{ onUp }}" style="display:block;flex:none;overflow:visible;touch-action:none;cursor:grab;user-select:none">
-${ring ? `${ringDress(c)}<g style="display:{{ ck.ring }}"><g style="fill:{{ lk.m }}" font-size="13" font-weight="800">${ringNums}</g></g>` : ''}
+${ring ? `${ringDress(c)}<g style="display:{{ ck.ring }}"><g style="fill:{{ lk.m }}" font-size="${ringFs}" font-weight="800">${ringNums}</g></g>` : ''}
 <g transform="${ring ? '{{ ck.tf }}' : 'translate(0 0)'}">
 ${o.shadow !== false ? `<circle cx="${c}" cy="${c + 4}" r="${R}" fill="rgba(0,0,0,.18)"></circle>` : ''}
 <circle cx="${c}" cy="${c}" r="${R - rimW / 2}" stroke-width="${rimW}" style="fill:{{ th.face }};stroke:${o.rimC || '{{ th.rim }}'}"></circle>
 ${o.double ? `<circle cx="${c}" cy="${c}" r="${R - rimW - 3}" fill="none" stroke-width="2" stroke-dasharray="3 5" style="stroke:{{ th.rim }}"></circle>` : ''}
 <g style="stroke:{{ th.tick }}" stroke-linecap="round">${ticks}</g>
 <g style="fill:${numC}" font-size="${o.numSize || 19}" font-weight="800">${nums}</g>
-<g transform="rotate({{ hz.hour }} ${c} ${c})"><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="15" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="11" stroke-linecap="round" style="stroke:${hourC}"></line><circle cx="${c}" cy="${c - 44}" r="10" stroke="#FFFFFF" stroke-width="3" style="fill:${hourC}"></circle><circle cx="${c}" cy="${c - 44}" r="3.2" fill="#FFFFFF" opacity=".85"></circle></g>
-<g transform="rotate({{ hz.min }} ${c} ${c})"><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="10" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="6.5" stroke-linecap="round" style="stroke:${minC}"></line><circle cx="${c}" cy="${c - 82}" r="7" stroke="#FFFFFF" stroke-width="2.5" style="fill:${minC}"></circle><circle cx="${c}" cy="${c - 82}" r="2.2" fill="#FFFFFF" opacity=".85"></circle></g>
+${slider('Hour hand', 1, 12, 't.hNum', 'keyH', `<g transform="rotate({{ hz.hour }} ${c} ${c})"><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="15" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="11" stroke-linecap="round" style="stroke:${hourC}"></line><circle cx="${c}" cy="${c - 44}" r="10" stroke="#FFFFFF" stroke-width="3" style="fill:${hourC}"></circle><circle cx="${c}" cy="${c - 44}" r="3.2" fill="#FFFFFF" opacity=".85"></circle>${kring(c - 44, 10)}</g>`)}
+${slider('Minute hand', 0, 59, 't.mNum', 'keyM', `<g transform="rotate({{ hz.min }} ${c} ${c})"><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="10" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="6.5" stroke-linecap="round" style="stroke:${minC}"></line><circle cx="${c}" cy="${c - 82}" r="7" stroke="#FFFFFF" stroke-width="2.5" style="fill:${minC}"></circle><circle cx="${c}" cy="${c - 82}" r="2.2" fill="#FFFFFF" opacity=".85"></circle>${kring(c - 82, 7)}</g>`)}
 <circle cx="${c}" cy="${c}" r="8" style="fill:${hourC}"></circle><circle cx="${c}" cy="${c}" r="3" fill="#FFFFFF"></circle>
 </g>
 </svg>`;
@@ -183,10 +196,14 @@ export function ampm(h, w, z, o = {}) {
 export function speakBtn(sz, z, o = {}) {
   const label = o.label !== false;
   const fs = Math.round(Math.max(17, sz * 0.3));
-  return `<button type="button" onClick="{{ speak }}" aria-label="Hear the time" style="height:${sz}px;min-width:${sz}px;${o.grow ? 'flex:1 1 auto;' : 'flex:none;'}${o.w ? `width:${o.w}px;` : ''}padding:0 ${label ? Math.round(sz * 0.32) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.14)}px;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.accent }};color:{{ th.onAccent }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:pointer;{{ th.btnFx }};${o.extra || ''}">
+  const on = `<button type="button" onClick="{{ speak }}" aria-label="Hear the time" style="height:${sz}px;min-width:${sz}px;${o.grow ? 'flex:1 1 auto;' : 'flex:none;'}${o.w ? `width:${o.w}px;` : ''}padding:0 ${label ? Math.round(sz * 0.32) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.14)}px;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.accent }};color:{{ th.onAccent }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:pointer;{{ th.btnFx }};${o.extra || ''}">
 <sc-if value="{{ speaking }}" hint-placeholder-val="{{ false }}">${icon('speaking', sz * 0.52)}${label ? '<span>Speaking</span>' : ''}</sc-if>
 <sc-if value="{{ notSpeaking }}" hint-placeholder-val="{{ true }}">${icon('speaker', sz * 0.52)}${label ? '<span>Hear it</span>' : ''}</sc-if>
 </button>`;
+  // No voice on the device (06-read-aloud): same place and size, flat and dashed so it
+  // doesn't look pressable, never in the hour or minute colour. A tap explains why.
+  const off = `<button type="button" onClick="{{ speak }}" aria-disabled="true" aria-label="Hear the time. Not available: this device has no voice." style="height:${sz}px;min-width:${sz}px;${o.grow ? 'flex:1 1 auto;' : 'flex:none;'}${o.w ? `width:${o.w}px;` : ''}padding:0 ${label ? Math.round(sz * 0.32) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.14)}px;${o.extra || ''};box-shadow:none;border:3px dashed {{ th.softInk }};border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.soft }};color:{{ th.softInk }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:not-allowed">${icon('speakerOff', sz * 0.52)}${label ? '<span>No voice</span>' : ''}</button>`;
+  return `<sc-if value="{{ hasVoice }}" hint-placeholder-val="{{ true }}">${on}</sc-if><sc-if value="{{ noVoice }}" hint-placeholder-val="{{ false }}">${off}</sc-if>`;
 }
 
 // One sign, one place. Real time: a "Now" sign with a green dot (not a button).
@@ -292,10 +309,17 @@ const DEFAULT_THEME = '${cfg.theme}';
 const DEFAULT_TIME = '${cfg.time}';
 const LINK_HANDS = ${cfg.linkHands ? 'true' : 'false'};
 const HAND_LEN = { on: [0.42, 0.67], off: [0.5, 0.8] };
-const FRAMES = ['L', 'P', 'A', 'B', 'D'];
+const FRAMES = ['L', 'P', 'A', 'B', 'D', 'M', 'S'];
 function norm(x) { return ((Math.round(x) % 1440) + 1440) % 1440; }
 function sceneOf(t) { if (t >= 300 && t < 420) return 'sunrise'; if (t >= 420 && t < 1020) return 'day'; if (t >= 1020 && t < 1200) return 'sunset'; return 'night'; }
 function partOf(t) { if (t >= 300 && t < 720) return 'in the morning'; if (t >= 720 && t < 1020) return 'in the afternoon'; if (t >= 1020 && t < 1200) return 'in the evening'; return 'at night'; }
+// Same as handKeyStep in src/set-clock.js: arrows 1 minute or 1 hour; page up/down 5 minutes or 1 hour.
+function keyStep(hand, key) {
+  const fwd = key === 'ArrowRight' || key === 'ArrowUp', back = key === 'ArrowLeft' || key === 'ArrowDown';
+  const jump = key === 'PageUp' ? 1 : key === 'PageDown' ? -1 : 0;
+  if (hand === 'h') return 60 * (fwd ? 1 : back ? -1 : jump);
+  return fwd ? 1 : back ? -1 : 5 * jump;
+}
 function minWord(n) { return n === 1 ? '1 minute' : n + ' minutes'; }
 function sayParts(t, style) {
   const h = Math.floor(t / 60), m = t % 60, hr = String((h % 12) || 12), nx = String(((h + 1) % 12) || 12), when = ' ' + partOf(t) + '.';
@@ -325,6 +349,7 @@ class Component extends DCLogic {
     if (prev.theme !== this.props.theme) this.setState({ theme: null });
     if (prev.hands !== this.props.hands) this.setState({ hands: null });
     if (prev.helpers !== this.props.helpers) this.setState({ helpers: null });
+    if (prev.voice !== this.props.voice) this.setState({ speaking: false });
   }
   componentWillUnmount() { clearInterval(this.timer); clearTimeout(this.speakT); clearTimeout(this.toastT); }
   applyTime(v) {
@@ -371,10 +396,18 @@ class Component extends DCLogic {
     this.setState({ set: true, mins: this.m });
   }
   onUp() { if (!this.hand) return; this.hand = null; this.setState(this.moved ? { drag: null, mins: Math.round(this.m) } : { drag: null }); }
+  keyHand(hand, e) {
+    const d = keyStep(hand, e.key);
+    if (!d) return; // Tab and other keys work as normal
+    e.preventDefault();
+    this.setState({ set: true, mins: Math.round(this.base()) + d });
+  }
+  noVoice() { return this.props.voice === 'none' || typeof window === 'undefined' || !window.speechSynthesis; }
   ampm() { const b = Math.round(this.base()); this.setState({ set: true, mins: b + (norm(b) < 720 ? 720 : -720) }); }
   now() { this.hand = null; this.setState({ set: false, drag: null }); }
   sentence() { return sayParts(norm(this.base()), this.state.style).map(p => typeof p === 'string' ? p : p[1]).join(''); }
   speak() {
+    if (this.noVoice()) { this.toastMsg('No voice on this device yet. A grown-up can add one in the device settings.'); return; }
     const text = this.sentence();
     clearTimeout(this.speakT);
     try {
@@ -455,7 +488,9 @@ class Component extends DCLogic {
     bd.mouthSmile = st.speaking ? 'none' : 'inline';
     return {
       th: th, sc: sc, ov: ov, themes: themes, pairs: pairs, prefs: prefs, pad: pad, lk: lk, lf: lf, ck: ck, helpersOn: helpers, bd: bd,
-      t: { h12: h12, mm: mm, d12: h12 + ':' + mm, d24: String(h).padStart(2, '0') + ':' + mm, h24: String(h).padStart(2, '0'), ap: isAM ? 'AM' : 'PM', sentence: sentence, parts: tParts, aria: 'Clock showing ' + h12 + ':' + mm + ' ' + (isAM ? 'AM' : 'PM') + '. Drag a hand to change the time.' },
+      hasVoice: !this.noVoice(), noVoice: this.noVoice(), motion: this.props.motion === 'reduced' ? 'reduced' : 'full',
+      keyH: (e) => this.keyHand('h', e), keyM: (e) => this.keyHand('m', e),
+      t: { hNum: Number(h12), mNum: m, valText: h12 + ':' + mm + ' ' + (isAM ? 'AM' : 'PM'), h12: h12, mm: mm, d12: h12 + ':' + mm, d24: String(h).padStart(2, '0') + ':' + mm, h24: String(h).padStart(2, '0'), ap: isAM ? 'AM' : 'PM', sentence: sentence, parts: tParts, aria: 'Clock showing ' + h12 + ':' + mm + ' ' + (isAM ? 'AM' : 'PM') + '. Drag a hand, or use the arrow keys on a hand, to change the time.' },
       ap: { am: isAM ? on : off, pm: isAM ? off : on },
       hz: { hour: ((tf / 60) % 12) * 30, min: (tf % 60) * 6 },
       isSet: st.set, isLive: !st.set, speaking: st.speaking, notSpeaking: !st.speaking,

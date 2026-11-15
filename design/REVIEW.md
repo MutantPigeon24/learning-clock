@@ -93,14 +93,16 @@ All ten are **Done** in the generator and republished to the canvas.
 
 Also done while there: the scrolling panels have `overscroll-behavior: contain`, "Not quite. Try again." is in the live region, and the journeys board no longer mentions "My time".
 
-### 6.3 Gaps in the designs (not drawn yet)
+### 6.3 Gaps in the designs: drawn for Clock Hub
 
-1. **No "in between" screen.** All five artboards are wide (1.6, 2.2) or tall (0.63, 0.45), and every layout function only knows wide or not wide. A square-ish desktop window (for example 1000 × 900, ratio 1.11) falls into the tall layout. Add an in-between artboard and layout for the chosen concept, matching `layoutFor`.
-2. **No "no voice" state for the read-aloud button.** `06-read-aloud.feature` says it shows as unavailable when the tablet has no offline voice. Draw it: greyed out, still labelled, and not looking like the hour or minute colour.
-3. **No pressed state.** Buttons only change the cursor. On a touch screen a child needs to see the press: a darker fill or the button moving down onto its shadow.
-4. **No keyboard way to set the time.** `00-learning-clock.feature` asks for every button to work with a keyboard, and the web guidelines ask for a tap or keyboard alternative to every drag. Suggest: each hand is a focusable slider (`role="slider"`, `aria-valuetext` like "9:45 AM"), and the arrow keys move it one minute or one hour. This needs a new scenario in `08-set-the-clock.feature` (owner to agree).
-5. **Ring numbers are small on phones.** The 0–55 numbers are 13 units in a 240 viewBox, so they come out at 13–16 px on phone landscape in Storybook, Colour Links and Toy Blocks (clocks of 248–288 px since the edge fix). Elsewhere they are 17 px or more. Make them at least 16 px everywhere, by a larger font on small clocks or a bigger clock.
-6. **Reduce motion isn't shown.** `10-looks.feature` has it, but the canvas has no `prefers-reduced-motion` rule, so stars, windows and balloons still move. The app must switch every transition off.
+The owner chose **Concept 1, Clock Hub**, on 15 Nov. All six gaps are now **Done** for it on the canvas. (The shared parts mean the other concepts would get them too if republished, but only Clock Hub is kept up to date.)
+
+1. **In-between screens.** Two new frames, both named in `00-learning-clock.feature`: a desktop window made narrow (1000 × 900) and a small square window (470 × 470). The layout puts the clock and AM/PM switch beside a strip of the 12-hour clock, the 24-hour clock and the words, with all the buttons and the lock in one row along the bottom. The clock stays the biggest thing: 578 px and 236 px. The generator now picks wide, tall or in between with the app's own `layoutFor`.
+2. **No voice.** The read-aloud button stays in the same place and size but turns flat, dashed and grey, with a crossed-out speaker and "No voice". Tapping it explains that a grown-up can add a voice in the device settings. Try it with the "voice" tweak.
+3. **Pressed states.** Every button moves down 3 px onto its shadow and darkens a little while pressed. Buttons also have `touch-action: manipulation`, no grey tap flash, and a slight lighten on hover where there is a mouse.
+4. **Keyboard.** Each hand is a slider (`role="slider"`, "Hour hand" or "Minute hand", with a value such as "9:45 AM"). The arrow keys move 1 minute or 1 hour; page up and page down move the minute hand 5 minutes. A focused hand gets the two-tone focus ring round its grip. This is a new rule in `08-set-the-clock.feature`, with `handKeyStep` and `moveHandByKey` in `src/set-clock.js` and 16 new tests.
+5. **Ring numbers.** The 0–55 numbers never go below 16 px on screen: small clocks get a larger font. Clock Hub's are 17 px or more on phones and 16 px on the small square window.
+6. **Less motion.** When the device asks for less motion, every transition stops, so scene changes are instant. Try it with the "motion" tweak.
 
 ### 6.4 For the build (carry into the real app)
 

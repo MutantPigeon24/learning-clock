@@ -1,5 +1,5 @@
 import { corners } from './theme-art.mjs';
-import { FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, overlays, toast, logic, icon, SAY } from './parts.mjs';
+import { FRAMES, MID_FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, overlays, toast, logic, icon, SAY } from './parts.mjs';
 
 const R = Math.round;
 const abs = (z, inner, extra = '') => `<div style="position:absolute;inset:0;padding:${z.pad}px ${z.px}px;box-sizing:border-box;display:flex;${extra}">${inner}</div>`;
@@ -22,6 +22,25 @@ function c1(f, z) {
     const rightW = W - 2 * px - cs - 2 * gap;
     return abs(z, `<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px;flex:none">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:${gap}px">${header}${words(rightW)}${digi((rightW - gap) / 2)}${tools}</div>`, `gap:${2 * gap}px`);
+  }
+  if (z.mid) {
+    // In between: the clock (with AM/PM) beside a strip of two rows, the two digital
+    // clocks and the words. The buttons, with the lock, run along the bottom.
+    const inner = W - 2 * px;
+    const topH = H - 2 * pad - btn - gap;
+    const minSide = z.phone ? 160 : 300;
+    const digH = (fd) => fl * 1.3 + fd + 2 * cp + 8;
+    const colH = (side) => { const fd = Math.min(z.fd, fdFor(z, side)); return 2 * digH(fd) + wordsH(z, side) + 2 * gap; };
+    let cs = Math.min(topH - ampH - gap, inner - minSide - 2 * gap);
+    while (cs > 120 && colH(inner - cs - 2 * gap) > topH) cs -= 2;
+    const side = inner - cs - 2 * gap;
+    const fd = Math.min(z.fd, fdFor(z, side));
+    const strip = `<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:${gap}px">
+<div style="${card};padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('12-hour', fl)}${digits12(fd, z)}</div>
+<div style="${card};padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div>${words(side)}</div>`;
+    const bar = `<div style="display:flex;align-items:center;gap:${z.bg}px">${speakBtn(btn, z, { grow: true })}${nowBtn(btn, z, { label: !z.phone })}${themeBtn(f, btn)}${calBtn(btn)}${lockBtn(f, small)}</div>`;
+    return abs(z, `<div style="flex:1;min-height:0;display:flex;align-items:center;gap:${2 * gap}px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px;flex:none">${clock(cs)}${ampm(ampH, cs * 0.5, z)}</div>${strip}</div>${bar}`, `flex-direction:column;gap:${gap}px`);
   }
   const inner = W - 2 * px;
   const fd = fdFor(z, (inner - gap) / 2);
@@ -213,7 +232,7 @@ const THEME_FONTS = 'family=Baloo+2:wght@800&family=Grandstander:wght@800&family
 const DECO_SPOTS = [[3, 4, 46, -12], [90, 3, 36, 14], [46, 2, 28, 0], [2, 88, 34, 8], [93, 90, 42, -10]];
 
 export const CONCEPTS = [
-  { n: 1, file: 'Concept1.dc.html', title: 'Concept 1 · Clock Hub', font: "'Baloo 2', system-ui, sans-serif", fontUrl: 'family=Baloo+2:wght@500;600;700;800', theme: 'sky', time: 'live', layout: c1 },
+  { n: 1, file: 'Concept1.dc.html', title: 'Concept 1 · Clock Hub', chosen: true, font: "'Baloo 2', system-ui, sans-serif", fontUrl: 'family=Baloo+2:wght@500;600;700;800', theme: 'sky', time: 'live', layout: c1 },
   { n: 2, file: 'Concept2.dc.html', title: 'Concept 2 · Storybook', font: "'Fredoka', system-ui, sans-serif", fontUrl: 'family=Fredoka:wght@500;600;700', theme: 'blossom', time: '18:20 sunset', layout: c2 },
   { n: 3, file: 'Concept3.dc.html', title: 'Concept 3 · Toy Blocks', font: "'Nunito', system-ui, sans-serif", fontUrl: 'family=Nunito:wght@600;700;800;900', theme: 'hero', time: '09:45 day', layout: c3 },
   { n: 4, file: 'Concept4.dc.html', title: 'Concept 4 · Colour Links', font: "'Andika', system-ui, sans-serif", fontUrl: 'family=Andika:wght@400;700', theme: 'dino', time: 'live', layout: c4, ring: true },
@@ -223,13 +242,15 @@ export const CONCEPTS = [
 
 // Desktop + tablet landscape | tablet portrait + phone landscape | phone portrait.
 export const ART_W = 3080, ART_H = 2020;
+// The chosen concept also shows the two in-between shapes, in a fourth column.
+export const artW = (c) => (c.chosen ? ART_W + 64 + 1016 : ART_W);
 
 export function conceptFile(c) {
   const dev = (fr) => {
     const z = sizes(fr.W, fr.H);
     const small = z.phone;
-    const desk = fr.id === 'D';
-    const screen = `<div style="position:relative;width:${fr.W}px;height:${fr.H}px;overflow:hidden;border-radius:${desk ? '0 0 10px 10px' : (small ? '24px' : '32px')};font-family:${c.font};color:{{ th.ink }}">
+    const desk = fr.id === 'D' || fr.id === 'M' || fr.id === 'S';
+    const screen = `<div data-motion="{{ motion }}" style="position:relative;width:${fr.W}px;height:${fr.H}px;overflow:hidden;border-radius:${desk ? '0 0 10px 10px' : (small ? '24px' : '32px')};font-family:${c.font};color:{{ th.ink }}">
 ${scene(`c${c.n}-${fr.id}`)}${corners(z)}${deco(z, DECO_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z)}${toast(z)}
 </div>`;
     const shell = desk
@@ -247,7 +268,9 @@ ${shell}</div>`;
     hands: { editor: 'enum', options: ['theme', 'red-blue', 'orange-purple', 'pink-teal', 'purple-orange'], default: 'theme' },
     helpers: { editor: 'enum', options: ['on', 'off'], default: 'on' },
     time: { editor: 'enum', options: ['live', '05:30 sunrise', '09:45 day', '18:20 sunset', '21:45 night'], default: c.time },
-    $preview: { width: ART_W, height: ART_H },
+    voice: { editor: 'enum', options: ['on', 'none'], default: 'on' },
+    motion: { editor: 'enum', options: ['full', 'reduced'], default: 'full' },
+    $preview: { width: artW(c), height: ART_H },
   };
   return `<!doctype html>
 <html lang="en">
@@ -263,13 +286,20 @@ ${shell}</div>`;
 <style>
 body{margin:0}
 button:focus-visible{outline:4px solid #FFD43B !important;outline-offset:2px;box-shadow:0 0 0 2px #0B1035 !important}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .08s ease,filter .08s ease}
+button:active:not([aria-disabled=true]){transform:translateY(3px) !important;filter:brightness(.9)}
+@media (hover:hover){button:hover:not([aria-disabled=true]){filter:brightness(1.06)}}
+.hand{outline:none;cursor:grab}.hand .kring{opacity:0}.hand:focus-visible .kring{opacity:1}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none !important;animation:none !important}}
+[data-motion=reduced] *{transition:none !important;animation:none !important}
 a{color:#1A64C8}a:hover{color:#0F4A99}
 </style>
 </helmet>
-<div style="width:${ART_W}px;height:${ART_H}px;box-sizing:border-box;padding:48px;display:flex;gap:64px;align-items:flex-start;background:#ECEEF2">
+<div style="width:${artW(c)}px;height:${ART_H}px;box-sizing:border-box;padding:48px;display:flex;gap:64px;align-items:flex-start;background:#ECEEF2">
 <div style="display:flex;flex-direction:column;gap:40px;flex:none">${dev(D)}${dev(L)}</div>
 <div style="display:flex;flex-direction:column;gap:40px;flex:none">${dev(P)}${dev(A)}</div>
 ${dev(B)}
+${c.chosen ? `<div style="display:flex;flex-direction:column;gap:40px;flex:none">${MID_FRAMES.map(dev).join('')}</div>` : ''}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='${JSON.stringify(props)}'>

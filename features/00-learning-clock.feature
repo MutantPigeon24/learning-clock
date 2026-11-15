@@ -161,3 +161,4 @@ Feature: Learning to tell time
       When someone uses a mouse
       Then they can drag the clock's hands just like a finger can
       And every button can also be reached and pressed with the keyboard
+      And the hands can be moved with the arrow keys (see 08-set-the-clock.feature)

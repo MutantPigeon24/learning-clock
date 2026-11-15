@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { CONCEPTS, conceptFile, ART_W, ART_H } from './concepts.mjs';
+import { CONCEPTS, conceptFile, ART_H, artW } from './concepts.mjs';
 
 const OUT = process.env.OUT;
 const MAIN_H = 3700;
@@ -115,7 +115,7 @@ function indexFile() {
   const fills = { 1: 'blue', 2: 'pink', 3: 'orange', 4: 'green', 5: 'purple', 6: 'teal' };
   let y = MAIN_H + 560;
   for (const c of CONCEPTS) {
-    boards[c.file] = { x: 0, y, w: ART_W, h: ART_H, title: c.title, is_interactive: true };
+    boards[c.file] = { x: 0, y, w: artW(c), h: ART_H, title: c.title, is_interactive: true };
     order.push(c.file);
     notes['why' + c.n] = { x: -700, y, w: 600, fill: fills[c.n], size: 'l', text: why[c.n] };
     y += ART_H + 240;

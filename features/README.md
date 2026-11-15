@@ -82,6 +82,9 @@ So that this works:
 23. **The settings are in the first version**: how the time is said, hour and minute helpers, talking speed, whether children can change the look, and reset. Part-of-day times, the voice and the hemisphere come later (`07-preferences.feature`).
 24. **"Reset to defaults" leaves the child's look and colour pair alone**, because they're the child's own choice. It only resets the grown-up settings (`07-preferences.feature`).
 25. **In the "quarter, half, past and to" wording, "quarter" and "half" take the minute colour**, and the hour after "to" takes the hour colour (`07-preferences.feature`).
+26. **Concept 1, Clock Hub, is the one to build** (chosen on 15 Nov 2026). The analog clock sits beside the cards (wide), above them (tall), or beside a strip of the two digital clocks and the words (in between), with the buttons in one row.
+27. **The hands can be moved with a keyboard.** Each hand is a slider: arrows move 1 minute or 1 hour, page up and page down move the minute hand 5 minutes (`08-set-the-clock.feature`).
+28. **"Reset to defaults" has an Undo** until the settings close (`07-preferences.feature`).
 
 ## Assumptions (change any of these if they're wrong)
 
