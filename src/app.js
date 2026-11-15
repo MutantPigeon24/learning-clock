@@ -145,6 +145,7 @@ function applyLayout() {
   document.documentElement.style.setProperty('--corner', `${Math.round(short * (sizes.phone ? 0.26 : 0.22))}px`);
   document.documentElement.style.setProperty('--motif-scale', String(Math.max(0.6, sizes.S)));
   placeOrb();
+  fitSpeakLabel();
 }
 
 // The ring numbers stay 16 px or more on screen, whatever size the clock is.
@@ -208,9 +209,12 @@ function render() {
     }),
   );
 
-  // Now sign or "Back to now"
-  $('now-sign').hidden = view.setByHand;
-  $('back-to-now').hidden = !view.setByHand;
+  // Now sign or "Back to now". "Back to now" is wider, so the read-aloud word may no longer fit.
+  if ($('back-to-now').hidden === view.setByHand) {
+    $('now-sign').hidden = view.setByHand;
+    $('back-to-now').hidden = !view.setByHand;
+    fitSpeakLabel();
+  }
 
   // The scene behind everything
   applyScene(view.scene);
@@ -288,9 +292,21 @@ function showSpeech({ voice, speaking }) {
   const [label, name] = SPEAK_LABELS[state];
   speakButton.dataset.state = state;
   $('speak-label').textContent = label;
+  fitSpeakLabel();
   speakButton.setAttribute('aria-label', name);
   if (state === 'none') speakButton.setAttribute('aria-disabled', 'true');
   else speakButton.removeAttribute('aria-disabled');
+}
+
+/**
+ * Shows the button's word only when it fits whole, so a child never sees a
+ * cut-off word: otherwise the speaker picture alone. The button keeps its
+ * full name for screen readers either way.
+ */
+function fitSpeakLabel() {
+  const label = $('speak-label');
+  speakButton.removeAttribute('data-picture-only');
+  if (label.scrollWidth > label.clientWidth + 1) speakButton.setAttribute('data-picture-only', '');
 }
 
 const reader = createReader({
@@ -300,6 +316,8 @@ const reader = createReader({
   onChange: showSpeech,
 });
 showSpeech(reader.state());
+// The fonts arrive a moment after the page; the word's width changes with them.
+document.fonts?.addEventListener('loadingdone', fitSpeakLabel);
 
 let toastTimer;
 function showToast(message) {

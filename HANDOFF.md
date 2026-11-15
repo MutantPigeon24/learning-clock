@@ -15,7 +15,6 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
   - Files: [`index.html`](index.html) and [`styles.css`](styles.css) are the page. [`src/clock-view.js`](src/clock-view.js) works out what every display shows (tested in Node). [`src/clock-face.js`](src/clock-face.js) draws the SVG and turns a finger into a point on the face. [`src/app.js`](src/app.js) only connects them to the page. Tests are in [`test/clock-screen.test.js`](test/clock-screen.test.js).
   - Sizes come from `clockHubLayout` as CSS variables, with two changes from the canvas. In the wide layout, the clock leaves room for digits at 60 % of their full size (at exactly 1.2 wide they were unreadable). In the tall layout, the clock fills whatever height is left (CSS container units).
   - Checked in the browser at 13 screen sizes, including every example in `00`: nothing overflows, overlaps or is cut off, the clock is the largest display, and the ring numbers are 16 px or more. Dragging, the keyboard, AM/PM and "Back to now" were tried by hand.
-  - **Not built yet:** local fonts (the system font for now).
 - **The grown-up check and settings are built** (15 Nov):
   - **Opening:** the lock button sits in the header's corner, or at the end of the bottom row in the in-between layout. It opens [`src/grown-up-panel.js`](src/grown-up-panel.js), one `<dialog>` that asks a 6–9 times-table question on a phone-style number pad (a keyboard works too). The right answer turns the same panel into the settings.
   - **Settings:** each change applies straight away and is kept on the device (`learning-clock:settings`, through `readSettings` and `saveSettings`). "Reset to defaults" leaves the child's look alone and offers Undo until the panel closes, but only if something changed. The next visit asks a question with a different answer.
@@ -26,7 +25,7 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
   - **Picker:** the palette button opens [`src/look-picker.js`](src/look-picker.js), a native `<dialog>` (`showModal`), so focus stays inside, Escape closes it, and focus goes back to the button. It has six picture tiles, then the hour and minute colours the look allows (none while the helpers are off). A pick applies straight away.
   - **Saved choice:** [`src/look-choice.js`](src/look-choice.js) keeps `{ look, pair }` in `localStorage` (`learning-clock:look`), loads it safely, and works out what the picker shows. A pair the look hides is kept for later, and the look's own colours are shown meanwhile.
   - **The look's kit:** [`src/look-art.js`](src/look-art.js) holds each look's card style, ring shape, corner pictures, picker picture and motifs. It moved here from the design generator, which now imports it; the canvas output is byte-for-byte the same. `app.js` puts the card styles in a `<style>` built by `lookStyleSheet()`, keyed on `data-look` on `<html>`.
-  - **Not used yet:** the display fonts (`dfont`) are for look names only (REVIEW 6.4), and wait for the fonts PR. `btnFx` styles the read-aloud button (through `lookStyleSheet()`).
+  - The display fonts (`dfont`) are used for the look names in the picker only (REVIEW 6.4). `btnFx` styles the read-aloud button (through `lookStyleSheet()`).
   - **Startup:** the page stays hidden until the look is applied, so Sky never flashes up first.
   - Each look's world behind the screen is drawn by the scenes (below).
 - **The time-of-day scenes are built** (15 Nov), in all six looks:
@@ -45,6 +44,12 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
   - **No voice:** voices can arrive late, so the button looks normal for up to 2.5 s (`VOICE_WAIT_MS`) while they load. With none it stays in place but turns flat, dashed and grey with "No voice", and a tap shows a message above the buttons for 4 s: a grown-up can add a voice in the device settings. A voice added later is found at the next press.
   - Checked in the browser with the engine's `speak` swapped for a silent stand-in: the text, speed, voice (an en-GB voice on the device), the "Speaking" state, pressing again, and talking speed from the settings. The button row fits at 1280 × 800, 412 × 915, 915 × 412 and 470 × 470, in the Unicorn, Hero and Space looks. The "No voice" state was set by hand to check how it looks. **Not yet heard on the tablet:** check there that a voice is installed (Settings → Text-to-speech) and that it speaks offline.
   - **Not built:** the word-by-word highlight (`@low-priority`).
+- **Local fonts are built** (15 Nov, the owner's OK to download them):
+  - **Which:** [`fonts/`](fonts/) holds eight woff2 files from Google Fonts, Latin letters only, about 144 KB in all. Their licences are in [`fonts/licences/`](fonts/licences/): SIL Open Font License, and Apache 2.0 for Chewy. The `@font-face` rules are at the top of `styles.css`, and every file is in `FILES` in `sw.js`, so they work offline.
+  - **Where:** Baloo 2 (one variable file, weights 400–800) is the screen's font, as in the Clock Hub design. Andika, made for early readers with a child-style "a" and "g", is for the sentence only (the owner's choice); the digits, buttons and labels stay in Baloo 2. Each look's own font (Grandstander, Sniglet, Bangers, Chewy, Audiowide; Baloo 2 for Sky) is only for its name in the look picker, with `font-synthesis: none` so no fake bold is drawn.
+  - **Fit:** Andika needs about 0.48 × the font size per character, under the 0.53 that `wordsCardHeight` allows. With the longest sentence ("It is 58 minutes past 12 in the afternoon.") nothing overflows its card or the screen at 13 sizes, from 360 × 740 to 1920 × 1080.
+  - **Read-aloud word:** Baloo 2 is a little wider, so on some screens "Hear it" doesn't fit beside "Back to now". The button then shows the speaker picture alone (`fitSpeakLabel` in `app.js`), and never a cut-off word. It keeps its full name for screen readers.
+  - **Checking in the built-in browser:** when the browser pane is hidden, the page doesn't render, so resize observers don't run and the layout looks stuck. Take a screenshot after each resize to force a frame, or show the pane.
 - **The app is an installable offline PWA** (15 Nov). Pieces:
   - [`manifest.webmanifest`](manifest.webmanifest): full screen (`display_override: fullscreen`, falling back to standalone), any orientation, Sky's colours, and every address relative so it works from the GitHub Pages sub-folder.
   - [`icons/`](icons/): drawn by [`tools/make-icons.mjs`](tools/make-icons.mjs) (`npm run icons`, no dependencies). A clock at ten past ten in Sky's hour and minute colours, with a maskable version.
@@ -100,10 +105,9 @@ These hold whichever concept is chosen. **All of them are now in the feature fil
 
 ## Likely next steps
 Each of these is its own PR. Add every new file to `FILES` in `sw.js` and run `npm run stamp`.
-1. **Local fonts** (REVIEW 6.4: Baloo 2 for labels, maybe Andika for the sentence and digits, and each look's display font for look names in the picker). Downloading the font files needs the owner's OK.
-2. Install it on the tablet (steps in `features/README.md`) and tag `v1`. This can happen at any point to check the install, and it is the first real test of the voice.
-3. Leave `@low-priority` and `@future` until the rest works.
-4. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
+1. Install it on the tablet (steps in `features/README.md`) and tag `v1`. This can happen at any point to check the install, and it is the first real test of the voice.
+2. Leave `@low-priority` and `@future` until the rest works.
+3. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
 
 ## Repo rules
 - No personal details (names, emails, home-folder paths) in files or git metadata. Commits use the repo-local GitHub noreply identity.
