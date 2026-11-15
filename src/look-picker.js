@@ -5,10 +5,12 @@
 //
 // It is a native <dialog> opened with showModal(), so the browser keeps the
 // focus inside it, closes it on Escape and makes the screen behind inert.
+// Closing it works like every panel (panel.js).
 
 import { LOOKS } from './colours.js';
 import { BADGES, LOOK_STYLES } from './look-art.js';
 import { lookPicker } from './look-choice.js';
+import { setUpPanel } from './panel.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -82,15 +84,7 @@ export function setUpLookPicker({ getChoice, getHelpers, onPick }) {
     pairTiles.querySelector(`[data-pair-id="${id}"]`)?.focus(); // the tiles were rebuilt
   });
 
-  $('look-picker-close').addEventListener('click', () => dialog.close());
-  // A tap on the dimmed screen outside the panel closes it too.
-  dialog.addEventListener('click', (e) => {
-    if (e.target !== dialog) return;
-    const r = dialog.getBoundingClientRect();
-    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-    if (!inside) dialog.close();
-  });
-  dialog.addEventListener('close', () => opener.focus());
+  setUpPanel(dialog, { opener, closeButtons: [$('look-picker-close')] });
   opener.addEventListener('click', open);
 
   return { open, refresh };

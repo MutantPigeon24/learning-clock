@@ -1,6 +1,7 @@
 // The Clock Hub clock screen: puts clockView on the page in the child's
 // look, lays it out for the screen's shape, and handles dragging the hands,
-// the keyboard, the AM/PM switch, "Back to now" and the look picker. The logic lives in the modules it imports;
+// the keyboard, the AM/PM switch, "Back to now", the look picker and the
+// grown-up settings. The logic lives in the modules it imports;
 // this file only connects them to the page.
 
 import { LOOKS } from './colours.js';
@@ -8,25 +9,20 @@ import { cornerArt, LOOK_STYLES, lookStyleSheet, MOTIF_SPOTS, MOTIFS, ringArt } 
 import { readLookChoice, saveLookChoice } from './look-choice.js';
 import { setUpLookPicker } from './look-picker.js';
 import { clockHubLayout } from './layout.js';
-import { defaultSettings } from './settings.js';
+import { readSettings, saveSettings } from './settings.js';
+import { deviceStorage } from './storage.js';
+import { setUpGrownUpPanel } from './grown-up-panel.js';
 import { dragHandTo, handKeyStep, moveHandByKey, moveTime, nearestHand, realClock, shownTime, swapAmPm } from './set-clock.js';
 import { clockFaceMarkup, facePoint, faceTransform, ringFontSize, VIEWBOX } from './clock-face.js';
 import { clockView } from './clock-view.js';
 import { startOffline } from './pwa.js';
 
-// The grown-up settings are fixed at their defaults until the settings
-// panel is built.
 const CENTRE = VIEWBOX / 2;
-const settings = defaultSettings();
+// Settings for features that aren't built yet stay out of the settings panel.
+const UNBUILT_SETTINGS = ['talkingSpeed']; // read-aloud
 
-// localStorage can be missing or blocked; the app then just doesn't remember.
-const storage = (() => {
-  try {
-    return globalThis.localStorage ?? null;
-  } catch {
-    return null;
-  }
-})();
+const storage = deviceStorage();
+let settings = readSettings(storage);
 
 const $ = (id) => document.getElementById(id);
 const screen = $('screen');
@@ -76,7 +72,7 @@ function applyLook(lookId) {
 }
 
 const SIZE_VARS = {
-  pad: 'pad', px: 'px', gap: 'gap', btn: 'btn', kid: 'kid', fs: 'fs', fl: 'fl', r: 'r',
+  pad: 'pad', px: 'px', gap: 'gap', btn: 'btn', small: 'small-btn', kid: 'kid', fs: 'fs', fl: 'fl', r: 'r',
   ampH: 'amp-h', cp: 'cp', clock: 'clock', digits: 'fd',
 };
 
@@ -258,7 +254,23 @@ const picker = setUpLookPicker({
     picker.refresh();
   },
 });
-$('look-button').hidden = !settings.childrenCanChangeLook;
+
+// --- The grown-up settings ---------------------------------------------------
+
+function applySettings() {
+  $('look-button').hidden = !settings.childrenCanChangeLook;
+  render();
+}
+
+setUpGrownUpPanel({
+  getSettings: () => settings,
+  hidden: UNBUILT_SETTINGS,
+  onChange(next) {
+    settings = next;
+    saveSettings(storage, settings);
+    applySettings(); // the clock behind the panel changes straight away
+  },
+});
 
 // --- Start -------------------------------------------------------------------
 
@@ -269,6 +281,6 @@ document.head.append(lookStyles);
 applyLook(choice.look);
 applyLayout();
 fitRingNumbers();
-render();
+applySettings();
 scheduleNextMinute();
 startOffline();

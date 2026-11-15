@@ -22,8 +22,12 @@
   <div class="layout" id="layout" data-shape="wide">
     <h1 class="visually-hidden">Learning Clock</h1>
 
-    <!-- Room for the calendar and grown-up buttons once they are built. -->
+    <!-- The header row: room for the calendar button once it is built, and the
+         grown-up lock (which joins the bottom row in the in-between layout). -->
     <div class="header"></div>
+    <button type="button" class="lock-button" id="lock-button" aria-label="Grown-up settings" aria-haspopup="dialog">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    </button>
 
     <div class="clock-area">
       <div class="clock" id="clock"></div>
@@ -81,6 +85,49 @@
       <section class="pair-section" id="pair-section" aria-labelledby="pair-title">
         <h3 class="pair-title" id="pair-title">Hour and minute colours</h3>
         <div class="pair-tiles" id="pair-tiles"></div>
+      </section>
+    </dialog>
+
+    <!-- The grown-up check, then the settings, in one panel.
+         src/grown-up-panel.js runs it. -->
+    <dialog class="panel" id="grown-up" aria-labelledby="grown-up-title">
+      <div class="panel-head">
+        <svg class="panel-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <h2 class="panel-title" id="grown-up-title">For grown-ups</h2>
+        <button type="button" class="panel-close" id="grown-up-close" aria-label="Close">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <section class="gate" id="gate">
+        <p class="gate-help">Answer the times-table question to open the settings.</p>
+        <p class="gate-question" id="gate-question"></p>
+        <div class="gate-entry" aria-live="polite">
+          <p class="gate-typed" id="gate-typed"></p>
+          <p class="gate-wrong" id="gate-wrong" hidden>Not quite. Try again.</p>
+        </div>
+        <div class="number-pad" id="number-pad">
+          <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button>
+          <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button>
+          <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button>
+          <span aria-hidden="true"></span>
+          <button type="button" data-key="0">0</button>
+          <button type="button" class="pad-delete" data-key="delete" aria-label="Delete">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5h11v14H9l-6-7z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings" id="settings" hidden>
+        <div class="setting-rows" id="setting-rows"></div>
+        <div class="settings-foot">
+          <span class="reset-note" id="reset-note" role="status"></span>
+          <button type="button" class="quiet-button" id="undo-reset" hidden>Undo</button>
+          <button type="button" class="quiet-button" id="reset-settings">Reset to defaults</button>
+          <button type="button" class="done-button" id="settings-done">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Done</span>
+          </button>
+        </div>
       </section>
     </dialog>
   </div>

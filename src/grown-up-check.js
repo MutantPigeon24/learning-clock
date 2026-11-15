@@ -40,3 +40,11 @@ export function pressKey(check, key) {
   if (entry === check.question.answer) return { ...check, entry, wrong: false, passed: true };
   return { ...check, entry: '', wrong: true };
 }
+
+/**
+ * What the number pad's display shows: the digits typed so far, then a gap
+ * for each digit still to come, e.g. "5 _" after typing 5 for 56.
+ */
+export function entryDisplay(check) {
+  return check.entry.padEnd(check.question.answer.length, '_').split('').join(' ');
+}
