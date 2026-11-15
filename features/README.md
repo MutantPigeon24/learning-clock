@@ -88,24 +88,27 @@ So that this works:
 
 Not part of the first version. It's written down now so the clock's logic can be built in a way that extends to dates.
 
+### Decisions (answered by the owner)
+1. **The default hemisphere is northern.** A parent can change it. In the northern hemisphere, winter is December to February, spring is March to May, summer is June to August and autumn is September to November. They're the other way round in the southern hemisphere.
+2. **The date in numbers is dd/mm/yyyy**, for example 15/11/2026.
+3. **The week starts on Monday.** Saturday and Sunday look different as the weekend.
+4. **The year wheel puts each month at its clock number:** January at the 1, March at the 3, December at the 12 at the top. A pointer like a clock hand shows the current month, and each season has its own colour.
+5. **Special days aren't planned yet.** Birthdays and holidays are a possible later addition (see "Possible later additions" below).
+
 ### Assumptions
 1. **A separate calendar screen**, reached by a big button from the clock screen, so the clock screen stays uncluttered.
 2. **The same ideas as the clock:** the date shown several ways at once (sentence, month page, week row, year wheel, numbers), a sentence that's also read aloud, a picture that changes, choosing your own date with a "back to today" button, and a chosen date that stays still.
 3. **Wording:** "Today is Sunday, the 15th of November 2026." plus "Yesterday was Saturday. Tomorrow is Monday."
-4. **Date in numbers is day/month/year**, for example 15/11/2026.
-5. **The week starts on Monday**, and Saturday and Sunday look different as the weekend.
-6. **Seasons go by whole months:** in the northern hemisphere, winter is December to February, spring is March to May, summer is June to August and autumn is September to November. They're the other way round in the southern hemisphere.
-7. **The hemisphere is a preference** a parent sets once, because the app never uses location.
-8. **The year wheel** shows the 12 months round a circle, January at the top, with each season in its own colour.
-9. **The clock and calendar share one date and time.** Dragging the clock past midnight changes the date. The AM/PM switch doesn't.
+4. **Seasons go by whole months**, not by the exact solstice and equinox dates.
+5. **The hemisphere is a preference** rather than detected, because the app never uses location.
+6. **The clock and calendar share one date and time.** Dragging the clock past midnight changes the date. The AM/PM switch doesn't.
 
 ### Open questions
-- Which hemisphere should be the default?
-- Day/month/year for the date in numbers, or another format?
-- Should the week start on Monday or Sunday?
-- Should the year wheel put each month at its clock number (January at the 1, December at the 12), to link it with the clock face?
-- Should the calendar show special days, such as birthdays and holidays?
+None at the moment.
+
+## Possible later additions (not planned yet)
+- Special days on the calendar, such as birthdays and holidays.
 
 ## Open questions
 
-None at the moment for the first version. See the calendar section above for future questions.
+None at the moment.

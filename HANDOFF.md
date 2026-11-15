@@ -29,7 +29,7 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 - **Answers from the owner** are recorded under "Decisions" in [`features/README.md`](features/README.md): no second hand; always "N minutes past H" (no quarter, half or to, because the child hasn't learnt fractions); the scene and the part-of-day words share boundaries (morning 05:00, afternoon 12:00, evening 17:00, night 20:00; scenes sunrise 05:00, day 07:00, sunset 17:00, night 20:00); word highlight is low priority; portrait and landscape are both supported, with the analog clock as the largest display; preferences come later.
 
 ## Waiting on the owner (open questions)
-None for the first version. The future calendar has its own open questions (hemisphere, date format, week start, year wheel layout, special days) in [`features/README.md`](features/README.md).
+None at the moment. Answers for the future calendar (northern hemisphere by default, dd/mm/yyyy, week starts on Monday, months at their clock numbers on the year wheel) are under "Future: calendar" in [`features/README.md`](features/README.md).
 
 ## Likely next steps
 1. Add tested logic for dragging the hands (`08-set-the-clock.feature` Examples): an angle snaps to a minute, crossing the 12 moves 12 hours either way, and the AM/PM switch adds or takes away 12 hours. Keep the shown time as "real" or "set" state that every display reads from. Store it as a full date and time, not just hours and minutes, so the future calendar (`09-calendar.feature`) can share it.
@@ -37,7 +37,7 @@ None for the first version. The future calendar has its own open questions (hemi
 3. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
 4. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
 5. Leave `@low-priority` and `@future` until the rest works.
-6. More ideas may come (quizzes, rewards). Add each as a new `features/NN-*.feature`.
+6. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
 
 ## Repo rules
 - No personal details (names, emails, home-folder paths) in files or git metadata. Commits use the repo-local GitHub noreply identity.

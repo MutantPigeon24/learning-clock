@@ -74,7 +74,7 @@ Feature: Learning the calendar (future)
         | 2026-11-15 | Yesterday was Saturday. Tomorrow is Monday.  |
         | 2026-12-31 | Yesterday was Wednesday. Tomorrow is Friday. |
 
-  Rule: The date in numbers is shown day, month, year
+  Rule: The date in numbers is shown as dd/mm/yyyy
 
     Scenario Outline: Writing the date in numbers
       Given today is <date>
@@ -115,19 +115,39 @@ Feature: Learning the calendar (future)
       Then the 1st of November is under Sunday
       And the 30th of November is under Monday
 
-  Rule: The year wheel shows the months like numbers on a clock
+  Rule: The year wheel puts each month at its number on a clock face
+
+    # Month 1 (January) is where the 1 is on a clock, and month 12 (December)
+    # is at the top, where the 12 is. This links the calendar to the clock.
 
     Scenario: Seeing the year wheel
       When my child looks at the year wheel
-      Then they see the 12 months around a circle, starting with January at the top
-      And a pointer points at the current month
+      Then they see the 12 months around a circle, like the numbers on a clock
+      And a pointer, like a clock hand, points at the current month
       And each season is a different colour
+
+    Scenario Outline: Placing each month on the wheel
+      When my child looks at the year wheel
+      Then <month> is where the <number> is on a clock face
+
+      Examples:
+        | month     | number |
+        | January   | 1      |
+        | March     | 3      |
+        | June      | 6      |
+        | September | 9      |
+        | December  | 12     |
 
   Rule: The season picture follows the month and the hemisphere
 
     # Meteorological seasons, by whole months. The seasons are opposite in the
     # southern hemisphere. The app never uses location, so the hemisphere is a
-    # preference that a parent sets once.
+    # preference that a parent can change. The default is northern.
+
+    Scenario: Using the northern hemisphere by default
+      Given a parent has not chosen a hemisphere
+      And today is in January
+      Then the season is winter
 
     Scenario Outline: Showing the season
       Given the hemisphere is set to <hemisphere>
@@ -211,3 +231,6 @@ Feature: Learning the calendar (future)
       When my child presses the AM/PM switch
       Then the time is 09:45
       And the date is still Sunday 15 November 2026
+
+  # Possible later addition, not planned yet: showing special days such as
+  # birthdays and holidays on the calendar.
