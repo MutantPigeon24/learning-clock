@@ -19,6 +19,7 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 | `05-time-of-day-scene.feature` | Sunrise / day / sunset / night background at fixed times that match the part-of-day words |
 | `06-read-aloud.feature` | Speaker button, on-device text-to-speech, the same sentence as the words, word highlight (`@low-priority`) |
 | `07-preferences.feature` | `@future`: parent preferences for wording style, part-of-day and scene times, voice |
+| `08-set-the-clock.feature` | Drag the analog hands to set any time; AM/PM switch on the analog clock; a set time is static; every display follows; "back to now" button |
 
 ## Decisions made
 - **Platform:** Android tablet, Chrome, installable offline PWA. No backend, no accounts, no network calls after install.
@@ -30,11 +31,12 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 None at the moment.
 
 ## Likely next steps
-1. Build the clock screen: plain HTML/CSS/JS with ES modules, no build step, every asset bundled locally. Draw the analog clock with SVG using `handAngles`. Update all displays together once a minute and on `visibilitychange`.
-2. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
-3. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
-4. Leave `@low-priority` and `@future` until the rest works.
-5. More ideas may come (quizzes, setting the clock, rewards). Add each as a new `features/NN-*.feature`.
+1. Add tested logic for dragging the hands (`08-set-the-clock.feature` Examples): an angle snaps to a minute, crossing the 12 moves 12 hours either way, and the AM/PM switch adds or takes away 12 hours. Keep the shown time as "real" or "set" state that every display reads from.
+2. Build the clock screen: plain HTML/CSS/JS with ES modules, no build step, every asset bundled locally. Draw the analog clock with SVG using `handAngles`. Update all displays together once a minute and on `visibilitychange`.
+3. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
+4. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
+5. Leave `@low-priority` and `@future` until the rest works.
+6. More ideas may come (quizzes, rewards). Add each as a new `features/NN-*.feature`.
 
 ## Repo rules
 - No personal details (names, emails, home-folder paths) in files or git metadata. Commits use the repo-local GitHub noreply identity.

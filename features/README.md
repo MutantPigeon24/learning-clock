@@ -12,6 +12,7 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 | `05-time-of-day-scene.feature` | Sunrise / day / sunset / night background |
 | `06-read-aloud.feature` | Button that speaks the time; word-by-word highlight (low priority) |
 | `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
+| `08-set-the-clock.feature` | Dragging the analog hands to set any time; AM/PM switch; every display follows; "back to now" button |
 
 Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
 
@@ -60,6 +61,10 @@ So that this works:
 5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
 6. **The analog clock is the largest display** in both portrait and landscape.
 7. **Voice and wording preferences** come later (`07-preferences.feature`).
+8. **The clock can be set by dragging the analog hands** (`08-set-the-clock.feature`). Both digital clocks, the words, the voice and the scene follow the set time. A button goes back to the real time.
+9. **A set time is static.** It doesn't tick. Pressing "back to now" returns to the real time, which ticks again.
+10. **Setting the time never speaks by itself.** The time is only read aloud when the read-aloud button is pressed.
+11. **An AM/PM switch on the analog clock** swaps between morning and evening without moving the hands, so the hour hand doesn't have to be dragged round past the 12. Using it while showing the real time sets the clock by hand.
 
 ## Assumptions (change any of these if they're wrong)
 
@@ -69,6 +74,14 @@ So that this works:
 4. **The spoken sentence is exactly the written sentence**, so one piece of logic drives both.
 5. **Speech uses a voice built into the device**, so it works offline.
 6. **Word highlighting is skipped** if the device's voice doesn't report when each word is spoken. Speech still works.
+7. **Setting the clock** (`08-set-the-clock.feature`):
+   - The hand closest to the finger is the one that moves.
+   - The minute hand settles on a whole minute when it's let go.
+   - Dragging the minute hand moves the hour hand along with it.
+   - Dragging the hour hand changes the hour and leaves the minutes alone.
+   - Each time a hand goes past the 12, the time moves between morning and evening (AM and PM). Going forward from 11:50 gives 12:10 PM, going backward from 00:05 gives 11:55 PM.
+   - A set time is kept when the app goes into the background, but a fresh open always shows the real time.
+   - The "back to now" button only appears when the clock has been set, and dragging the hands back to the real time doesn't count as going back to now.
 
 ## Open questions
 

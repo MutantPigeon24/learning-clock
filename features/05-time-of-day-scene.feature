@@ -54,6 +54,9 @@ Feature: Time-of-day scene
       Then the background fades slowly into the sunset scene
       And nothing flashes or jumps suddenly
 
+    # When the hands are being dragged, the scene changes quickly so it keeps up
+    # (see 08-set-the-clock.feature).
+
   Rule: The clocks stay easy to read in every scene
 
     Scenario Outline: Keeping the clocks readable
