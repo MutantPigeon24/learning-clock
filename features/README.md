@@ -13,6 +13,7 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 | `06-read-aloud.feature` | Button that speaks the time; word-by-word highlight (low priority) |
 | `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
 | `08-set-the-clock.feature` | Dragging the analog hands to set any time; AM/PM switch; every display follows; "back to now" button |
+| `09-calendar.feature` | **Future:** calendar screen for days, weeks, months, years and seasons, using the same ideas as the clock |
 
 Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
 
@@ -82,6 +83,31 @@ So that this works:
    - Each time a hand goes past the 12, the time moves between morning and evening (AM and PM). Going forward from 11:50 gives 12:10 PM, going backward from 00:05 gives 11:55 PM.
    - A set time is kept when the app goes into the background, but a fresh open always shows the real time.
    - The "back to now" button only appears when the clock has been set, and dragging the hands back to the real time doesn't count as going back to now.
+
+## Future: calendar (`09-calendar.feature`)
+
+Not part of the first version. It's written down now so the clock's logic can be built in a way that extends to dates.
+
+### Decisions (answered by the owner)
+1. **The default hemisphere is northern.** A parent can change it. In the northern hemisphere, winter is December to February, spring is March to May, summer is June to August and autumn is September to November. They're the other way round in the southern hemisphere.
+2. **The date in numbers is dd/mm/yyyy**, for example 15/11/2026.
+3. **The week starts on Monday.** Saturday and Sunday look different as the weekend.
+4. **The year wheel puts each month at its clock number:** January at the 1, March at the 3, December at the 12 at the top. A pointer like a clock hand shows the current month, and each season has its own colour.
+5. **Special days aren't planned yet.** Birthdays and holidays are a possible later addition (see "Possible later additions" below).
+
+### Assumptions
+1. **A separate calendar screen**, reached by a big button from the clock screen, so the clock screen stays uncluttered.
+2. **The same ideas as the clock:** the date shown several ways at once (sentence, month page, week row, year wheel, numbers), a sentence that's also read aloud, a picture that changes, choosing your own date with a "back to today" button, and a chosen date that stays still.
+3. **Wording:** "Today is Sunday, the 15th of November 2026." plus "Yesterday was Saturday. Tomorrow is Monday."
+4. **Seasons go by whole months**, not by the exact solstice and equinox dates.
+5. **The hemisphere is a preference** rather than detected, because the app never uses location.
+6. **The clock and calendar share one date and time.** Dragging the clock past midnight changes the date. The AM/PM switch doesn't.
+
+### Open questions
+None at the moment.
+
+## Possible later additions (not planned yet)
+- Special days on the calendar, such as birthdays and holidays.
 
 ## Open questions
 
