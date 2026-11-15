@@ -114,6 +114,15 @@ Feature: Learning to tell time
       And a button can show only its picture when the picture alone makes the meaning clear
       And every button has a full spoken label for screen readers
 
+    Scenario: The app doesn't zoom or select text like a web page
+      Given the app is installed on the tablet
+      When my child pinches the screen or taps it twice quickly
+      Then the screen does not zoom in or out
+      When my child holds a finger on a word
+      Then the word is not selected
+      And no menu to copy or select all appears
+      But a panel that is taller than the screen can still be scrolled
+
   Rule: The app fits any screen, picking its layout from the screen's shape
 
     # The app is made for an Android tablet, but the same app also runs on a

@@ -80,6 +80,16 @@ body {
   overscroll-behavior: none;
 }
 
+/* The app feels like an app, not a web page: pinching and double-tapping
+   don't zoom (with user-scalable=no in index.html; pan-x pan-y still lets
+   the panels scroll), and holding a finger on a word doesn't select it or
+   bring up Copy and Select all. */
+html {
+  touch-action: pan-x pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* Buttons don't take the page's font by themselves. */
 button {
   font-family: inherit;
