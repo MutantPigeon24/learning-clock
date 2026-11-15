@@ -3,6 +3,9 @@ Feature: Read the time aloud
   I want to press a button and hear the time spoken
   So that I can learn how the time sounds even before I can read every word
 
+  # The app reads out whatever time the clock is showing: the real time, or a
+  # time set by dragging the hands (see 08-set-the-clock.feature).
+
   Background:
     Given the clock screen is showing
 

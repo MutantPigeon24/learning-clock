@@ -3,6 +3,10 @@ Feature: Show the device's current time
   I want the app to show the time it is right now
   So that what I learn matches the real world around me
 
+  # Everything here applies while the clock is following the real time.
+  # When my child sets the clock by dragging the hands, the set time is shown
+  # instead until they go back to the real time (see 08-set-the-clock.feature).
+
   Rule: The time always comes from the device's own clock and time zone
 
     Scenario: Showing the current time on opening

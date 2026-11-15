@@ -90,6 +90,7 @@ Feature: Learning to tell time
       And they see the time written in words
       And they see a time-of-day scene behind the clocks
       And they see a button that reads the time aloud
+      And they can drag the analog clock's hands to set their own time
 
   Rule: The app suits a tablet held by a young child
 
