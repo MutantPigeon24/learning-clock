@@ -11,6 +11,12 @@
   -webkit-text-size-adjust: 100%;
 }
 
+/* Nothing shows until app.js has applied the child's look and the layout,
+   so the default colours never flash up first. */
+html:not([data-look]) body {
+  visibility: hidden;
+}
+
 html,
 body {
   height: 100%;
@@ -33,6 +39,7 @@ body {
 .screen {
   position: fixed;
   inset: 0;
+  z-index: 1; /* above the look's pictures (.decor) */
   box-sizing: border-box;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
@@ -131,12 +138,8 @@ body {
   box-shadow: 0 calc(4px + 4px * var(--s)) 0 rgba(0, 0, 0, 0.14);
 }
 
-/* Each look's own card style (design/concepts-generator/parts.mjs, cardFx).
-   Only Sky's for now; the others come with the look picker. */
-[data-look='sky'] .card {
-  border-color: #CFE2FB;
-  background-image: linear-gradient(180deg, #FFFFFF 55%, #EDF5FF);
-}
+/* Each look's own card style is added by src/app.js from
+   lookStyleSheet() in src/look-art.js. */
 
 .digital {
   display: flex;
@@ -218,7 +221,6 @@ body {
   dominant-baseline: central;
   font-weight: 800;
 }
-.ring-band { fill: var(--soft); }
 .face-disc { fill: var(--face); stroke: var(--rim); }
 .ticks { stroke: var(--tick); }
 .hour-numbers { font-size: 19px; }
@@ -355,4 +357,240 @@ button:focus-visible,
   padding: 0;
   gap: calc(var(--btn) * 0.06);
   font-size: max(14px, calc(var(--btn) * 0.22));
+}
+
+/* --- The look's pictures ---------------------------------------------------- */
+
+.decor {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.corner {
+  position: absolute;
+  width: var(--corner);
+  height: var(--corner);
+  overflow: visible;
+}
+.corner-top {
+  right: calc(var(--corner) * 0.02);
+  top: calc(var(--corner) * 0.02);
+}
+.corner-bottom {
+  left: 0;
+  bottom: 0;
+}
+.motif {
+  position: absolute;
+  width: calc(var(--motif) * var(--motif-scale));
+  height: calc(var(--motif) * var(--motif-scale));
+  opacity: 0.9;
+}
+
+/* --- Round picture buttons (the look button) -------------------------------- */
+
+.tool-button {
+  box-sizing: border-box;
+  width: var(--btn);
+  height: var(--btn);
+  flex: none;
+  margin-left: auto; /* the far end of the row, so the Now sign never moves it */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(11, 37, 69, 0.12), 0 3px 0 rgba(11, 37, 69, 0.18);
+  cursor: pointer;
+}
+.tool-button[hidden] {
+  display: none;
+}
+.tool-button svg,
+.panel-close svg,
+.panel-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tool-button svg {
+  width: 50%;
+  height: 50%;
+}
+.tool-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 2px rgba(11, 37, 69, 0.12), 0 1px 0 rgba(11, 37, 69, 0.18);
+}
+
+/* --- Panels (the look picker) --------------------------------------------- */
+
+.panel {
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--px));
+  max-width: 680px;
+  max-height: calc(100% - 2 * var(--pad));
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: auto;
+  padding: 28px;
+  border: none;
+  border-radius: 32px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+.panel[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.panel::backdrop {
+  background: rgba(10, 14, 30, 0.55);
+}
+.layout[data-shape='wide'] .panel {
+  max-width: max(680px, calc(760px * max(var(--s), 0.8)));
+}
+.layout[data-small] .panel {
+  padding: 16px;
+  border-radius: 20px;
+  gap: 12px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.panel-icon {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  color: var(--accent);
+}
+.panel-title {
+  margin: 0;
+  flex: 1;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+.panel-close {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--soft-ink);
+  cursor: pointer;
+}
+.panel-close svg {
+  width: 30px;
+  height: 30px;
+}
+.layout[data-small] .panel-icon { width: 26px; height: 26px; }
+.layout[data-small] .panel-title { font-size: 20px; }
+.layout[data-small] .panel-close { width: 48px; height: 48px; }
+
+/* Look tiles: each in its own look's colours, the one in use outlined. */
+.look-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.look-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 4px;
+  border-radius: 24px;
+  border: 4px solid transparent;
+  background: var(--tile-bg);
+  color: var(--tile-ink);
+  cursor: pointer;
+}
+.look-tile[aria-pressed='true'] {
+  border-color: var(--tile-edge);
+}
+.look-badge {
+  width: 104px;
+  height: 104px;
+  overflow: visible;
+}
+.look-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.layout[data-small] .look-tiles { gap: 12px; }
+.layout[data-small] .look-tile { gap: 4px; padding: 8px 4px; border-radius: 16px; }
+.layout[data-small] .look-badge { width: 64px; height: 64px; }
+.layout[data-small] .look-name { font-size: 16px; }
+.layout[data-small][data-shape='wide'] .look-tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.layout[data-small][data-shape='wide'] .look-badge { width: 54px; height: 54px; }
+
+/* Colour pairs: a short thick hour hand over a long thin minute hand. */
+.pair-section {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+.pair-section[hidden] {
+  display: none;
+}
+.pair-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+.pair-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.pair-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 96px;
+  padding: 12px 4px;
+  border-radius: 20px;
+  border: 4px solid transparent;
+  background: var(--soft);
+  color: var(--soft-ink);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+}
+.pair-tile[aria-pressed='true'] {
+  border-color: var(--accent);
+}
+.pair-hands {
+  width: 64px;
+  height: 32px;
+}
+.layout[data-small] .pair-title { font-size: 17px; }
+.layout[data-small] .pair-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.layout[data-small][data-shape='wide'] .pair-tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.layout[data-small] .pair-tile { gap: 4px; min-height: 64px; padding: 8px 4px; border-radius: 14px; font-size: 13px; }
+.layout[data-small] .pair-hands { width: 44px; height: 24px; }
+
+.look-tile:active,
+.pair-tile:active,
+.panel-close:active {
+  transform: translateY(2px);
 }

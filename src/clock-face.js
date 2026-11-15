@@ -3,8 +3,9 @@
 // (design/concepts-generator/parts.mjs, clock()).
 //
 // The SVG is 240 units square. The face has radius 96 at the centre (120, 120),
-// with the 0–55 minutes ring round it. With the helpers off the ring is hidden
-// and the face grows by 1.2 to fill the space.
+// with the 0–55 minutes ring round it, on the look's own ring shape
+// (ringArt in look-art.js). With the helpers off the ring numbers are hidden
+// and the face grows by 1.2, so only the edge of the ring shape peeks out.
 
 export const VIEWBOX = 240;
 const C = VIEWBOX / 2;
@@ -80,8 +81,8 @@ ${focusRing(C - gripAt, grip)}
  */
 export function clockFaceMarkup() {
   return `<svg class="clock-face" viewBox="0 0 ${VIEWBOX} ${VIEWBOX}" role="group">
+<g data-part="ring-dress" aria-hidden="true"></g>
 <g data-part="ring" aria-hidden="true">
-<circle cx="${C}" cy="${C}" r="117" class="ring-band"/>
 <g data-part="ring-numbers" class="ring-numbers">${numbers(12, FACE_RADIUS + 13, (k) => k * 5)}</g>
 </g>
 <g data-part="face">
