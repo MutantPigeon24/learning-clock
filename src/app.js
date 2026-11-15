@@ -6,6 +6,7 @@
 
 import { LOOKS } from './colours.js';
 import { cornerArt, LOOK_STYLES, lookStyleSheet, MOTIF_SPOTS, MOTIFS, ringArt } from './look-art.js';
+import { cornerDayStyle, orbSpot, orbValues, sceneHoles, sceneMarkup, sceneTiming, sceneValues, skyBand } from './scene-art.js';
 import { readLookChoice, saveLookChoice } from './look-choice.js';
 import { setUpLookPicker } from './look-picker.js';
 import { clockHubLayout } from './layout.js';
@@ -29,6 +30,7 @@ const screen = $('screen');
 const layout = $('layout');
 $('clock').innerHTML = clockFaceMarkup();
 const face = document.querySelector('.clock-face');
+const sceneLayer = $('scene');
 // The parts of the clock that change, looked up once: parts.ring, parts['hour-turn'] ...
 const parts = Object.fromEntries([...face.querySelectorAll('[data-part]')].map((el) => [el.dataset.part, el]));
 const hands = { hour: face.querySelector('[data-hand="hour"]'), minute: face.querySelector('[data-hand="minute"]') };
@@ -47,7 +49,8 @@ const CSS_COLOURS = {
 };
 
 const RING_ART = ringArt(CENTRE, 'var(--soft)');
-const CORNER_ART = cornerArt();
+// Things in the corners seen only by day fade with the scene (Sky's balloon lands for the night).
+const CORNER_ART = cornerArt(cornerDayStyle(sceneHoles));
 
 // The look's two corner pictures and its motifs, sized by CSS variables.
 function decorMarkup(lookId) {
@@ -68,7 +71,55 @@ function applyLook(lookId) {
   }
   document.querySelector('meta[name="theme-color"]').content = look.accent;
   parts['ring-dress'].innerHTML = RING_ART[lookId];
+  shownScene = null; // the new look's scene is drawn straight away, not faded in
+  applyScene(clockView(state, new Date(), options()).scene);
+  sceneLayer.innerHTML = sceneMarkup('app', sceneHoles, [lookId]);
   $('decor').innerHTML = decorMarkup(lookId);
+}
+
+// --- The time-of-day scene ----------------------------------------------------
+
+const lessMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let shownScene = null; // "<look> <scene>" on screen now
+let sceneName = null; // the scene on screen now
+let openSky = null; // the open sky above the cards, measured with the layout
+
+/** Where the sun or moon goes for this scene: in the open sky above the cards. */
+function orbFor(name) {
+  if (!openSky) return {}; // not measured yet: the scene's own spot
+  const width = sceneLayer.clientWidth;
+  const height = sceneLayer.clientHeight;
+  return orbValues(orbSpot(openSky, name, Math.min(width, height)), width, height);
+}
+
+function setSceneValues(values) {
+  const root = document.documentElement.style;
+  for (const [hole, value] of Object.entries(values)) root.setProperty(`--sc-${hole}`, String(value));
+}
+
+/** Finds the open sky again after the layout changes, and moves the sun or moon there. */
+function placeOrb() {
+  const box = (el) => el.getBoundingClientRect();
+  openSky = skyBand({
+    clock: box(document.querySelector('.clock-area')),
+    cards: [...layout.querySelectorAll(':scope > .card')].map(box),
+    corner: box(document.querySelector('.corner-top')),
+  });
+  if (sceneName) setSceneValues(orbFor(sceneName));
+}
+
+/**
+ * Sets the scene's CSS variables for the look and scene. The markup's
+ * transitions do the fading: about 2 seconds, quicker while a hand is
+ * dragged, and straight away with less motion or when nothing is shown yet.
+ */
+function applyScene(name) {
+  const key = `${choice.look} ${name}`;
+  if (key === shownScene) return;
+  const timing = sceneTiming({ dragging: drag !== null, reducedMotion: lessMotion.matches || shownScene === null });
+  shownScene = key;
+  sceneName = name;
+  setSceneValues({ ...sceneValues(choice.look, name), ...orbFor(name), ...timing });
 }
 
 const SIZE_VARS = {
@@ -92,6 +143,7 @@ function applyLayout() {
   const short = Math.min(screen.clientWidth, screen.clientHeight);
   document.documentElement.style.setProperty('--corner', `${Math.round(short * (sizes.phone ? 0.26 : 0.22))}px`);
   document.documentElement.style.setProperty('--motif-scale', String(Math.max(0.6, sizes.S)));
+  placeOrb();
 }
 
 // The ring numbers stay 16 px or more on screen, whatever size the clock is.
@@ -158,6 +210,9 @@ function render() {
   // Now sign or "Back to now"
   $('now-sign').hidden = view.setByHand;
   $('back-to-now').hidden = !view.setByHand;
+
+  // The scene behind everything
+  applyScene(view.scene);
 }
 
 /** Changes the time shown. A change that gives the same time does nothing. */

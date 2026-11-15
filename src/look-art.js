@@ -84,8 +84,8 @@ export const pterosaur = (x, y, s, col = '#5D4037') => `<path transform="transla
 export const footprint = (x, y, s, rot, col) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})" fill="${col}"><ellipse cx="0" cy="6" rx="7" ry="8"></ellipse><ellipse cx="-8" cy="-6" rx="3" ry="6" transform="rotate(-25 -8 -6)"></ellipse><ellipse cx="0" cy="-9" rx="3" ry="6"></ellipse><ellipse cx="8" cy="-6" rx="3" ry="6" transform="rotate(25 8 -6)"></ellipse></g>`;
 
 // ---------- corner pictures (200 × 200), top right and bottom left ----------
-// Sky's balloon only flies by day. dayStyle is the style for things that are
-// only seen by day; the scenes use it to fade them out at night.
+// Sky's balloon, Unicorn's rainbow and Dino's pterosaur are only seen by day.
+// dayStyle is the style for those; the scenes use it to fade them out at night.
 export function cornerArt(dayStyle = '') {
   return {
   sky: {
@@ -100,7 +100,8 @@ ${flower(40, 70, 26, '#FFB3CF', '#FFE066', '#FF6F9F')}${flower(110, 112, 22, '#F
     bl: `${tulip(40, 205, 90, '#E8436E')}${tulip(80, 205, 120, '#FF8FB8')}${tulip(122, 205, 80, '#FFC93C')}${tulip(156, 205, 105, '#B57EDC')}`,
   },
   unicorn: {
-    tr: `${['#FF8FA3', '#FFB86B', '#FFE16B', '#8FE3A8', '#8EC5FF', '#C8A2FF'].map((c, i) => `<path d="M${20 + i * 11} 150 A ${80 - i * 11} ${80 - i * 11} 0 0 1 ${180 - i * 11} 150" stroke="${c}" stroke-width="11" fill="none"></path>`).join('')}${cloudPuff(30, 152, 0.55, '#FFFFFF', '#F1E8FF')}${cloudPuff(172, 152, 0.55, '#FFFFFF', '#F1E8FF')}`,
+    // The rainbow has gone at night.
+    tr: `<g style="${dayStyle}">${['#FF8FA3', '#FFB86B', '#FFE16B', '#8FE3A8', '#8EC5FF', '#C8A2FF'].map((c, i) => `<path d="M${20 + i * 11} 150 A ${80 - i * 11} ${80 - i * 11} 0 0 1 ${180 - i * 11} 150" stroke="${c}" stroke-width="11" fill="none"></path>`).join('')}</g>${cloudPuff(30, 152, 0.55, '#FFFFFF', '#F1E8FF')}${cloudPuff(172, 152, 0.55, '#FFFFFF', '#F1E8FF')}`,
     bl: `${star4(70, 110, 4.5, '#FFD36E')}${star4(140, 60, 2.4, '#FF8FC8')}${star4(150, 150, 2, '#8EC5FF')}${star4(35, 40, 1.6, '#C8A2FF')}${star5(110, 170, 16, '#FFE16B', '#D69E2E')}`,
   },
   hero: {
@@ -108,7 +109,8 @@ ${flower(40, 70, 26, '#FFB3CF', '#FFE066', '#FF6F9F')}${flower(110, 112, 22, '#F
     bl: `${burst(96, 110, 86, 54, 11, '#FFFFFF', '#111C3A', 4)}${burst(96, 110, 58, 40, 9, '#1D4ED8', '#111C3A')}<text x="96" y="124" text-anchor="middle" font-family="Bangers, Impact, sans-serif" font-size="40" fill="#FFC21A" stroke="#111C3A" stroke-width="3" paint-order="stroke">POW!</text>`,
   },
   dino: {
-    tr: `${pterosaur(108, 92, 2.4, '#6D4C41')}<path transform="translate(108 92) scale(2.4)" d="M-12 4 L-4 2 L8 6 L-2 7z" fill="#A1887F"></path><circle cx="178" cy="83" r="3" fill="#FFFFFF"></circle>`,
+    // The pterosaur has gone at night, with the ones in the sky.
+    tr: `<g style="${dayStyle}">${pterosaur(108, 92, 2.4, '#6D4C41')}<path transform="translate(108 92) scale(2.4)" d="M-12 4 L-4 2 L8 6 L-2 7z" fill="#A1887F"></path><circle cx="178" cy="83" r="3" fill="#FFFFFF"></circle></g>`,
     bl: `${fern(40, 215, 190, 25, '#2E7D32')}${fern(95, 215, 150, 5, '#43A047')}${fern(150, 215, 110, -18, '#66BB6A')}`,
   },
   space: {

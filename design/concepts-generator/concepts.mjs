@@ -238,7 +238,7 @@ export function conceptFile(c) {
     const small = z.phone;
     const desk = fr.id === 'D' || fr.id === 'M' || fr.id === 'S';
     const screen = `<div data-motion="{{ motion }}" style="position:relative;width:${fr.W}px;height:${fr.H}px;overflow:hidden;border-radius:${desk ? '0 0 10px 10px' : (small ? '24px' : '32px')};font-family:${c.font};color:{{ th.ink }}">
-${scene(`c${c.n}-${fr.id}`)}${corners(z)}${deco(z, MOTIF_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z)}${toast(z)}
+${scene(`c${c.n}-${fr.id}`, c.chosen ? fr.id : null)}${corners(z)}${deco(z, MOTIF_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z)}${toast(z)}
 </div>`;
     const shell = desk
       ? `<div style="width:${fr.W + 16}px;box-sizing:border-box;padding:0 8px 8px;background:#2B2D33;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.18)">

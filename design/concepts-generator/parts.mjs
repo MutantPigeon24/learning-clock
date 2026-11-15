@@ -1,5 +1,5 @@
 // Shared pieces for the Learning Clock concept artboards.
-import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
+import { MOTIFS, PAINT, LIGHT, SKY, ORB, ringDress, scene, badge } from './theme-art.mjs';
 import { LOOKS, LOOK_IDS, PAIRS, hiddenPairs } from '../../src/colours.js';
 import { LOOK_STYLES } from '../../src/look-art.js';
 
@@ -15,12 +15,8 @@ export const THEMES = LOOK_IDS.map((id) => ({ id, ...LOOKS[id], ...LOOK_STYLES[i
 // The picker hides them for that look, so "blue" never means both "minutes" and "press me".
 export const CLASH = Object.fromEntries(THEMES.map((t) => [t.id, hiddenPairs(t.id)]));
 
-export const SCENES = {
-  sunrise: { top: '#FF9E8A', bot: '#FFE1B0', orb: '#FF7A3D', ox: 290, oy: 800, os: 1.1, h1: '#F2A65A', h2: '#E07A4F', stars: 0, moon: 0, cloud: 0.5 },
-  day: { top: '#4FAEF5', bot: '#CDEBFF', orb: '#FFD43B', ox: 700, oy: 470, os: 1, h1: '#8BD17C', h2: '#5BAF5B', stars: 0, moon: 0, cloud: 1 },
-  sunset: { top: '#5B3A8E', bot: '#FF9254', orb: '#FF5E3A', ox: 700, oy: 820, os: 1.25, h1: '#7A3F6E', h2: '#4E2A57', stars: 0.25, moon: 0, cloud: 0 },
-  night: { top: '#0B1035', bot: '#27306E', orb: '#F4F1C9', ox: 690, oy: 480, os: 0.8, h1: '#1C2456', h2: '#111739', stars: 1, moon: 1, cloud: 0 },
-};
+// Each scene's sky in the Sky look: its paint, then the sun, moon, stars and clouds (src/scene-art.js).
+export const SCENES = Object.fromEntries(Object.entries(SKY).map(([name, sky]) => [name, { ...PAINT.sky[name], ...sky }]));
 
 export const FRAMES = [
   { id: 'L', W: 1280, H: 800, label: 'Tablet · landscape · 1280 × 800' },
@@ -100,21 +96,7 @@ ${slider('Minute hand', 0, 59, 't.mNum', 'keyM', `<g transform="rotate({{ hz.min
 </svg>`;
 }
 
-export function scene(id) {
-  let stars = '';
-  const pts = [[230, 420], [330, 520], [420, 400], [520, 470], [600, 560], [780, 410], [840, 540], [300, 640], [460, 610], [560, 380], [760, 640], [250, 560], [880, 450], [650, 450]];
-  // Stars come out one by one (and go one by one in the morning); instant while dragging.
-  pts.forEach(([x, y], i) => { stars += `<circle cx="${x}" cy="${y}" r="${i % 3 === 0 ? 4 : 2.5}" fill="#FFFFFF" style="opacity:{{ sc.stars }};transition:opacity 0.9s ease calc({{ sc.stag }} * ${(0.2 + i * 0.17).toFixed(2)}s)"></circle>`; });
-  const t = 'transition:{{ sc.dur }}';
-  return `<svg aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%;display:block">
-<defs><linearGradient id="sky-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0.35" style="stop-color:{{ sc.top }};${t}"></stop><stop offset="1" style="stop-color:{{ sc.bot }};${t}"></stop></linearGradient></defs>
-<rect width="1000" height="1000" fill="url(#sky-${id})"></rect>
-<g>${stars}</g>
-<g style="transform:translate({{ sc.ox }}px, {{ sc.oy }}px) scale({{ sc.os }});${t}"><circle r="62" style="fill:{{ sc.orb }};${t}"></circle><circle cx="22" cy="-14" r="54" style="fill:{{ sc.top }};opacity:{{ sc.moon }};${t}"></circle></g>
-<g style="opacity:{{ sc.cloud }};${t}" fill="#FFFFFF" opacity=".9"><ellipse cx="300" cy="520" rx="70" ry="26"></ellipse><ellipse cx="335" cy="500" rx="42" ry="30"></ellipse><ellipse cx="540" cy="420" rx="56" ry="20"></ellipse><ellipse cx="566" cy="404" rx="32" ry="24"></ellipse></g>
-${landscape(id)}
-</svg>`;
-}
+export { scene };
 
 // Theme decorations, placed in % so they follow any screen shape.
 export function deco(z, spots) {
@@ -268,6 +250,7 @@ const SCENES = ${JSON.stringify(SCENES)};
 const PAINT = ${JSON.stringify(PAINT)};
 const CLASH = ${JSON.stringify(CLASH)};
 const LIGHT = ${JSON.stringify(LIGHT)};
+const ORB = ${JSON.stringify(ORB)};
 const PAIRS = ${JSON.stringify(PAIRS)};
 const DEFAULT_THEME = '${cfg.theme}';
 const DEFAULT_TIME = '${cfg.time}';
@@ -425,7 +408,7 @@ class Component extends DCLogic {
     const sentence = parts.map(p => typeof p === 'string' ? p : p[1]).join('');
     const tParts = parts.map(p => typeof p === 'string' ? { tx: p, style: '' } : { tx: p[1], style: helpers ? 'color:' + (p[0] === 'h' ? lk.h : lk.m) + ';font-weight:800' : '' });
     const scName = sceneOf(t);
-    const sc = Object.assign({}, SCENES[scName], (PAINT[th.id] || PAINT.sky)[scName], LIGHT[scName], { name: scName, dur: st.drag ? '0.4s' : '2.5s', stag: st.drag ? 0 : 1 });
+    const sc = Object.assign({}, SCENES[scName], (PAINT[th.id] || PAINT.sky)[scName], LIGHT[scName], { at: ORB[scName], name: scName, dur: st.drag ? '0.4s' : '2.5s', stag: st.drag ? 0 : 1 });
     const on = 'background:' + th.accent + ';color:' + th.onAccent;
     const off = 'background:transparent;color:' + th.sub;
     const ov = {};

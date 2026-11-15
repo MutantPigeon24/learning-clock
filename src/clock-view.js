@@ -2,7 +2,7 @@
 // state, the time now and the settings. No DOM here, so it can be tested in
 // Node; src/app.js puts the result on the screen.
 
-import { handAngles, sentenceParts, twelveHourClock, twentyFourHourClock } from './time.js';
+import { handAngles, scene, sentenceParts, twelveHourClock, twentyFourHourClock } from './time.js';
 import { isSetByHand, shownTime } from './set-clock.js';
 import { partColours } from './colours.js';
 
@@ -24,6 +24,8 @@ export function clockView(state, now, { look = 'sky', pair = 'theme', helpers = 
   return {
     wall,
     setByHand: isSetByHand(state),
+    // The background follows the time shown, so it always agrees with the words.
+    scene: scene(hours, minutes),
     helpers,
     colours,
     angles: handAngles(hours, minutes),
