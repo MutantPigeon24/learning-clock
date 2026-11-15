@@ -2,7 +2,7 @@
 
 These scripts write the claude.ai design canvas "Learning Clock — 6 Design Concepts". It has a journeys, screens and UX rules board, plus six interactive concepts, each shown on five screens (desktop, tablet landscape and portrait, phone landscape and portrait).
 
-This is design tooling only. The app doesn't use it, and `npm test` ignores it. It does use the app's colours from `src/colours.js`, so the canvas and the app always agree.
+This is design tooling only. The app doesn't use it, and `npm test` ignores it. It does use the app's colours from `src/colours.js` and its sizes from `src/layout.js` (`screenSizes`, and `clockHubLayout` for Clock Hub), so the canvas and the app always agree.
 
 | File | What it holds |
 |---|---|

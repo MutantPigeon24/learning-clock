@@ -136,6 +136,11 @@ export function isSetByHand(state) {
   return state.setByHand;
 }
 
+/** True when two wall times are the same minute of the same day. */
+export function sameTime(a, b) {
+  return a.year === b.year && a.month === b.month && a.day === b.day && a.hours === b.hours && a.minutes === b.minutes;
+}
+
 /** The wall time every display should show. A set time never ticks. */
 export function shownTime(state, now) {
   return state.setByHand ? state.wall : wallFromDate(now);
@@ -147,4 +152,28 @@ export function shownTime(state, now) {
  */
 export function changeTime(state, now, change) {
   return { setByHand: true, wall: change(shownTime(state, now)) };
+}
+
+/**
+ * Like changeTime, but a change that leaves the time as it was changes
+ * nothing: the same state comes back, so a touch alone (or a drag that ends
+ * where it started) leaves the clock following the real time.
+ */
+export function moveTime(state, now, change) {
+  const from = shownTime(state, now);
+  const to = change(from);
+  return sameTime(from, to) ? state : { setByHand: true, wall: to };
+}
+
+/** Points closer to the centre than this (in face radii) have no clear angle. */
+export const CENTRE_DEAD_ZONE = 0.1;
+
+/**
+ * The time after dragging a hand to a point on the face (relative to the
+ * centre, in face radii, y down). Near the centre the hand stays put.
+ */
+export function dragHandTo(wall, hand, point) {
+  if (Math.hypot(point.x, point.y) < CENTRE_DEAD_ZONE) return wall;
+  const angle = pointerAngle(point);
+  return hand === 'minute' ? dragMinuteHand(wall, angle) : dragHourHand(wall, angle);
 }

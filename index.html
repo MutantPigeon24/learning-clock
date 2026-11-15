@@ -12,12 +12,55 @@
   <script type="module" src="src/app.js"></script>
 </head>
 <body>
-  <!-- Placeholder until the Clock Hub clock screen is built. It shows the
-       time so an offline install can be checked on the tablet. -->
-  <main class="shell">
-    <h1 class="shell-title">Learning Clock</h1>
-    <p class="shell-time" id="digital"></p>
-    <p class="shell-words" id="words"></p>
+  <!-- The Clock Hub clock screen. src/app.js fills in the time and sets the
+       layout (data-shape) and sizes (CSS variables) from the space inside
+       the screen's safe area. -->
+  <main class="screen" id="screen">
+  <div class="layout" id="layout" data-shape="wide">
+    <h1 class="visually-hidden">Learning Clock</h1>
+
+    <!-- Room for the calendar and grown-up buttons once they are built. -->
+    <div class="header"></div>
+
+    <div class="clock-area">
+      <div class="clock" id="clock"></div>
+      <button type="button" class="ampm" id="ampm">
+        <span class="ampm-option" data-period="AM">AM</span>
+        <span class="ampm-option" data-period="PM">PM</span>
+      </button>
+    </div>
+
+    <section class="card words" aria-label="The time in words">
+      <p class="sentence" id="sentence"></p>
+    </section>
+
+    <section class="card digital twelve">
+      <h2 class="card-label">12-hour</h2>
+      <p class="digits">
+        <span class="digits-time"><span id="h12"></span>:<span id="m12"></span></span>
+        <span class="digits-period" id="period"></span>
+      </p>
+    </section>
+
+    <section class="card digital twenty-four">
+      <h2 class="card-label">24-hour</h2>
+      <p class="digits">
+        <span class="digits-time"><span id="h24"></span>:<span id="m24"></span></span>
+      </p>
+    </section>
+
+    <div class="tools">
+      <!-- One sign in one place: "Now" while following the real time, the
+           "Back to now" button once the time is set by hand. -->
+      <div class="now-sign" id="now-sign" role="status" aria-label="Showing the real time" tabindex="-1">
+        <span class="now-dot" aria-hidden="true"></span><span class="now-label">Now</span>
+      </div>
+      <button type="button" class="back-to-now" id="back-to-now" aria-label="Back to the real time" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4.5H8"/><path d="M12 8v4.2l2.8 1.8"/></svg>
+        <span class="back-label">Back to now</span>
+      </button>
+    </div>
+  </div>
   </main>
 </body>
 </html>
