@@ -100,6 +100,10 @@ Each of these is its own PR. Add every new file to `FILES` in `sw.js` and run `n
 - **Avoid stacked PRs.** Branch from `main` once the previous PR has merged. If a PR has to be stacked, its base must be changed to `main` (rebase with `git rebase --onto origin/main <old-parent>`) before the owner merges it. Otherwise it merges into the parent branch and never reaches `main`. This happened to PR #5, so its code was landed again in a new PR.
 - After each merge, check that the author on `main` is the GitHub handle and noreply email (`git log origin/main -3 --format='%an <%ae>'`).
 - **Tag each installed version** (`v1`, `v2`, …) so it's clear what's on the tablet.
-- A GitHub Action ([`.github/workflows/test.yml`](.github/workflows/test.yml)) runs `npm test` on every PR and on `main`. The tests come from the `Examples` tables in the feature files.
+- A GitHub Action ([`.github/workflows/test.yml`](.github/workflows/test.yml)) runs `npm test` on every PR and on `main`. The tests come from the `Examples` tables in the feature files. It uses `actions/checkout@v7` and `actions/setup-node@v7`, which run on Node 24.
+- **Merging stays manual** (decided 15 Nov). Auto-merging a PR when CI passes was looked at and put off:
+  - GitHub's own auto-merge isn't available here: the repo is private on the free plan, so there's no branch protection or rulesets (the API answers 403).
+  - **If wanted later:** add an opt-in `automerge` job to `test.yml` (`needs: test`, label `automerge`, `gh pr merge --squash --delete-branch` with the workflow token). The other routes are GitHub Pro for native auto-merge with a required check, or making the repo public.
+  - Either way, the owner's review is the only check on how the screen looks, so keep it opt-in.
 - Keep this file up to date in the same PR as the work it describes.
 - **Test the logic, check the visuals by eye:** time maths and wording live in plain, unit-tested functions.
