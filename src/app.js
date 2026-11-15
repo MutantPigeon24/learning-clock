@@ -1,9 +1,12 @@
-// The Clock Hub clock screen: puts clockView on the page, lays it out for
-// the screen's shape, and handles dragging the hands, the keyboard, the
-// AM/PM switch and "Back to now". The logic lives in the modules it imports;
+// The Clock Hub clock screen: puts clockView on the page in the child's
+// look, lays it out for the screen's shape, and handles dragging the hands,
+// the keyboard, the AM/PM switch, "Back to now" and the look picker. The logic lives in the modules it imports;
 // this file only connects them to the page.
 
 import { LOOKS } from './colours.js';
+import { cornerArt, LOOK_STYLES, lookStyleSheet, MOTIF_SPOTS, MOTIFS, ringArt } from './look-art.js';
+import { readLookChoice, saveLookChoice } from './look-choice.js';
+import { setUpLookPicker } from './look-picker.js';
 import { clockHubLayout } from './layout.js';
 import { defaultSettings } from './settings.js';
 import { dragHandTo, handKeyStep, moveHandByKey, moveTime, nearestHand, realClock, shownTime, swapAmPm } from './set-clock.js';
@@ -11,12 +14,19 @@ import { clockFaceMarkup, facePoint, faceTransform, ringFontSize, VIEWBOX } from
 import { clockView } from './clock-view.js';
 import { startOffline } from './pwa.js';
 
-// The look, colour pair and settings are fixed until the look picker and
-// grown-up settings are built.
-const LOOK = 'sky';
-const PAIR = 'theme';
+// The grown-up settings are fixed at their defaults until the settings
+// panel is built.
 const CENTRE = VIEWBOX / 2;
 const settings = defaultSettings();
+
+// localStorage can be missing or blocked; the app then just doesn't remember.
+const storage = (() => {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch {
+    return null;
+  }
+})();
 
 const $ = (id) => document.getElementById(id);
 const screen = $('screen');
@@ -29,8 +39,9 @@ const hands = { hour: face.querySelector('[data-hand="hour"]'), minute: face.que
 
 let state = realClock();
 let drag = null; // { hand, pointerId } while a hand is held
+let choice = readLookChoice(storage); // { look, pair } the child picked
 
-const options = () => ({ look: LOOK, pair: PAIR, helpers: settings.helpers, wording: settings.wording });
+const options = () => ({ look: choice.look, pair: choice.pair, helpers: settings.helpers, wording: settings.wording });
 
 // --- Colours and layout -----------------------------------------------------
 
@@ -39,12 +50,29 @@ const CSS_COLOURS = {
   soft: 'soft', softInk: 'soft-ink', face: 'face', rim: 'rim', tick: 'tick',
 };
 
+const RING_ART = ringArt(CENTRE, 'var(--soft)');
+const CORNER_ART = cornerArt();
+
+// The look's two corner pictures and its motifs, sized by CSS variables.
+function decorMarkup(lookId) {
+  const corners = CORNER_ART[lookId];
+  const motifs = MOTIF_SPOTS.map(
+    ([left, top, size, turn]) => `<svg class="motif" viewBox="0 0 24 24" style="left:${left}%;top:${top}%;--motif:${size}px;transform:rotate(${turn}deg)"><path d="${MOTIFS[lookId]}" fill="${LOOK_STYLES[lookId].deco}"/></svg>`,
+  );
+  return `<svg class="corner corner-top" viewBox="0 0 200 200">${corners.tr}</svg><svg class="corner corner-bottom" viewBox="0 0 200 200">${corners.bl}</svg>${motifs.join('')}`;
+}
+
+/** Dresses the whole screen in a look: colours, cards, ring shape and pictures. */
 function applyLook(lookId) {
   const look = LOOKS[lookId];
-  document.documentElement.dataset.look = lookId;
+  const root = document.documentElement;
+  root.dataset.look = lookId;
   for (const [key, name] of Object.entries(CSS_COLOURS)) {
-    document.documentElement.style.setProperty(`--${name}`, look[key]);
+    root.style.setProperty(`--${name}`, look[key]);
   }
+  document.querySelector('meta[name="theme-color"]').content = look.accent;
+  parts['ring-dress'].innerHTML = RING_ART[lookId];
+  $('decor').innerHTML = decorMarkup(lookId);
 }
 
 const SIZE_VARS = {
@@ -64,6 +92,10 @@ function applyLayout() {
     layout.style.setProperty(`--${name}`, `${sizes[key]}px`);
   }
   layout.style.setProperty('--s', String(sizes.S));
+  // The corner pictures and motifs are sized from the whole screen.
+  const short = Math.min(screen.clientWidth, screen.clientHeight);
+  document.documentElement.style.setProperty('--corner', `${Math.round(short * (sizes.phone ? 0.26 : 0.22))}px`);
+  document.documentElement.style.setProperty('--motif-scale', String(Math.max(0.6, sizes.S)));
 }
 
 // The ring numbers stay 16 px or more on screen, whatever size the clock is.
@@ -213,7 +245,28 @@ document.addEventListener('visibilitychange', () => {
 new ResizeObserver(applyLayout).observe(screen);
 new ResizeObserver(fitRingNumbers).observe(face);
 
-applyLook(LOOK);
+// --- The look picker ---------------------------------------------------------
+
+const picker = setUpLookPicker({
+  getChoice: () => choice,
+  getHelpers: () => settings.helpers,
+  onPick(next) {
+    choice = next;
+    saveLookChoice(storage, choice);
+    applyLook(choice.look);
+    render();
+    picker.refresh();
+  },
+});
+$('look-button').hidden = !settings.childrenCanChangeLook;
+
+// --- Start -------------------------------------------------------------------
+
+const lookStyles = document.createElement('style');
+lookStyles.textContent = lookStyleSheet();
+document.head.append(lookStyles);
+
+applyLook(choice.look);
 applyLayout();
 fitRingNumbers();
 render();

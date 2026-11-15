@@ -15,6 +15,9 @@
   <!-- The Clock Hub clock screen. src/app.js fills in the time and sets the
        layout (data-shape) and sizes (CSS variables) from the space inside
        the screen's safe area. -->
+  <!-- The look's corner pictures and motifs, behind everything. -->
+  <div class="decor" id="decor" aria-hidden="true"></div>
+
   <main class="screen" id="screen">
   <div class="layout" id="layout" data-shape="wide">
     <h1 class="visually-hidden">Learning Clock</h1>
@@ -59,7 +62,27 @@
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4.5H8"/><path d="M12 8v4.2l2.8 1.8"/></svg>
         <span class="back-label">Back to now</span>
       </button>
+      <button type="button" class="tool-button" id="look-button" aria-label="Change the look" aria-haspopup="dialog">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.2-1-1.6-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.3"/><circle cx="10" cy="7.3" r="1.3"/><circle cx="14.8" cy="7.3" r="1.3"/></svg>
+      </button>
     </div>
+
+    <!-- The look picker: six looks, then the hour and minute colours.
+         src/look-picker.js fills in the tiles. -->
+    <dialog class="panel" id="look-picker" aria-labelledby="look-picker-title">
+      <div class="panel-head">
+        <svg class="panel-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.2-1-1.6-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11.5" r="1.3"/><circle cx="10" cy="7.3" r="1.3"/><circle cx="14.8" cy="7.3" r="1.3"/></svg>
+        <h2 class="panel-title" id="look-picker-title">Pick a look</h2>
+        <button type="button" class="panel-close" id="look-picker-close" aria-label="Close">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="look-tiles" id="look-tiles"></div>
+      <section class="pair-section" id="pair-section" aria-labelledby="pair-title">
+        <h3 class="pair-title" id="pair-title">Hour and minute colours</h3>
+        <div class="pair-tiles" id="pair-tiles"></div>
+      </section>
+    </dialog>
   </div>
   </main>
 </body>

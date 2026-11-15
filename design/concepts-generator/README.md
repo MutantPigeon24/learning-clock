@@ -2,13 +2,13 @@
 
 These scripts write the claude.ai design canvas "Learning Clock — 6 Design Concepts". It has a journeys, screens and UX rules board, plus six interactive concepts, each shown on five screens (desktop, tablet landscape and portrait, phone landscape and portrait).
 
-This is design tooling only. The app doesn't use it, and `npm test` ignores it. It does use the app's colours from `src/colours.js` and its sizes from `src/layout.js` (`screenSizes`, and `clockHubLayout` for Clock Hub), so the canvas and the app always agree.
+This is design tooling only. The app doesn't use it, and `npm test` ignores it. It does use the app's colours from `src/colours.js`, its sizes from `src/layout.js` (`screenSizes`, and `clockHubLayout` for Clock Hub) and each look's kit from `src/look-art.js` (card styles, ring shapes, corner pictures, picker pictures, motifs), so the canvas and the app always agree.
 
 | File | What it holds |
 |---|---|
-| `theme-art.mjs` | Each look's kit: sky paint per scene, scene lighting, landscape, corner pictures, clock-ring shape, picker badge and corner motif |
+| `theme-art.mjs` | Each look's sky paint per scene, scene lighting and landscape. It shows the corner pictures, ring shape and picker badge from [`src/look-art.js`](../../src/look-art.js) for the look in use |
 | `check.mjs` | Contrast and colour-clash check over every look × colour pair (`node design/concepts-generator/check.mjs`). `npm test` runs the same checks on `src/colours.js` |
-| `parts.mjs` | Themes (decoration, card and button styles, label font; each look's name and colours, its hour and minute colours and the colour pairs a child can pick come from [`src/colours.js`](../../src/colours.js)), scenes, screen frames, sizing helpers, shared components (clock, digits, buttons, look picker, grown-up check, settings) and the logic class every concept shares |
+| `parts.mjs` | Themes (each look's name and colours, its hour and minute colours and the colour pairs a child can pick, from [`src/colours.js`](../../src/colours.js); its card, button and label styles from [`src/look-art.js`](../../src/look-art.js)), scenes, screen frames, sizing helpers, shared components (clock, digits, buttons, look picker, grown-up check, settings) and the logic class every concept shares |
 | `concepts.mjs` | One layout function per concept, the concept list and the artboard wrapper |
 | `main.mjs` | The journeys board text (journeys, screens, rules), canvas notes and positions, and the command line |
 

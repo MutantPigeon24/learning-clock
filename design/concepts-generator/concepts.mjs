@@ -1,5 +1,6 @@
 import { corners } from './theme-art.mjs';
 import { clockHubLayout } from '../../src/layout.js';
+import { MOTIF_SPOTS } from '../../src/look-art.js';
 import { FRAMES, MID_FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, overlays, toast, logic, icon, SAY } from './parts.mjs';
 
 const R = Math.round;
@@ -216,7 +217,6 @@ function c6(f, z) {
 // Display fonts for the six looks (labels and look names only).
 const THEME_FONTS = 'family=Baloo+2:wght@800&family=Grandstander:wght@800&family=Sniglet:wght@800&family=Bangers&family=Chewy&family=Audiowide';
 
-const DECO_SPOTS = [[3, 4, 46, -12], [90, 3, 36, 14], [46, 2, 28, 0], [2, 88, 34, 8], [93, 90, 42, -10]];
 
 export const CONCEPTS = [
   { n: 1, file: 'Concept1.dc.html', title: 'Concept 1 · Clock Hub', chosen: true, font: "'Baloo 2', system-ui, sans-serif", fontUrl: 'family=Baloo+2:wght@500;600;700;800', theme: 'sky', time: 'live', layout: c1 },
@@ -238,7 +238,7 @@ export function conceptFile(c) {
     const small = z.phone;
     const desk = fr.id === 'D' || fr.id === 'M' || fr.id === 'S';
     const screen = `<div data-motion="{{ motion }}" style="position:relative;width:${fr.W}px;height:${fr.H}px;overflow:hidden;border-radius:${desk ? '0 0 10px 10px' : (small ? '24px' : '32px')};font-family:${c.font};color:{{ th.ink }}">
-${scene(`c${c.n}-${fr.id}`)}${corners(z)}${deco(z, DECO_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z)}${toast(z)}
+${scene(`c${c.n}-${fr.id}`)}${corners(z)}${deco(z, MOTIF_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z)}${toast(z)}
 </div>`;
     const shell = desk
       ? `<div style="width:${fr.W + 16}px;box-sizing:border-box;padding:0 8px 8px;background:#2B2D33;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.18)">

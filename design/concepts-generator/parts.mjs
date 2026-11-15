@@ -1,30 +1,15 @@
 // Shared pieces for the Learning Clock concept artboards.
 import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
-import { LOOKS, PAIRS, hiddenPairs } from '../../src/colours.js';
+import { LOOKS, LOOK_IDS, PAIRS, hiddenPairs } from '../../src/colours.js';
+import { LOOK_STYLES } from '../../src/look-art.js';
 
 export { PAIRS };
 
-// Each theme is a kit (see theme-art.mjs for the pictures). Its name and colours
-// (surfaces, text, buttons, clock, hour and minute colours) come from
-// src/colours.js, which the app uses too. The tokens here are the decoration:
-// deco/edge/body: picture colours.
-// cardFx: extra card styling (border, texture, shadow). cardTex: texture only, for
-// layouts that draw their own borders. btnFx: extra style on the main button.
-// dfont: display font for small labels and look names (never the sentence or digits).
-export const THEMES = [
-  { id: 'sky', deco: '#FFFFFF', edge: '#0F4A99', body: '#5AA9F2',
-    cardFx: 'border:3px solid #CFE2FB;background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', cardTex: 'background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', btnFx: 'box-shadow:0 5px 0 #0F4A99', dfont: "'Baloo 2', sans-serif" },
-  { id: 'blossom', deco: '#FF8FB8', edge: '#8E1243', body: '#F48FB1',
-    cardFx: 'border:3px solid #FFC2D9;background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', cardTex: 'background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', btnFx: 'box-shadow:0 5px 0 #8E1243', dfont: "'Grandstander', sans-serif" },
-  { id: 'unicorn', deco: '#FFE066', edge: '#5B21B6', body: '#F3EDFF',
-    cardFx: 'border:4px solid transparent;background-image:linear-gradient(#FFFFFF,#FFFFFF),linear-gradient(90deg,#FF8FA3,#FFB86B,#FFE16B,#8FE3A8,#8EC5FF,#C8A2FF);background-origin:border-box;background-clip:padding-box,border-box', cardTex: 'background-image:radial-gradient(circle at 92% 14%,#FFF4C2 0 5px,transparent 6px),radial-gradient(circle at 8% 88%,#F3E8FF 0 7px,transparent 8px)', btnFx: 'background-image:linear-gradient(135deg,#7C3AED,#B62BC9);box-shadow:0 5px 0 #5B21B6', dfont: "'Sniglet', sans-serif" },
-  { id: 'hero', deco: '#FFC21A', edge: '#111C3A', body: '#3B6FE0',
-    cardFx: 'border:4px solid #111C3A;box-shadow:6px 6px 0 #111C3A;background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', cardTex: 'background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', btnFx: 'border:3px solid #111C3A;box-shadow:4px 4px 0 #111C3A', dfont: "'Bangers', Impact, sans-serif" },
-  { id: 'dino', deco: '#7CC46A', edge: '#1B5E20', body: '#6CC05C',
-    cardFx: 'border:3px solid #A5D16E;background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', cardTex: 'background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', btnFx: 'box-shadow:0 5px 0 #1B5E20', dfont: "'Chewy', sans-serif" },
-  { id: 'space', deco: '#FFC93C', edge: '#0F0C33', body: '#8E87FF',
-    cardFx: 'border:2px solid rgba(165,180,255,.5);box-shadow:0 0 0 4px rgba(109,99,255,.22),0 12px 30px rgba(0,0,0,.35);background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),radial-gradient(1.6px 1.6px at 88% 18%,rgba(255,255,255,.6),transparent),radial-gradient(1.2px 1.2px at 40% 86%,rgba(255,255,255,.5),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', cardTex: 'background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', btnFx: 'box-shadow:0 0 0 3px rgba(255,201,60,.35),0 0 22px rgba(255,201,60,.45)', dfont: "'Audiowide', sans-serif" },
-].map((t) => ({ id: t.id, ...LOOKS[t.id], ...t, motif: MOTIFS[t.id] }));
+// Each theme: its name and colours (surfaces, text, buttons, clock, hour and
+// minute colours) from src/colours.js, and its kit (card, button and label
+// styles, picture colours and motif) from src/look-art.js. The app uses both
+// too, so the canvas and the app always agree.
+export const THEMES = LOOK_IDS.map((id) => ({ id, ...LOOKS[id], ...LOOK_STYLES[id], motif: MOTIFS[id] }));
 
 // Pairs whose hour or minute colour looks like a look's accent (button) colour.
 // The picker hides them for that look, so "blue" never means both "minutes" and "press me".
