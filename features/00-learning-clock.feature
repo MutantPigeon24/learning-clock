@@ -100,6 +100,19 @@ Feature: Learning to tell time
       Then every button is big enough for small fingers
       And no feature depends on reading instructions
 
+    Scenario: No buttons for things that are not built yet
+      Given a planned feature, such as the calendar, is not built yet
+      When my child looks at the clock screen
+      Then there is no button for it
+      And the layout keeps room for that button, so adding it later needs no redesign
+
+    Scenario: Buttons that can be understood from their picture
+      When my child looks at any button
+      Then its picture shows what it does without needing to read
+      And a short word is shown next to the picture where there is room
+      And a button can show only its picture when the picture alone makes the meaning clear
+      And every button has a full spoken label for screen readers
+
     Scenario Outline: Fitting the tablet screen
       Given the tablet is held in <orientation>
       When my child looks at the clock screen

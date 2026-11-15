@@ -24,6 +24,14 @@ Feature: Setting the clock by dragging the hands
       Then the hand closest to their finger is the one that moves
       And the hands are easy to grab with a small finger
 
+    Scenario: Seeing that the hands can be moved
+      When my child looks at the analog clock
+      Then each hand has a round grip near its tip, like a handle to hold
+      And each grip is the same colour as its hand, with a light edge so it stands out
+      And the hour hand's grip is bigger than the minute hand's, to match the thicker hand
+      And the grips show whether or not the hour and minute helpers are on
+      And no words or instructions are needed to see that the hands can be moved
+
     Scenario: Letting go of the minute hand
       Given my child is dragging the minute hand
       When they let go between two minute marks
@@ -71,7 +79,7 @@ Feature: Setting the clock by dragging the hands
       Given the clock is showing <start>
       When my child drags the minute hand <direction> to minute <minute>
       Then the time is <end>
-      And the 12-hour clock highlights "<label>"
+      And the 12-hour clock shows "<label>"
       And the words say "<sentence>"
 
       Examples:
@@ -95,7 +103,7 @@ Feature: Setting the clock by dragging the hands
       When my child presses the AM/PM switch
       Then the time is <end>
       And the hands have not moved
-      And the 12-hour clock highlights "<label>"
+      And the 12-hour clock shows "<label>"
       And the words say "<sentence>"
 
       Examples:
@@ -125,7 +133,7 @@ Feature: Setting the clock by dragging the hands
       Given the clock is showing the real time of 09:12
       When my child drags the minute hand to 09:45
       Then while they drag, both digital clocks and the words change with every minute the hand passes
-      And when they let go, the 12-hour clock shows "9:45" with "AM" highlighted
+      And when they let go, the 12-hour clock shows "9:45 AM"
       And the 24-hour clock shows "09:45"
       And the words say "It is 45 minutes past 9 in the morning."
 
@@ -167,11 +175,24 @@ Feature: Setting the clock by dragging the hands
 
   Rule: There is always a way back to the real time
 
+    # One sign in one place shows whether the clock is showing the real time.
+    # While it is, the sign says "Now" next to a green dot. When the clock is
+    # set by hand, the same sign turns into the "back to now" button, so
+    # nothing else on the screen has to move to make room for it.
+
+    Scenario: Seeing that the clock shows the real time
+      Given the clock is showing the real time
+      Then a "Now" sign with a green dot is shown
+      And the sign is not a button, and pressing it does nothing
+
     Scenario: Seeing that the clock has been set
       Given the clock is showing the real time
       When my child drags a hand to a different time
-      Then a large "back to now" button appears
+      Then the "Now" sign turns into a large "back to now" button in the same place
+      And the green dot is replaced by a turn-back arrow round a clock
+      And the button looks pressable, with an outline the "Now" sign does not have
       And it can be recognised without reading
+      And nothing else on the screen moves
 
     Scenario: Going back to the real time
       Given my child has set the clock to 09:45
@@ -179,11 +200,12 @@ Feature: Setting the clock by dragging the hands
       When they press the "back to now" button
       Then every display shows 14:20
       And the clock starts ticking again with the real time
-      And the "back to now" button goes away
+      And the button turns back into the "Now" sign with the green dot
 
     Scenario: No "back to now" button while showing the real time
       Given the clock is showing the real time
       Then no "back to now" button is shown
+      And the "Now" sign is shown in its place
 
     Scenario: Dragging the hands back to the real time
       Given the device's real time is 14:20

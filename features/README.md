@@ -14,6 +14,7 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 | `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
 | `08-set-the-clock.feature` | Dragging the analog hands to set any time; AM/PM switch; every display follows; "back to now" button |
 | `09-calendar.feature` | **Future:** calendar screen for days, weeks, months, years and seasons, using the same ideas as the clock |
+| `10-looks.feature` | Six looks children can pick; each look's own world, its own version of each scene and its own way of changing between them |
 
 Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
 
@@ -66,6 +67,13 @@ So that this works:
 9. **A set time is static.** It doesn't tick. Pressing "back to now" returns to the real time, which ticks again.
 10. **Setting the time never speaks by itself.** The time is only read aloud when the read-aloud button is pressed.
 11. **An AM/PM switch on the analog clock** swaps between morning and evening without moving the hands, so the hour hand doesn't have to be dragged round past the 12. Using it while showing the real time sets the clock by hand.
+12. **Each hand has a round grip near its tip** so a child can see the hands can be moved. The grip is the hand's colour, and the hour grip is bigger (`08-set-the-clock.feature`).
+13. **No button for a feature that isn't built yet.** The calendar button stays hidden until the calendar exists, but each layout keeps room for it (`00-learning-clock.feature`).
+14. **A button can show only its picture** when the picture alone makes its meaning clear. Otherwise it gets a short word too. Every button has a full label for screen readers (`00-learning-clock.feature`).
+15. **The 12-hour clock shows only the AM or PM that applies, as plain text** ("9:45 PM"). The AM and PM chips are gone because they looked like buttons but did nothing. AM and PM side by side only appear on the AM/PM switch, which works (`03-digital-clocks.feature`).
+16. **The time picks the scene, the look paints it.** Each look has its own world and its own sunrise, day, sunset and night, and changes between them in its own way (lights coming on one by one, balloons landing, lava glowing). The scenes still change at the same times in every look, so the picture always agrees with the words (`10-looks.feature`, `05-time-of-day-scene.feature`).
+17. **One "Now" sign shows the real time.** It has a green dot and is not a button. When the clock is set by hand, the same sign turns into the "back to now" button in the same place, with a turn-back arrow and an outline (`08-set-the-clock.feature`).
+18. **The Storybook tags stay tilted.** The slight tilt is fine for reading.
 
 ## Assumptions (change any of these if they're wrong)
 

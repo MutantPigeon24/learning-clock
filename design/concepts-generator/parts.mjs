@@ -1,13 +1,28 @@
 // Shared pieces for the Learning Clock concept artboards.
+import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
 
+// Each theme is a kit (see theme-art.mjs for the pictures). Tokens:
+// card/ink/sub/soft/softInk: surfaces and text. accent/onAccent: buttons and the
+// selected state; it must never look like the hour or minute colour.
+// ctl: outline of controls on cards (3 : 1 or better against the card).
+// hc/mc (hcT/mcT on dark cards): hour and minute colours. face/rim/tick/num: clock.
+// cardFx: extra card styling (border, texture, shadow). cardTex: texture only, for
+// layouts that draw their own borders. btnFx: extra style on the main button.
+// dfont: display font for small labels and look names (never the sentence or digits).
 export const THEMES = [
-  { id: 'sky', name: 'Sky', card: '#FFFFFF', ink: '#0B2545', sub: '#3D5A80', accent: '#1A64C8', onAccent: '#FFFFFF', soft: '#DCEBFF', softInk: '#0B2545', face: '#FFFFFF', rim: '#1A64C8', tick: '#0B2545', num: '#0B2545', hc: '#B23B0B', mc: '#6741D9', deco: '#FFFFFF', edge: '#0F4A99', body: '#5AA9F2', motif: 'M7 19a5 5 0 0 1-.6-10A6.5 6.5 0 0 1 19 9.6 4.7 4.7 0 0 1 18.3 19z' },
-  { id: 'blossom', name: 'Blossom', card: '#FFFFFF', ink: '#4A0D2E', sub: '#7A2E55', accent: '#C2185B', onAccent: '#FFFFFF', soft: '#FFE1EE', softInk: '#4A0D2E', face: '#FFF7FB', rim: '#E0457B', tick: '#4A0D2E', num: '#4A0D2E', hc: '#A61E4D', mc: '#0A6B66', deco: '#FF8FB8', edge: '#8E1243', body: '#F48FB1', motif: 'M12 21s-7.5-4.6-9.6-9.1C1 8.6 3 5 6.5 5c2.1 0 3.7 1.2 5.5 3.2C13.8 6.2 15.4 5 17.5 5 21 5 23 8.6 21.6 11.9 19.5 16.4 12 21 12 21z' },
-  { id: 'unicorn', name: 'Unicorn', card: '#FFFFFF', ink: '#35155D', sub: '#5B3A8C', accent: '#7C3AED', onAccent: '#FFFFFF', soft: '#EFE5FF', softInk: '#35155D', face: '#FFFFFF', rim: '#B48CF2', tick: '#35155D', num: '#35155D', hc: '#C2255C', mc: '#1864AB', deco: '#FFE066', edge: '#5B21B6', body: '#F3EDFF', motif: 'M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z' },
-  { id: 'hero', name: 'Hero', card: '#FFFFFF', ink: '#111C3A', sub: '#34416B', accent: '#D3242C', onAccent: '#FFFFFF', soft: '#FFF0C2', softInk: '#111C3A', face: '#FFFFFF', rim: '#F2B705', tick: '#111C3A', num: '#111C3A', hc: '#C92A2A', mc: '#1D4ED8', deco: '#FFC21A', edge: '#8F1219', body: '#3B6FE0', motif: 'M13.5 2L4 13.5h6.5L9 22l11-12.5h-6.8z' },
-  { id: 'dino', name: 'Dino', card: '#FFFFFF', ink: '#173A1E', sub: '#2F5D36', accent: '#2E7D32', onAccent: '#FFFFFF', soft: '#E2F3D5', softInk: '#173A1E', face: '#FFFDF5', rim: '#5FAE4E', tick: '#173A1E', num: '#173A1E', hc: '#B23B0B', mc: '#1D4ED8', deco: '#7CC46A', edge: '#1B5E20', body: '#6CC05C', motif: 'M4 20C4 10 10 4 21 3c-.5 11-7 17-17 17z' },
-  { id: 'space', name: 'Space', dark: true, card: '#1E1B4B', ink: '#FFFFFF', sub: '#C7C9F5', accent: '#FFC93C', onAccent: '#1E1B4B', soft: '#312E81', softInk: '#FFFFFF', face: '#FFFFFF', rim: '#6D63FF', tick: '#1E1B4B', num: '#1E1B4B', hc: '#B23B0B', mc: '#3B5BDB', hcT: '#FFA94D', mcT: '#A5B4FF', deco: '#FFC93C', edge: '#0F0C33', body: '#8E87FF', motif: 'M12 2c3.2 2.2 5 6 5 10l-2 4H9l-2-4c0-4 1.8-7.8 5-10zM9 16l-3 4.5 4.5-1.5zM15 16l3 4.5-4.5-1.5z' },
-];
+  { id: 'sky', name: 'Sky', card: '#FFFFFF', ink: '#0B2545', sub: '#3D5A80', accent: '#1A64C8', onAccent: '#FFFFFF', ctl: '#1A64C8', soft: '#DCEBFF', softInk: '#0B2545', face: '#FFFFFF', rim: '#1A64C8', tick: '#0B2545', num: '#0B2545', hc: '#B23B0B', mc: '#6741D9', deco: '#FFFFFF', edge: '#0F4A99', body: '#5AA9F2',
+    cardFx: 'border:3px solid #CFE2FB;background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', cardTex: 'background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', btnFx: 'box-shadow:0 5px 0 #0F4A99', dfont: "'Baloo 2', sans-serif" },
+  { id: 'blossom', name: 'Blossom', card: '#FFFFFF', ink: '#4A0D2E', sub: '#7A2E55', accent: '#C2185B', onAccent: '#FFFFFF', ctl: '#C2185B', soft: '#FFE1EE', softInk: '#4A0D2E', face: '#FFF7FB', rim: '#E0457B', tick: '#4A0D2E', num: '#4A0D2E', hc: '#6A2BB5', mc: '#0A6B66', deco: '#FF8FB8', edge: '#8E1243', body: '#F48FB1',
+    cardFx: 'border:3px solid #FFC2D9;background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', cardTex: 'background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', btnFx: 'box-shadow:0 5px 0 #8E1243', dfont: "'Grandstander', sans-serif" },
+  { id: 'unicorn', name: 'Unicorn', card: '#FFFFFF', ink: '#35155D', sub: '#5B3A8C', accent: '#7C3AED', onAccent: '#FFFFFF', ctl: '#7C3AED', soft: '#EFE5FF', softInk: '#35155D', face: '#FFFFFF', rim: '#B48CF2', tick: '#35155D', num: '#35155D', hc: '#C2255C', mc: '#1864AB', deco: '#FFE066', edge: '#5B21B6', body: '#F3EDFF',
+    cardFx: 'border:4px solid transparent;background-image:linear-gradient(#FFFFFF,#FFFFFF),linear-gradient(90deg,#FF8FA3,#FFB86B,#FFE16B,#8FE3A8,#8EC5FF,#C8A2FF);background-origin:border-box;background-clip:padding-box,border-box', cardTex: 'background-image:radial-gradient(circle at 92% 14%,#FFF4C2 0 5px,transparent 6px),radial-gradient(circle at 8% 88%,#F3E8FF 0 7px,transparent 8px)', btnFx: 'background-image:linear-gradient(135deg,#7C3AED,#B62BC9);box-shadow:0 5px 0 #5B21B6', dfont: "'Sniglet', sans-serif" },
+  { id: 'hero', name: 'Hero', card: '#FFFFFF', ink: '#111C3A', sub: '#34416B', accent: '#FFC21A', onAccent: '#111C3A', ctl: '#111C3A', soft: '#FFF0C2', softInk: '#111C3A', face: '#FFFFFF', rim: '#111C3A', tick: '#111C3A', num: '#111C3A', hc: '#C92A2A', mc: '#1D4ED8', deco: '#FFC21A', edge: '#111C3A', body: '#3B6FE0',
+    cardFx: 'border:4px solid #111C3A;box-shadow:6px 6px 0 #111C3A;background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', cardTex: 'background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', btnFx: 'border:3px solid #111C3A;box-shadow:4px 4px 0 #111C3A', dfont: "'Bangers', Impact, sans-serif" },
+  { id: 'dino', name: 'Dino', card: '#FFFFFF', ink: '#173A1E', sub: '#2F5D36', accent: '#2E7D32', onAccent: '#FFFFFF', ctl: '#2E7D32', soft: '#E2F3D5', softInk: '#173A1E', face: '#FFFDF5', rim: '#5FAE4E', tick: '#173A1E', num: '#173A1E', hc: '#B23B0B', mc: '#1D4ED8', deco: '#7CC46A', edge: '#1B5E20', body: '#6CC05C',
+    cardFx: 'border:3px solid #A5D16E;background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', cardTex: 'background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', btnFx: 'box-shadow:0 5px 0 #1B5E20', dfont: "'Chewy', sans-serif" },
+  { id: 'space', name: 'Space', dark: true, card: '#1E1B4B', ink: '#FFFFFF', sub: '#C7C9F5', accent: '#FFC93C', onAccent: '#1E1B4B', ctl: '#FFC93C', soft: '#312E81', softInk: '#FFFFFF', face: '#FFFFFF', rim: '#6D63FF', tick: '#1E1B4B', num: '#1E1B4B', hc: '#B23B0B', mc: '#3B5BDB', hcT: '#FFA94D', mcT: '#A5B4FF', deco: '#FFC93C', edge: '#0F0C33', body: '#8E87FF',
+    cardFx: 'border:2px solid rgba(165,180,255,.5);box-shadow:0 0 0 4px rgba(109,99,255,.22),0 12px 30px rgba(0,0,0,.35);background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),radial-gradient(1.6px 1.6px at 88% 18%,rgba(255,255,255,.6),transparent),radial-gradient(1.2px 1.2px at 40% 86%,rgba(255,255,255,.5),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', cardTex: 'background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', btnFx: 'box-shadow:0 0 0 3px rgba(255,201,60,.35),0 0 22px rgba(255,201,60,.45)', dfont: "'Audiowide', sans-serif" },
+].map((t) => ({ ...t, motif: MOTIFS[t.id] }));
 
 // Hour and minute colour pairs a child can pick instead of the theme's own.
 // h/m sit on light cards and the clock face; hL/mL are for dark cards.
@@ -18,6 +33,18 @@ export const PAIRS = [
   { id: 'pink-teal', name: 'Pink and teal', h: '#C2255C', m: '#0A6B66', hL: '#F783AC', mL: '#63E6BE' },
   { id: 'purple-orange', name: 'Purple and orange', h: '#6741D9', m: '#B23B0B', hL: '#B197FC', mL: '#FFA94D' },
 ];
+
+// Pairs whose hour or minute colour looks like a look's accent (button) colour.
+// The picker hides them for that look, so "blue" never means both "minutes" and "press me".
+function looksAlike(a, b) {
+  const hx = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const hueOf = (h) => { const [r, g, b] = hx(h), mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); if (!d) return 0; const k = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return (k * 60 + 360) % 360; };
+  const lum = (h) => { const [r, g, b] = hx(h).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const d = Math.abs(hueOf(a) - hueOf(b)), gap = Math.min(d, 360 - d);
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return gap < 25 && (x + 0.05) / (y + 0.05) < 1.6;
+}
+export const CLASH = Object.fromEntries(THEMES.map((t) => [t.id, PAIRS.filter((p) => p.h && (looksAlike(t.accent, p.h) || looksAlike(t.accent, p.m))).map((p) => p.id)]));
 
 export const SCENES = {
   sunrise: { top: '#FF9E8A', bot: '#FFE1B0', orb: '#FF7A3D', ox: 290, oy: 800, os: 1.1, h1: '#F2A65A', h2: '#E07A4F', stars: 0, moon: 0, cloud: 0.5 },
@@ -52,7 +79,7 @@ export function wordsH(z, width, fs = z.fs, cp = z.cp) {
   return Math.round(lines * fs * 1.3 + 2 * cp);
 }
 export function fdFor(z, cardW, cp = z.cp, max = z.fd) {
-  const chipW = z.chip * 2.4 + 18;
+  const chipW = z.chip * 2.2 + 12; // room for the AM or PM text
   return Math.floor(Math.min(max, (cardW - 2 * cp - chipW - 10) / 2.75));
 }
 
@@ -97,16 +124,16 @@ export function clock(size, o = {}) {
   }
   const hourC = o.hourC || '{{ lf.h }}', minC = o.minC || '{{ lf.m }}';
   const numC = o.numC || '{{ lf.h }}';
-  return `<svg width="${Math.round(size)}" height="${Math.round(size)}" viewBox="0 0 ${vb} ${vb}" role="group" aria-label="{{ t.aria }}" onPointerDown="{{ onDown }}" onPointerMove="{{ onMove }}" onPointerUp="{{ onUp }}" onPointerCancel="{{ onUp }}" style="display:block;flex:none;touch-action:none;cursor:grab;user-select:none">
-${ring ? `<g style="display:{{ ck.ring }}"><circle cx="${c}" cy="${c}" r="${c - 2}" style="fill:{{ th.soft }}"></circle><g style="fill:{{ lk.m }}" font-size="13" font-weight="800">${ringNums}</g></g>` : ''}
+  return `<svg width="${Math.round(size)}" height="${Math.round(size)}" viewBox="0 0 ${vb} ${vb}" role="group" aria-label="{{ t.aria }}" onPointerDown="{{ onDown }}" onPointerMove="{{ onMove }}" onPointerUp="{{ onUp }}" onPointerCancel="{{ onUp }}" style="display:block;flex:none;overflow:visible;touch-action:none;cursor:grab;user-select:none">
+${ring ? `${ringDress(c)}<g style="display:{{ ck.ring }}"><g style="fill:{{ lk.m }}" font-size="13" font-weight="800">${ringNums}</g></g>` : ''}
 <g transform="${ring ? '{{ ck.tf }}' : 'translate(0 0)'}">
 ${o.shadow !== false ? `<circle cx="${c}" cy="${c + 4}" r="${R}" fill="rgba(0,0,0,.18)"></circle>` : ''}
 <circle cx="${c}" cy="${c}" r="${R - rimW / 2}" stroke-width="${rimW}" style="fill:{{ th.face }};stroke:${o.rimC || '{{ th.rim }}'}"></circle>
 ${o.double ? `<circle cx="${c}" cy="${c}" r="${R - rimW - 3}" fill="none" stroke-width="2" stroke-dasharray="3 5" style="stroke:{{ th.rim }}"></circle>` : ''}
 <g style="stroke:{{ th.tick }}" stroke-linecap="round">${ticks}</g>
 <g style="fill:${numC}" font-size="${o.numSize || 19}" font-weight="800">${nums}</g>
-<g transform="rotate({{ hz.hour }} ${c} ${c})"><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="11" stroke-linecap="round" style="stroke:${hourC}"></line></g>
-<g transform="rotate({{ hz.min }} ${c} ${c})"><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="6.5" stroke-linecap="round" style="stroke:${minC}"></line></g>
+<g transform="rotate({{ hz.hour }} ${c} ${c})"><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="15" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 10}" x2="${c}" y2="${c - 50}" stroke-width="11" stroke-linecap="round" style="stroke:${hourC}"></line><circle cx="${c}" cy="${c - 44}" r="10" stroke="#FFFFFF" stroke-width="3" style="fill:${hourC}"></circle><circle cx="${c}" cy="${c - 44}" r="3.2" fill="#FFFFFF" opacity=".85"></circle></g>
+<g transform="rotate({{ hz.min }} ${c} ${c})"><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="10" stroke-linecap="round" stroke="#FFFFFF"></line><line x1="${c}" y1="${c + 14}" x2="${c}" y2="${c - 80}" stroke-width="6.5" stroke-linecap="round" style="stroke:${minC}"></line><circle cx="${c}" cy="${c - 82}" r="7" stroke="#FFFFFF" stroke-width="2.5" style="fill:${minC}"></circle><circle cx="${c}" cy="${c - 82}" r="2.2" fill="#FFFFFF" opacity=".85"></circle></g>
 <circle cx="${c}" cy="${c}" r="8" style="fill:${hourC}"></circle><circle cx="${c}" cy="${c}" r="3" fill="#FFFFFF"></circle>
 </g>
 </svg>`;
@@ -115,16 +142,16 @@ ${o.double ? `<circle cx="${c}" cy="${c}" r="${R - rimW - 3}" fill="none" stroke
 export function scene(id) {
   let stars = '';
   const pts = [[230, 420], [330, 520], [420, 400], [520, 470], [600, 560], [780, 410], [840, 540], [300, 640], [460, 610], [560, 380], [760, 640], [250, 560], [880, 450], [650, 450]];
-  pts.forEach(([x, y], i) => { stars += `<circle cx="${x}" cy="${y}" r="${i % 3 === 0 ? 4 : 2.5}" fill="#FFFFFF"></circle>`; });
+  // Stars come out one by one (and go one by one in the morning); instant while dragging.
+  pts.forEach(([x, y], i) => { stars += `<circle cx="${x}" cy="${y}" r="${i % 3 === 0 ? 4 : 2.5}" fill="#FFFFFF" style="opacity:{{ sc.stars }};transition:opacity 0.9s ease calc({{ sc.stag }} * ${(0.2 + i * 0.17).toFixed(2)}s)"></circle>`; });
   const t = 'transition:{{ sc.dur }}';
   return `<svg aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%;display:block">
 <defs><linearGradient id="sky-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0.35" style="stop-color:{{ sc.top }};${t}"></stop><stop offset="1" style="stop-color:{{ sc.bot }};${t}"></stop></linearGradient></defs>
 <rect width="1000" height="1000" fill="url(#sky-${id})"></rect>
-<g style="opacity:{{ sc.stars }};${t}">${stars}</g>
+<g>${stars}</g>
 <g style="transform:translate({{ sc.ox }}px, {{ sc.oy }}px) scale({{ sc.os }});${t}"><circle r="62" style="fill:{{ sc.orb }};${t}"></circle><circle cx="22" cy="-14" r="54" style="fill:{{ sc.top }};opacity:{{ sc.moon }};${t}"></circle></g>
-<g style="opacity:{{ sc.cloud }};${t}" fill="#FFFFFF"><ellipse cx="300" cy="520" rx="70" ry="26"></ellipse><ellipse cx="335" cy="500" rx="42" ry="30"></ellipse><ellipse cx="540" cy="420" rx="56" ry="20"></ellipse><ellipse cx="566" cy="404" rx="32" ry="24"></ellipse></g>
-<path d="M0 860 Q 250 760 500 840 T 1000 820 V1000 H0z" style="fill:{{ sc.h1 }};${t}"></path>
-<path d="M0 925 Q 300 845 620 915 T 1000 905 V1000 H0z" style="fill:{{ sc.h2 }};${t}"></path>
+<g style="opacity:{{ sc.cloud }};${t}" fill="#FFFFFF" opacity=".9"><ellipse cx="300" cy="520" rx="70" ry="26"></ellipse><ellipse cx="335" cy="500" rx="42" ry="30"></ellipse><ellipse cx="540" cy="420" rx="56" ry="20"></ellipse><ellipse cx="566" cy="404" rx="32" ry="24"></ellipse></g>
+${landscape(id)}
 </svg>`;
 }
 
@@ -136,19 +163,18 @@ export function deco(z, spots) {
   }).join('');
 }
 
-export const lab = (txt, fs) => `<span style="font-size:${fs}px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:{{ th.sub }}">${txt}</span>`;
+export const lab = (txt, fs) => `<span style="font-family:{{ th.dfont }};font-size:${Math.round(fs * 1.1)}px;font-weight:800;letter-spacing:.02em;line-height:1.1;color:{{ th.sub }}">${txt}</span>`;
 
+// 12-hour digits with the AM or PM that applies written after them as plain text.
+// No chips: AM and PM side by side only appear on the AM/PM switch, which works.
 export function digits12(fd, z, o = {}) {
-  const cf = Math.round(Math.max(13, fd * 0.26));
+  const ap = Math.round(Math.max(16, fd * 0.42));
   const num = o.link !== false
     ? `<span style="color:{{ lk.h }}">{{ t.h12 }}</span>:<span style="color:{{ lk.m }}">{{ t.mm }}</span>`
     : '{{ t.d12 }}';
-  return `<div style="display:flex;align-items:center;gap:${Math.round(fd * 0.16)}px">
-<span style="font-size:${fd}px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap${o.color ? ';color:' + o.color : ''}">${num}</span>
-<span style="display:flex;flex-direction:${o.row ? 'row' : 'column'};gap:4px">
-<span style="padding:2px 9px;border-radius:999px;border:2px solid;font-size:${cf}px;font-weight:800;text-align:center;line-height:1.25;{{ ap.amChip }}">AM</span>
-<span style="padding:2px 9px;border-radius:999px;border:2px solid;font-size:${cf}px;font-weight:800;text-align:center;line-height:1.25;{{ ap.pmChip }}">PM</span>
-</span></div>`;
+  return `<span style="display:flex;align-items:baseline;gap:${Math.round(fd * 0.14)}px;white-space:nowrap">
+<span style="font-size:${fd}px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums${o.color ? ';color:' + o.color : ''}">${num}</span>
+<span style="font-size:${ap}px;font-weight:800;line-height:1;color:{{ th.sub }}">{{ t.ap }}</span></span>`;
 }
 export function digits24(fd, o = {}) {
   const num = o.link !== false
@@ -164,7 +190,7 @@ export function ampm(h, w, z, o = {}) {
   const fs = Math.round(Math.max(18, h * 0.38));
   const r = o.radius ?? Math.round(h / 2);
   const dir = o.vertical ? 'column' : 'row';
-  return `<button type="button" onClick="{{ ampm }}" aria-label="AM or PM switch. Showing {{ t.ap }}" style="display:flex;flex-direction:${dir};padding:5px;gap:5px;${o.vertical ? `width:${h}px;height:${w}px` : `height:${h}px;width:${Math.round(w)}px`};box-sizing:border-box;border-radius:${r}px;border:3px solid {{ th.accent }};background:{{ th.card }};cursor:pointer;font-family:inherit;flex:none">
+  return `<button type="button" onClick="{{ ampm }}" aria-label="AM or PM switch. Showing {{ t.ap }}" style="display:flex;flex-direction:${dir};padding:5px;gap:5px;${o.vertical ? `width:${h}px;height:${w}px` : `height:${h}px;width:${Math.round(w)}px`};box-sizing:border-box;border-radius:${r}px;border:3px solid {{ th.ctl }};background:{{ th.card }};cursor:pointer;font-family:inherit;flex:none">
 <span style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:${Math.max(6, r - 6)}px;font-size:${fs}px;font-weight:800;{{ ap.am }}">AM</span>
 <span style="flex:1;display:flex;align-items:center;justify-content:center;border-radius:${Math.max(6, r - 6)}px;font-size:${fs}px;font-weight:800;{{ ap.pm }}">PM</span>
 </button>`;
@@ -173,33 +199,37 @@ export function ampm(h, w, z, o = {}) {
 export function speakBtn(sz, z, o = {}) {
   const label = o.label !== false;
   const fs = Math.round(Math.max(17, sz * 0.3));
-  return `<button type="button" onClick="{{ speak }}" aria-label="Hear the time" style="height:${sz}px;min-width:${sz}px;${o.grow ? 'flex:1 1 auto;' : 'flex:none;'}${o.w ? `width:${o.w}px;` : ''}padding:0 ${label ? Math.round(sz * 0.32) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.14)}px;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.accent }};color:{{ th.onAccent }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:pointer;${o.extra || ''}">
+  return `<button type="button" onClick="{{ speak }}" aria-label="Hear the time" style="height:${sz}px;min-width:${sz}px;${o.grow ? 'flex:1 1 auto;' : 'flex:none;'}${o.w ? `width:${o.w}px;` : ''}padding:0 ${label ? Math.round(sz * 0.32) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.14)}px;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.accent }};color:{{ th.onAccent }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:pointer;{{ th.btnFx }};${o.extra || ''}">
 <sc-if value="{{ speaking }}" hint-placeholder-val="{{ false }}">${icon('speaking', sz * 0.52)}${label ? '<span>Speaking</span>' : ''}</sc-if>
 <sc-if value="{{ notSpeaking }}" hint-placeholder-val="{{ true }}">${icon('speaker', sz * 0.52)}${label ? '<span>Hear it</span>' : ''}</sc-if>
 </button>`;
 }
 
+// One sign, one place. Real time: a "Now" sign with a green dot (not a button).
+// Set by hand: the same slot becomes the "Back to now" button with a turn-back
+// arrow and an outline, so nothing else on the screen moves (08-set-the-clock).
+// label:false keeps the button picture-only where space is tight.
 export function nowBtn(sz, z, o = {}) {
   const label = o.label !== false;
   const fs = Math.round(Math.max(16, sz * 0.27));
-  return `<sc-if value="{{ isSet }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ now }}" aria-label="Back to the real time" style="height:${sz}px;min-width:${sz}px;flex:none;padding:0 ${label ? Math.round(sz * 0.26) : 0}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:${Math.round(sz * 0.1)}px;border:${Math.max(3, Math.round(sz * 0.05))}px solid {{ th.accent }};border-radius:${o.radius ?? Math.round(sz / 2)}px;background:{{ th.card }};color:{{ th.ink }};font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap;cursor:pointer;${o.extra || ''}">${icon('now', sz * 0.5)}${label ? '<span>Now</span>' : ''}</button></sc-if>`;
+  const bw = Math.max(3, Math.round(sz * 0.05));
+  const rad = o.radius ?? Math.round(sz / 2);
+  const box = `height:${sz}px;min-width:${sz}px;flex:none;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:${rad}px;font-family:inherit;font-size:${fs}px;font-weight:800;white-space:nowrap`;
+  const dot = Math.round(Math.max(12, sz * 0.2));
+  return `<sc-if value="{{ isLive }}" hint-placeholder-val="{{ true }}"><div role="status" aria-label="Showing the real time" style="${box};${label ? `padding:0 ${Math.round(sz * 0.24)}px;gap:${Math.round(sz * 0.1)}px` : `flex-direction:column;padding:0;gap:${Math.round(sz * 0.06)}px;font-size:${Math.round(Math.max(14, sz * 0.22))}px`};border:${bw}px solid transparent;background:{{ th.card }};color:{{ th.ink }};opacity:.92"><span aria-hidden="true" style="width:${dot}px;height:${dot}px;border-radius:50%;background:#1F9D55;box-shadow:0 0 0 ${Math.round(dot * 0.3)}px rgba(31,157,85,.22);flex:none"></span><span>Now</span></div></sc-if>
+<sc-if value="{{ isSet }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ now }}" aria-label="Back to the real time" style="${box};padding:0 ${label ? Math.round(sz * 0.26) : 0}px;gap:${Math.round(sz * 0.1)}px;border:${bw}px solid {{ th.ctl }};background:{{ th.card }};color:{{ th.ink }};box-shadow:0 4px 0 rgba(11,37,69,.22);cursor:pointer;${o.extra || ''}">${icon('now', sz * 0.5)}${label ? '<span>Back to now</span>' : ''}</button></sc-if>`;
 }
 
 export function iconBtn(name, sz, aria, handler, o = {}) {
-  return `<button type="button" onClick="{{ ${handler} }}" aria-label="${aria}" style="width:${sz}px;height:${sz}px;flex:none;display:flex;align-items:center;justify-content:center;padding:0;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:${o.bg || '{{ th.card }}'};color:${o.color || '{{ th.accent }}'};cursor:pointer;${o.extra || ''}">${icon(name, sz * (o.k || 0.5))}</button>`;
+  return `<button type="button" onClick="{{ ${handler} }}" aria-label="${aria}" style="width:${sz}px;height:${sz}px;flex:none;display:flex;align-items:center;justify-content:center;padding:0;border:none;border-radius:${o.radius ?? Math.round(sz / 2)}px;background:${o.bg || '{{ th.card }}'};color:${o.color || '{{ th.accent }}'};box-shadow:0 0 0 2px rgba(11,37,69,.12),0 3px 0 rgba(11,37,69,.18);cursor:pointer;${o.extra || ''}">${icon(name, sz * (o.k || 0.5))}</button>`;
 }
 export const themeBtn = (f, sz, o = {}) => `<sc-if value="{{ canTheme }}" hint-placeholder-val="{{ true }}">${iconBtn('palette', sz, 'Change the look', `ov.${f}.openTheme`, o)}</sc-if>`;
 export const lockBtn = (f, sz, o = {}) => iconBtn('lock', sz, 'Grown-up settings', `ov.${f}.openGate`, { color: '{{ th.sub }}', k: 0.44, ...o });
-export const calBtn = (sz, o = {}) => iconBtn('calendar', sz, 'Calendar, coming later', 'cal', o);
+// The calendar button is hidden until the calendar is built (00-learning-clock.feature).
+// Set CALENDAR_BUILT to true to show it again; every layout already has room for it.
+const CALENDAR_BUILT = false;
+export const calBtn = (sz, o = {}) => (CALENDAR_BUILT ? iconBtn('calendar', sz, 'Calendar', 'cal', o) : '');
 
-export function chip(z, o = {}) {
-  const h = o.h || Math.round(Math.max(36, 48 * z.S));
-  const fs = Math.round(Math.max(14, h * 0.36));
-  return `<div style="display:inline-flex;align-items:center;gap:8px;height:${h}px;padding:0 ${Math.round(h * 0.4)}px;box-sizing:border-box;border-radius:999px;background:{{ th.card }};color:{{ th.ink }};font-weight:800;font-size:${fs}px;flex:none;white-space:nowrap">
-<sc-if value="{{ isLive }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:${Math.round(fs * 0.7)}px;height:${Math.round(fs * 0.7)}px;border-radius:50%;background:#1F9D55;flex:none"></span><span>Real time</span></sc-if>
-<sc-if value="{{ isSet }}" hint-placeholder-val="{{ false }}">${icon('hand', fs * 1.3, 2.2)}<span>My time</span></sc-if>
-</div>`;
-}
 
 // Child look picker, grown-up check and grown-up settings, for one frame.
 export function overlays(f, z, gate) {
@@ -218,8 +248,8 @@ ${iconBtn('close', small ? 48 : 60, 'Close', 'close', { bg: '{{ th.soft }}', col
   const themeInner = `${head('Pick a look', 'palette')}
 <div style="display:grid;grid-template-columns:repeat(${cols}, minmax(0, 1fr));gap:${small ? 8 : 16}px">
 <sc-for list="{{ themes }}" as="it" hint-placeholder-count="6"><button type="button" onClick="{{ it.pick }}" aria-pressed="{{ it.sel }}" aria-label="{{ it.name }} look" style="display:flex;flex-direction:column;align-items:center;gap:${small ? 4 : 10}px;padding:${small ? 8 : 16}px 4px;border-radius:${small ? 16 : 24}px;border:4px solid;cursor:pointer;font-family:inherit;position:relative;{{ it.tile }}">
-<svg aria-hidden="true" width="${mini}" height="${mini}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke-width="7" style="fill:{{ it.face }};stroke:{{ it.rim }}"></circle><line x1="50" y1="50" x2="31" y2="35" stroke-width="8" stroke-linecap="round" style="stroke:{{ it.hour }}"></line><line x1="50" y1="50" x2="74" y2="26" stroke-width="5" stroke-linecap="round" style="stroke:{{ it.minute }}"></line><g transform="translate(66 64) scale(1.25)"><path d="{{ it.motif }}" style="{{ it.motifS }}"></path></g></svg>
-<span style="font-size:${small ? 15 : 22}px;font-weight:800">{{ it.name }}</span>
+${badge(mini, 'it.vis')}
+<span style="font-family:{{ it.dfont }};font-size:${small ? 16 : 24}px;font-weight:800;letter-spacing:.02em">{{ it.name }}</span>
 </button></sc-for>
 </div>
 <sc-if value="{{ helpersOn }}" hint-placeholder-val="{{ true }}"><h3 style="margin:0;font-size:${small ? 17 : 24}px;font-weight:800">Hour and minute colours</h3>
@@ -280,6 +310,9 @@ export function logic(cfg) {
   return `
 const THEMES = ${JSON.stringify(THEMES)};
 const SCENES = ${JSON.stringify(SCENES)};
+const PAINT = ${JSON.stringify(PAINT)};
+const CLASH = ${JSON.stringify(CLASH)};
+const LIGHT = ${JSON.stringify(LIGHT)};
 const PAIRS = ${JSON.stringify(PAIRS)};
 const GATE = '${cfg.gate}';
 const DEFAULT_THEME = '${cfg.theme}';
@@ -410,7 +443,8 @@ class Component extends DCLogic {
     const tf = ((raw % 1440) + 1440) % 1440, t = norm(raw);
     const h = Math.floor(t / 60), m = t % 60, mm = String(m).padStart(2, '0'), h12 = String((h % 12) || 12);
     const isAM = h < 12;
-    const pairId = st.hands || this.props.hands || 'theme';
+    let pairId = st.hands || this.props.hands || 'theme';
+    if ((CLASH[th.id] || []).includes(pairId)) pairId = 'theme';
     const pr = PAIRS.find(x => x.id === pairId) || PAIRS[0];
     const lfOn = pr.id === 'theme' ? { h: th.hc, m: th.mc } : { h: pr.h, m: pr.m };
     const helpers = this.helpersOn();
@@ -422,18 +456,16 @@ class Component extends DCLogic {
     const sentence = parts.map(p => typeof p === 'string' ? p : p[1]).join('');
     const tParts = parts.map(p => typeof p === 'string' ? { tx: p, style: '' } : { tx: p[1], style: helpers ? 'color:' + (p[0] === 'h' ? lk.h : lk.m) + ';font-weight:800' : '' });
     const scName = sceneOf(t);
-    const sc = Object.assign({}, SCENES[scName], { name: scName, dur: st.drag ? '0.4s' : '2.5s' });
+    const sc = Object.assign({}, SCENES[scName], (PAINT[th.id] || PAINT.sky)[scName], LIGHT[scName], { name: scName, dur: st.drag ? '0.4s' : '2.5s', stag: st.drag ? 0 : 1 });
     const on = 'background:' + th.accent + ';color:' + th.onAccent;
     const off = 'background:transparent;color:' + th.sub;
-    const chipOn = 'background:' + th.accent + ';color:' + th.onAccent + ';border-color:' + th.accent;
-    const chipOff = 'background:transparent;color:' + th.sub + ';border-color:' + th.sub + ';font-weight:600';
     const ov = {};
     FRAMES.forEach(f => {
       const k = st.ov && st.ov.f === f ? st.ov.k : '';
       ov[f] = { theme: k === 'theme', gate: k === 'gate', settings: k === 'settings', openTheme: () => this.open(f, 'theme'), openGate: () => this.open(f, 'gate') };
     });
-    const themes = THEMES.map(x => ({ id: x.id, name: x.name, sel: x.id === th.id, pick: () => this.setState({ theme: x.id }), tile: 'background:' + x.soft + ';color:' + x.softInk + ';border-color:' + (x.id === th.id ? x.accent : 'transparent'), face: x.face, rim: x.rim, hour: !helpers ? x.tick : (pr.id === 'theme' ? x.hc : lf.h), minute: !helpers ? x.tick : (pr.id === 'theme' ? x.mc : lf.m), motif: x.motif, motifS: 'fill:' + x.accent }));
-    const pairs = PAIRS.map(x => { const c = x.id === 'theme' ? { h: th.hc, m: th.mc } : x; return { name: x.name, sel: x.id === pr.id, h: c.h, m: c.m, pick: () => this.setState({ hands: x.id }), tile: 'background:' + th.soft + ';color:' + th.softInk + ';border-color:' + (x.id === pr.id ? th.accent : 'transparent') }; });
+    const themes = THEMES.map(x => ({ id: x.id, name: x.name, sel: x.id === th.id, pick: () => this.setState({ theme: x.id }), tile: 'background:' + x.soft + ';color:' + x.softInk + ';border-color:' + (x.id === th.id ? x.accent : 'transparent'), face: x.face, rim: x.rim, hour: !helpers ? x.tick : (pr.id === 'theme' ? x.hc : lf.h), minute: !helpers ? x.tick : (pr.id === 'theme' ? x.mc : lf.m), motif: x.motif, motifS: 'fill:' + x.accent, dfont: x.dfont, vis: Object.fromEntries(THEMES.map(y => [y.id, y.id === x.id ? 'inline' : 'none'])) }));
+    const pairs = PAIRS.filter(x => !(CLASH[th.id] || []).includes(x.id)).map(x => { const c = x.id === 'theme' ? { h: th.hc, m: th.mc } : x; return { name: x.name, sel: x.id === pr.id, h: c.h, m: c.m, pick: () => this.setState({ hands: x.id }), tile: 'background:' + th.soft + ';color:' + th.softInk + ';border-color:' + (x.id === pr.id ? th.accent : 'transparent') }; });
     const cur = (key) => key === 'helpers' ? helpers : st[key];
     const seg = (key, val, label) => ({ label: label, sel: cur(key) === val, pick: () => this.setState({ [key]: val }), style: cur(key) === val ? 'background:' + th.accent + ';color:' + th.onAccent + ';border-color:' + th.accent : 'background:transparent;color:' + th.ink + ';border-color:' + th.sub });
     const prefs = [
@@ -453,7 +485,7 @@ class Component extends DCLogic {
     return {
       th: th, sc: sc, ov: ov, themes: themes, pairs: pairs, prefs: prefs, pad: pad, lk: lk, lf: lf, ck: ck, helpersOn: helpers, bd: bd,
       t: { h12: h12, mm: mm, d12: h12 + ':' + mm, d24: String(h).padStart(2, '0') + ':' + mm, h24: String(h).padStart(2, '0'), ap: isAM ? 'AM' : 'PM', sentence: sentence, parts: tParts, aria: 'Clock showing ' + h12 + ':' + mm + ' ' + (isAM ? 'AM' : 'PM') + '. Drag a hand to change the time.' },
-      ap: { am: isAM ? on : off, pm: isAM ? off : on, amChip: isAM ? chipOn : chipOff, pmChip: isAM ? chipOff : chipOn },
+      ap: { am: isAM ? on : off, pm: isAM ? off : on },
       hz: { hour: ((tf / 60) % 12) * 30, min: (tf % 60) * 6 },
       isSet: st.set, isLive: !st.set, speaking: st.speaking, notSpeaking: !st.speaking,
       canTheme: !st.themeLock, toast: st.toast, hasToast: !!st.toast,
