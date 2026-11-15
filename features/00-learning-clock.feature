@@ -91,6 +91,7 @@ Feature: Learning to tell time
       And they see a time-of-day scene behind the clocks
       And they see a button that reads the time aloud
       And they can drag the analog clock's hands to set their own time
+      And they see an AM/PM switch on the analog clock
 
   Rule: The app suits a tablet held by a young child
 

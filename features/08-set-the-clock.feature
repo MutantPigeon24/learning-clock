@@ -64,7 +64,8 @@ Feature: Setting the clock by dragging the hands
 
     # The clock face looks the same in the morning and the evening, so the app
     # keeps count: each time the hour hand passes 12 going forward, the time moves
-    # on 12 hours; going backward, it moves back 12 hours.
+    # on 12 hours; going backward, it moves back 12 hours. The AM/PM switch on
+    # the analog clock is the quicker way (see the next rule).
 
     Scenario Outline: Crossing midday and midnight
       Given the clock is showing <start>
@@ -80,6 +81,43 @@ Feature: Setting the clock by dragging the hands
         | 12:10 | anticlockwise, past the 12 | 50     | 11:50 | AM    | It is 50 minutes past 11 in the morning.   |
         | 23:55 | clockwise, past the 12     | 5      | 00:05 | AM    | It is 5 minutes past 12 at night.          |
         | 00:05 | anticlockwise, past the 12 | 55     | 23:55 | PM    | It is 55 minutes past 11 at night.         |
+
+  Rule: An AM/PM switch on the analog clock swaps between morning and evening
+
+    Scenario: Seeing the AM/PM switch
+      When my child looks at the analog clock
+      Then they see an AM/PM switch on or next to the clock face
+      And the half of the day that applies is highlighted
+      And the switch is big enough for small fingers
+
+    Scenario Outline: Swapping between AM and PM
+      Given the clock is showing <start>
+      When my child presses the AM/PM switch
+      Then the time is <end>
+      And the hands have not moved
+      And the 12-hour clock highlights "<label>"
+      And the words say "<sentence>"
+
+      Examples:
+        | start | end   | label | sentence                                   |
+        | 09:45 | 21:45 | PM    | It is 45 minutes past 9 at night.          |
+        | 21:45 | 09:45 | AM    | It is 45 minutes past 9 in the morning.    |
+        | 07:30 | 19:30 | PM    | It is 30 minutes past 7 in the evening.    |
+        | 12:00 | 00:00 | AM    | It is 12 o'clock midnight.                 |
+        | 00:00 | 12:00 | PM    | It is 12 o'clock midday.                   |
+        | 00:05 | 12:05 | PM    | It is 5 minutes past 12 in the afternoon.  |
+
+    Scenario: The scene follows the switch
+      Given the clock is showing 09:45 with the day scene
+      When my child presses the AM/PM switch
+      Then the time is 21:45
+      And the background changes to the night scene
+
+    Scenario: Using the switch while showing the real time
+      Given the clock is showing the real time of 09:45
+      When my child presses the AM/PM switch
+      Then the clock is set by hand to 21:45
+      And the "back to now" button appears
 
   Rule: Every display follows the set time
 
@@ -103,16 +141,18 @@ Feature: Setting the clock by dragging the hands
       And the background changes to the sunset scene
       And the change is quick enough to keep up with the hands, without flashing
 
-    Scenario: Dragging does not speak by itself
-      When my child drags a hand
-      Then nothing is read aloud until they press the read-aloud button
+    Scenario: Setting the time does not speak by itself
+      When my child lets go of a hand or presses the AM/PM switch
+      Then nothing is read aloud
+      And the new time is only spoken when they press the read-aloud button
 
   Rule: A set time stays still until it is changed or reset
 
     Scenario: The set time does not tick
       Given my child has set the clock to 09:45
-      When a real minute passes on the device
+      When several real minutes pass on the device
       Then every display still shows 09:45
+      And the hands do not move
 
     Scenario: Coming back from the background keeps the set time
       Given my child has set the clock to 09:45
@@ -138,7 +178,7 @@ Feature: Setting the clock by dragging the hands
       And the device's real time is 14:20
       When they press the "back to now" button
       Then every display shows 14:20
-      And the time keeps itself up to date again
+      And the clock starts ticking again with the real time
       And the "back to now" button goes away
 
     Scenario: No "back to now" button while showing the real time
