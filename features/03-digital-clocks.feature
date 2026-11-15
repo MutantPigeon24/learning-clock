@@ -3,18 +3,22 @@ Feature: 12-hour and 24-hour digital clocks
   I want to see the time on both a 12-hour and a 24-hour digital clock
   So that I can read the kinds of clock I see at home, at school and on screens
 
-  Rule: The 12-hour clock shows AM or PM and highlights the one that applies
+  Rule: The 12-hour clock shows whether it is AM or PM
 
-    Scenario: Seeing AM and PM together
+    # Only the AM/PM switch on the analog clock shows "AM" and "PM" side by
+    # side, because pressing it changes the time. The 12-hour clock only shows
+    # the one that applies, as plain text, so it never looks like a button
+    # that does nothing.
+
+    Scenario: Seeing AM or PM on the 12-hour clock
       When my child looks at the 12-hour clock
-      Then both "AM" and "PM" labels are visible
-      And the label that applies is highlighted
-      And the other label is dimmed
+      Then they see "AM" or "PM" written after the time, for example "9:45 PM"
+      And it is plain text, not something that looks like a button
 
     Scenario Outline: Writing the time on the 12-hour clock
       Given the current time is <time>
       Then the 12-hour clock shows "<display>"
-      And "<label>" is highlighted
+      And "<label>" is written after it
 
       Examples:
         | time  | display | label |

@@ -3,6 +3,10 @@ Feature: Time-of-day scene
   I want a background picture that shows what part of the day it is
   So that I can connect the numbers on the clock to sunrise, daytime, sunset and night
 
+  # Each look paints these scenes its own way and changes between them in its
+  # own way (see 10-looks.feature). The descriptions below are what every look
+  # has in common.
+
   Rule: The scene follows fixed times of day
 
     # Fixed times, so the scene never needs location access or the internet.
@@ -53,6 +57,7 @@ Feature: Time-of-day scene
       When the time reaches 17:00
       Then the background fades slowly into the sunset scene
       And nothing flashes or jumps suddenly
+      And the look's own changes play as well, such as lights coming on at night
 
     # When the hands are being dragged, the scene changes quickly so it keeps up
     # (see 08-set-the-clock.feature).

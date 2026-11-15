@@ -6,7 +6,9 @@ This is design tooling only. The app doesn't use it, and `npm test` ignores it.
 
 | File | What it holds |
 |---|---|
-| `parts.mjs` | Themes (tokens, including each theme's hour and minute colours), colour pairs a child can pick, scenes, screen frames, sizing helpers, shared components (clock, digits, buttons, look picker, grown-up check, settings) and the logic class every concept shares |
+| `theme-art.mjs` | Each look's kit: sky paint per scene, scene lighting, landscape, corner pictures, clock-ring shape, picker badge and corner motif |
+| `check.mjs` | Contrast and colour-clash check over every look × colour pair (`node design/concepts-generator/check.mjs`) |
+| `parts.mjs` | Themes (tokens, card and button styles, label font, including each theme's hour and minute colours), colour pairs a child can pick, scenes, screen frames, sizing helpers, shared components (clock, digits, buttons, look picker, grown-up check, settings) and the logic class every concept shares |
 | `concepts.mjs` | One layout function per concept, the concept list and the artboard wrapper |
 | `main.mjs` | The journeys board text (journeys, screens, rules), canvas notes and positions, and the command line |
 

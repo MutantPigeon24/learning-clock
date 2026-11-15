@@ -1,4 +1,5 @@
-import { FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, chip, overlays, toast, logic, icon, SAY } from './parts.mjs';
+import { corners } from './theme-art.mjs';
+import { FRAMES, sizes, wordsH, fdFor, clock, scene, deco, lab, digits12, digits24, ampm, speakBtn, nowBtn, iconBtn, themeBtn, lockBtn, calBtn, overlays, toast, logic, icon, SAY } from './parts.mjs';
 
 const R = Math.round;
 const abs = (z, inner, extra = '') => `<div style="position:absolute;inset:0;padding:${z.pad}px;box-sizing:border-box;display:flex;${extra}">${inner}</div>`;
@@ -6,7 +7,7 @@ const abs = (z, inner, extra = '') => `<div style="position:absolute;inset:0;pad
 // ---------- Concept 1 · Clock Hub ----------
 function c1(f, z) {
   const { pad, gap, btn, small, fs, fl, r, ampH, cp, W, H } = z;
-  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${r}px;box-shadow:0 ${R(4 + 4 * z.S)}px 0 rgba(0,0,0,.14)`;
+  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${r}px;box-shadow:0 ${R(4 + 4 * z.S)}px 0 rgba(0,0,0,.14);{{ th.cardFx }}`;
   const words = (w) => `<div style="${card};padding:${cp}px"><p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div>`;
   const digi = (cardW) => {
     const fd = fdFor(z, cardW);
@@ -14,7 +15,7 @@ function c1(f, z) {
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('12-hour', fl)}${digits12(fd, z)}</div>
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div></div>`;
   };
-  const header = `<div style="display:flex;align-items:center;justify-content:space-between;gap:${gap}px">${chip(z)}<div style="display:flex;gap:${R(gap * 0.6)}px">${calBtn(small)}${lockBtn(f, small)}</div></div>`;
+  const header = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:${gap}px"><div style="display:flex;gap:${R(gap * 0.6)}px">${calBtn(small)}${lockBtn(f, small)}</div></div>`;
   const tools = `<div style="display:flex;gap:${gap}px">${speakBtn(btn, z, { grow: true })}${nowBtn(btn, z)}${themeBtn(f, btn)}</div>`;
   if (z.wide) {
     const cs = H - 2 * pad - ampH - gap;
@@ -34,11 +35,11 @@ function c2(f, z) {
   const { pad, gap, btn, fs, fl, r, ampH, cp, W, H } = z;
   const tag = (label, body, rot) => `<div style="position:relative;transform:rotate(${rot}deg);padding-top:${R(26 * Math.max(z.S, 0.6))}px;flex:none">
 <span aria-hidden="true" style="position:absolute;left:50%;top:0;width:3px;height:${R(30 * Math.max(z.S, 0.6))}px;margin-left:-1.5px;background:{{ th.edge }}"></span>
-<div style="background:{{ th.card }};color:{{ th.ink }};border-radius:${R(r * 0.8)}px;padding:${cp}px ${R(cp * 1.2)}px;border:4px solid {{ th.rim }};display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 8px 0 rgba(0,0,0,.15)">
+<div style="background:{{ th.card }};color:{{ th.ink }};border-radius:${R(r * 0.8)}px;padding:${cp}px ${R(cp * 1.2)}px;border:4px solid {{ th.rim }};display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 8px 0 rgba(0,0,0,.15);{{ th.cardTex }}">
 <span aria-hidden="true" style="width:${R(14 * Math.max(z.S, 0.7))}px;height:${R(14 * Math.max(z.S, 0.7))}px;border-radius:50%;background:{{ th.soft }};border:3px solid {{ th.edge }}"></span>${lab(label, fl)}${body}</div></div>`;
   const ribbon = (sp) => `<div style="display:flex;align-items:center;flex:none">
 ${speakBtn(sp, z, { label: false, extra: `position:relative;z-index:2;border:${R(Math.max(4, 6 * z.S))}px solid {{ th.card }};box-shadow:0 6px 0 rgba(0,0,0,.18)` })}
-<div style="flex:1;min-width:0;margin-left:-${R(sp * 0.35)}px;background:{{ th.card }};color:{{ th.ink }};padding:${R(cp * 0.8)}px ${R(cp * 2)}px ${R(cp * 0.8)}px ${R(sp * 0.35 + cp)}px;clip-path:polygon(0 0, 100% 0, calc(100% - ${R(22 * Math.max(z.S, 0.6))}px) 50%, 100% 100%, 0 100%);box-shadow:0 6px 0 rgba(0,0,0,.18)">
+<div style="flex:1;min-width:0;margin-left:-${R(sp * 0.35)}px;background:{{ th.card }};color:{{ th.ink }};padding:${R(cp * 0.8)}px ${R(cp * 2)}px ${R(cp * 0.8)}px ${R(sp * 0.35 + cp)}px;clip-path:polygon(0 0, 100% 0, calc(100% - ${R(22 * Math.max(z.S, 0.6))}px) 50%, 100% 100%, 0 100%);box-shadow:0 6px 0 rgba(0,0,0,.18);{{ th.cardTex }}">
 <p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div></div>`;
   const corners = (mid = '') => `<div style="display:flex;align-items:center;gap:${R(gap * 0.6)}px">${themeBtn(f, btn, { bg: '{{ th.card }}' })}${calBtn(btn)}</div>${mid}${lockBtn(f, R(btn * 0.8))}`;
   const sp = R(btn * 1.25);
@@ -69,7 +70,7 @@ function c3(f, z) {
   const pad = R(Math.max(14, 24 * z.S));
   const ew = R(Math.max(6, 10 * z.S));
   const rr = R(Math.max(16, 26 * z.S));
-  const blk = (bg, ink) => `background:${bg};color:${ink};border:3px solid {{ th.edge }};border-bottom-width:${ew}px;border-radius:${rr}px;box-sizing:border-box`;
+  const blk = (bg, ink) => `background:${bg};color:${ink};border:3px solid {{ th.edge }};border-bottom-width:${ew}px;border-radius:${rr}px;box-sizing:border-box${bg === '{{ th.card }}' ? ';{{ th.cardTex }}' : ''}`;
   const tile = (label, body, extra = '') => `<div style="${blk('{{ th.card }}', '{{ th.ink }}')};padding:${cp}px;display:flex;flex-direction:column;gap:8px;min-width:0;${extra}">${lab(label, fl)}${body}</div>`;
   const words = (extra = '') => `<div style="${blk('{{ th.card }}', '{{ th.ink }}')};padding:${cp}px;display:flex;align-items:center;min-width:0;${extra}"><p style="margin:0;font-size:${fs}px;line-height:1.25;font-weight:800">${SAY}</p></div>`;
   const bb = (o = {}) => ({ ...o, radius: rr, extra: `border:3px solid {{ th.edge }};border-bottom-width:${ew}px;${o.extra || ''}` });
@@ -98,7 +99,7 @@ function c3(f, z) {
 // ---------- Concept 4 · Colour Links ----------
 function c4(f, z) {
   const { pad, gap, btn, small, fs, fl, r, ampH, cp, W, H } = z;
-  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${R(r * 0.6)}px;box-shadow:0 2px 0 rgba(0,0,0,.08), 0 10px 30px rgba(0,0,0,.12)`;
+  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${R(r * 0.6)}px;box-shadow:0 2px 0 rgba(0,0,0,.08), 0 10px 30px rgba(0,0,0,.12);{{ th.cardFx }}`;
   const hands = { rimW: 6, numSize: 20 };
   const legend = `<div style="display:flex;flex-wrap:wrap;gap:${R(gap * 0.6)}px">
 <span style="${card};display:inline-flex;align-items:center;gap:10px;padding:8px 16px;font-size:${fl}px;font-weight:700"><span aria-hidden="true" style="width:${R(28 * Math.max(z.S, .7))}px;height:10px;border-radius:5px;background:{{ lf.h }}"></span><span>Short hand: <b style="color:{{ lk.h }}">hours</b></span></span>
@@ -129,11 +130,11 @@ function c4(f, z) {
 // ---------- Concept 5 · Full Face ----------
 function c5(f, z) {
   const { pad, gap, btn, fs, fl, ampH, cp, W, H } = z;
-  const pill = `background:{{ th.card }};color:{{ th.ink }};border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.18)`;
+  const pill = `background:{{ th.card }};color:{{ th.ink }};border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.18);{{ th.cardFx }}`;
   const dockS = `background:{{ th.card }};border-radius:999px;padding:${R(gap * 0.5)}px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;gap:${R(gap * 0.6)}px;align-items:center`;
   const p12 = (fd) => `<div style="${pill};padding:${R(cp * 0.6)}px ${R(cp * 1.2)}px;display:flex;align-items:center;gap:${R(gap * 0.7)}px;min-width:0">${lab('12h', fl)}${digits12(fd, z, { row: true })}</div>`;
   const p24 = (fd) => `<div style="${pill};padding:${R(cp * 0.6)}px ${R(cp * 1.2)}px;display:flex;align-items:center;gap:${R(gap * 0.7)}px;min-width:0">${lab('24h', fl)}${digits24(fd)}</div>`;
-  const words = `<div style="background:{{ th.card }};color:{{ th.ink }};border-radius:${R(z.r * 1.2)}px;padding:${cp}px ${R(cp * 1.2)}px;box-shadow:0 6px 20px rgba(0,0,0,.18)"><p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div>`;
+  const words = `<div style="background:{{ th.card }};color:{{ th.ink }};border-radius:${R(z.r * 1.2)}px;padding:${cp}px ${R(cp * 1.2)}px;box-shadow:0 6px 20px rgba(0,0,0,.18);{{ th.cardFx }}"><p style="margin:0;font-size:${fs}px;line-height:1.3;font-weight:700">${SAY}</p></div>`;
   const db = R(btn * 0.92);
   const dockBtns = `${speakBtn(R(db * 1.15), z, { label: false })}${nowBtn(db, z, { label: false })}${themeBtn(f, db, { bg: '{{ th.soft }}', color: '{{ th.softInk }}' })}${calBtn(db, { bg: '{{ th.soft }}', color: '{{ th.softInk }}' })}`;
   if (z.wide) {
@@ -180,7 +181,7 @@ function buddy(size) {
 }
 function c6(f, z) {
   const { pad, gap, btn, small, fs, fl, r, ampH, cp, W, H } = z;
-  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${r}px;box-shadow:0 6px 0 rgba(0,0,0,.12)`;
+  const card = `background:{{ th.card }};color:{{ th.ink }};border-radius:${r}px;box-shadow:0 6px 0 rgba(0,0,0,.12);{{ th.cardFx }}`;
   const digi = (fd) => `<div style="display:flex;gap:${gap}px">
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('12-hour', fl)}${digits12(fd, z)}</div>
 <div style="${card};flex:1;min-width:0;padding:${cp}px;display:flex;flex-direction:column;gap:8px">${lab('24-hour', fl)}${digits24(fd)}</div></div>`;
@@ -205,6 +206,9 @@ function c6(f, z) {
   return abs(z, `${tools}${digi(fd)}<div style="display:flex;flex-direction:column;align-items:center;gap:${gap}px">${clock(cs, { rimW: 9 })}${ampm(ampH, cs * 0.5, z)}</div>${zone}`, `flex-direction:column;justify-content:space-between;gap:${gap}px`);
 }
 
+// Display fonts for the six looks (labels and look names only).
+const THEME_FONTS = 'family=Baloo+2:wght@800&family=Grandstander:wght@800&family=Sniglet:wght@800&family=Bangers&family=Chewy&family=Audiowide';
+
 const DECO_SPOTS = [[3, 4, 46, -12], [90, 3, 36, 14], [46, 2, 28, 0], [2, 88, 34, 8], [93, 90, 42, -10]];
 
 export const CONCEPTS = [
@@ -225,7 +229,7 @@ export function conceptFile(c) {
     const small = z.phone;
     const desk = fr.id === 'D';
     const screen = `<div style="position:relative;width:${fr.W}px;height:${fr.H}px;overflow:hidden;border-radius:${desk ? '0 0 10px 10px' : (small ? '24px' : '32px')};font-family:${c.font};color:{{ th.ink }}">
-${scene(`c${c.n}-${fr.id}`)}${deco(z, DECO_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z, c.gate)}${toast(z)}
+${scene(`c${c.n}-${fr.id}`)}${corners(z)}${deco(z, DECO_SPOTS)}${c.layout(fr.id, z)}${overlays(fr.id, z, c.gate)}${toast(z)}
 </div>`;
     const shell = desk
       ? `<div style="width:${fr.W + 16}px;box-sizing:border-box;padding:0 8px 8px;background:#2B2D33;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.18)">
@@ -254,10 +258,10 @@ ${shell}</div>`;
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${c.fontUrl.replace(/&/g, '&amp;')}&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${(c.fontUrl + '&' + THEME_FONTS).replace(/&/g, '&amp;')}&amp;display=swap">
 <style>
 body{margin:0}
-button:focus-visible{outline:4px solid #FFD43B;outline-offset:3px}
+button:focus-visible{outline:4px solid #FFD43B;outline-offset:2px;box-shadow:0 0 0 2px #0B1035}
 a{color:#1A64C8}a:hover{color:#0F4A99}
 </style>
 </helmet>
