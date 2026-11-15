@@ -20,6 +20,7 @@ export function clockView(state, now, { look = 'sky', pair = 'theme', helpers = 
   const colours = partColours(look, pair, helpers);
   // With the helpers off the sentence is plain text, so no part is picked out.
   const wordColour = helpers ? { hour: colours.hourWords, minute: colours.minuteWords, plain: null } : {};
+  const parts = sentenceParts(hours, minutes, { style: wording });
 
   return {
     wall,
@@ -36,7 +37,9 @@ export function clockView(state, now, { look = 'sky', pair = 'theme', helpers = 
       minuteDigits: twelve.minuteDigits,
       display: twentyFourHourClock(hours, minutes),
     },
-    sentence: sentenceParts(hours, minutes, { style: wording }).map((p) => ({ text: p.text, colour: wordColour[p.kind] ?? null })),
+    sentence: parts.map((p) => ({ text: p.text, colour: wordColour[p.kind] ?? null })),
+    // The sentence as one string: what the read-aloud button says (06-read-aloud.feature).
+    words: parts.map((p) => p.text).join(''),
     hourHandValue: Number(twelve.hourDigits),
     minuteHandValue: minutes,
     clockLabel: `Clock showing ${time12}. Drag a hand, or use the arrow keys on a hand, to change the time.`,

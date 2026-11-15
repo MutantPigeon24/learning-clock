@@ -191,14 +191,16 @@ export const MOTIFS = Object.freeze({
 export const MOTIF_SPOTS = Object.freeze([[3, 4, 46, -12], [90, 3, 36, 14], [46, 2, 28, 0], [2, 88, 34, 8], [93, 90, 42, -10]]);
 
 /**
- * CSS for every look's own card style, keyed on data-look on the root
- * element. Space is dark, so its form controls are too. The display fonts
+ * CSS for every look's own card style and main button style (the read-aloud
+ * button), keyed on data-look on the root element. Space is dark, so its form controls are too. The display fonts
  * (dfont) are only for look names, never for labels a child must read
  * (design/REVIEW.md 6.4), so they are not used here.
  */
 export function lookStyleSheet() {
   return LOOK_IDS.map((id) => {
     const scheme = LOOKS[id].dark ? `\n:root[data-look="${id}"] { color-scheme: dark; }` : '';
-    return `[data-look="${id}"] .card { ${LOOK_STYLES[id].cardFx}; }${scheme}`;
+    // The read-aloud button wears the look's button style, except with no voice.
+    const button = `[data-look="${id}"] .speak-button:not([data-state="none"]) { ${LOOK_STYLES[id].btnFx}; }`;
+    return `[data-look="${id}"] .card { ${LOOK_STYLES[id].cardFx}; }\n${button}${scheme}`;
   }).join('\n');
 }

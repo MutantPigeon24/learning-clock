@@ -408,6 +408,95 @@ button:focus-visible,
   opacity: 0.9;
 }
 
+/* --- The read-aloud button ----------------------------------------------------
+   The main button, first in the row and as wide as the row allows. Each look
+   adds its own button style (btnFx in src/look-art.js). With no voice it stays
+   in the same place and size but turns flat, dashed and grey. */
+
+.speak-button {
+  box-sizing: border-box;
+  height: var(--btn);
+  min-width: var(--btn);
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--btn) * 0.14);
+  padding: 0 calc(var(--btn) * 0.32);
+  border: none;
+  border-radius: calc(var(--btn) / 2);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 5px 0 rgba(11, 37, 69, 0.3);
+  font: inherit;
+  font-size: max(17px, calc(var(--btn) * 0.3));
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.speak-button svg {
+  width: calc(var(--btn) * 0.52);
+  height: calc(var(--btn) * 0.52);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.speak-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.speak-button .icon-speaking,
+.speak-button .icon-no-voice,
+.speak-button[data-state='speaking'] .icon-speaker,
+.speak-button[data-state='none'] .icon-speaker {
+  display: none;
+}
+.speak-button[data-state='speaking'] .icon-speaking,
+.speak-button[data-state='none'] .icon-no-voice {
+  display: block;
+}
+.speak-button:active:not([data-state='none']) {
+  transform: translateY(3px);
+  filter: brightness(0.9);
+}
+.speak-button[data-state='none'] {
+  border: 3px dashed var(--soft-ink);
+  background: var(--soft);
+  background-image: none;
+  color: var(--soft-ink);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* A short message above the buttons, so it never covers the one just pressed. */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--pad) + var(--btn) + var(--gap));
+  transform: translateX(-50%);
+  z-index: 40;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(90%, 36em);
+  margin: 0;
+  padding: max(10px, calc(var(--btn) * 0.18)) max(16px, calc(var(--btn) * 0.3));
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--card);
+  font-size: max(15px, calc(var(--btn) * 0.24));
+  font-weight: 700;
+  text-align: center;
+}
+.toast[hidden] {
+  display: none;
+}
+
 /* --- Round picture buttons (the look button) -------------------------------- */
 
 .tool-button {
@@ -415,7 +504,7 @@ button:focus-visible,
   width: var(--btn);
   height: var(--btn);
   flex: none;
-  margin-left: auto; /* the far end of the row, so the Now sign never moves it */
+  margin-left: auto; /* the far end of the row, after the read-aloud button */
   display: flex;
   align-items: center;
   justify-content: center;
