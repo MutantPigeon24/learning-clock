@@ -5,7 +5,8 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 
 ## Current state
 - **Requirements are written in BDD** in [`features/`](features/).
-- **Time logic is built and tested** in [`src/time.js`](src/time.js): time in words (both wording styles), part of day, scene, 12- and 24-hour clocks, analog hand angles. There's no screen yet.
+- **Time logic is built and tested** in [`src/time.js`](src/time.js): time in words (both wording styles), part of day, scene, 12- and 24-hour clocks, analog hand angles.
+- **Setting the clock is built and tested** in [`src/set-clock.js`](src/set-clock.js): dragging the minute and hour hands (the short way round, so going past the 12 changes the hour and AM/PM), the AM/PM switch, which hand a finger picks up, and "real time" or "set by hand" state with `shownTime`, `changeTime` and `realClock` ("back to now"). Times are wall times with a date, so going past midnight changes the day. There's no screen yet.
 - **Tests read the `Examples` tables straight from the `.feature` files** ([`test/support/gherkin-examples.js`](test/support/gherkin-examples.js)), so changing an example changes the test. Run them with `npm test` (Node 22+, no dependencies). A GitHub Action runs them on every PR.
 - [`features/README.md`](features/README.md) has the file index, platform notes, hosting and install steps, **assumptions** and **open questions**. Read it first.
 
@@ -32,12 +33,11 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 None at the moment. Answers for the future calendar (northern hemisphere by default, dd/mm/yyyy, week starts on Monday, months at their clock numbers on the year wheel) are under "Future: calendar" in [`features/README.md`](features/README.md).
 
 ## Likely next steps
-1. Add tested logic for dragging the hands (`08-set-the-clock.feature` Examples): an angle snaps to a minute, crossing the 12 moves 12 hours either way, and the AM/PM switch adds or takes away 12 hours. Keep the shown time as "real" or "set" state that every display reads from. Store it as a full date and time, not just hours and minutes, so the future calendar (`09-calendar.feature`) can share it.
-2. Build the clock screen: plain HTML/CSS/JS with ES modules, no build step, every asset bundled locally. Draw the analog clock with SVG using `handAngles`. Update all displays together once a minute and on `visibilitychange`.
-3. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
-4. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
-5. Leave `@low-priority` and `@future` until the rest works.
-6. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
+1. Build the clock screen: plain HTML/CSS/JS with ES modules, no build step, every asset bundled locally. Draw the analog clock with SVG using `handAngles`. Every display reads `shownTime(state, new Date())`. Re-render once a minute and on `visibilitychange`; a set time stays still. Use pointer events with `touch-action: none` on the face, `pointerAngle` and `nearestHand` to pick up a hand, and `dragMinuteHand` or `dragHourHand` on each move.
+2. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
+3. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
+4. Leave `@low-priority` and `@future` until the rest works.
+5. More ideas may come (quizzes, rewards, special days on the calendar). Add each as a new `features/NN-*.feature`, or list it under "Possible later additions" in `features/README.md` until it's planned.
 
 ## Repo rules
 - No personal details (names, emails, home-folder paths) in files or git metadata. Commits use the repo-local GitHub noreply identity.
