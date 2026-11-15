@@ -6,7 +6,7 @@
 
 import { LOOKS } from './colours.js';
 import { cornerArt, LOOK_STYLES, lookStyleSheet, MOTIF_SPOTS, MOTIFS, ringArt } from './look-art.js';
-import { cornerDayStyle, sceneHoles, sceneMarkup, sceneTiming, sceneValues } from './scene-art.js';
+import { cornerDayStyle, orbSpot, orbValues, sceneHoles, sceneMarkup, sceneTiming, sceneValues, skyBand } from './scene-art.js';
 import { readLookChoice, saveLookChoice } from './look-choice.js';
 import { setUpLookPicker } from './look-picker.js';
 import { clockHubLayout } from './layout.js';
@@ -81,6 +81,32 @@ function applyLook(lookId) {
 
 const lessMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let shownScene = null; // "<look> <scene>" on screen now
+let sceneName = null; // the scene on screen now
+let openSky = null; // the open sky above the cards, measured with the layout
+
+/** Where the sun or moon goes for this scene: in the open sky above the cards. */
+function orbFor(name) {
+  if (!openSky) return {}; // not measured yet: the scene's own spot
+  const width = sceneLayer.clientWidth;
+  const height = sceneLayer.clientHeight;
+  return orbValues(orbSpot(openSky, name, Math.min(width, height)), width, height);
+}
+
+function setSceneValues(values) {
+  const root = document.documentElement.style;
+  for (const [hole, value] of Object.entries(values)) root.setProperty(`--sc-${hole}`, String(value));
+}
+
+/** Finds the open sky again after the layout changes, and moves the sun or moon there. */
+function placeOrb() {
+  const box = (el) => el.getBoundingClientRect();
+  openSky = skyBand({
+    clock: box(document.querySelector('.clock-area')),
+    cards: [...layout.querySelectorAll(':scope > .card')].map(box),
+    corner: box(document.querySelector('.corner-top')),
+  });
+  if (sceneName) setSceneValues(orbFor(sceneName));
+}
 
 /**
  * Sets the scene's CSS variables for the look and scene. The markup's
@@ -92,10 +118,8 @@ function applyScene(name) {
   if (key === shownScene) return;
   const timing = sceneTiming({ dragging: drag !== null, reducedMotion: lessMotion.matches || shownScene === null });
   shownScene = key;
-  const root = document.documentElement.style;
-  for (const [hole, value] of Object.entries({ ...sceneValues(choice.look, name), ...timing })) {
-    root.setProperty(`--sc-${hole}`, String(value));
-  }
+  sceneName = name;
+  setSceneValues({ ...sceneValues(choice.look, name), ...orbFor(name), ...timing });
 }
 
 const SIZE_VARS = {
@@ -119,6 +143,7 @@ function applyLayout() {
   const short = Math.min(screen.clientWidth, screen.clientHeight);
   document.documentElement.style.setProperty('--corner', `${Math.round(short * (sizes.phone ? 0.26 : 0.22))}px`);
   document.documentElement.style.setProperty('--motif-scale', String(Math.max(0.6, sizes.S)));
+  placeOrb();
 }
 
 // The ring numbers stay 16 px or more on screen, whatever size the clock is.

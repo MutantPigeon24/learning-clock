@@ -263,6 +263,65 @@ export function sceneTiming({ dragging = false, reducedMotion = false } = {}) {
   return { dur: '2.5s', stag: 1 };
 }
 
+// --- Where the sun and moon go on the clock screen ---------------------------
+// SKY puts them at fixed points, which the design canvas uses. On a real
+// screen those points are often behind the cards or the clock, so the app
+// puts them in the open sky above the cards instead (above the clock when
+// the clock is on top), clear of the top corner picture.
+
+/**
+ * The open sky above the cards: from the top of the screen down to the top
+ * of the cards (or of the clock, when it sits above them), across the cards
+ * and stopping short of the top corner picture. Rects are
+ * { left, top, right, bottom } in screen pixels.
+ */
+export function skyBand({ clock, cards, corner }) {
+  const left = Math.min(...cards.map((c) => c.left));
+  const right = Math.min(Math.max(...cards.map((c) => c.right)), corner.left - 4);
+  let bottom = Math.min(...cards.map((c) => c.top));
+  const clockAbove = clock.left < right && clock.right > left && clock.top < bottom;
+  if (clockAbove) bottom = Math.min(bottom, clock.top);
+  return { left, top: 0, right: Math.max(right, left), bottom: Math.max(bottom, 0) };
+}
+
+/** Smallest sun or moon, in pixels, so it always reads as one. */
+export const ORB_MIN = 44;
+
+/**
+ * Where the sun or moon goes in the open sky, in screen pixels:
+ * { x, y, size } (centre and diameter). By day it is high in the middle of
+ * the band, and at night the moon is too. At sunrise it is low on the left
+ * and at sunset low on the right, peeking over the cards.
+ * short: the screen's short side, which caps the size.
+ */
+export function orbSpot(band, sceneName, short) {
+  const w = band.right - band.left;
+  const h = band.bottom - band.top;
+  const base = Math.min(h * 0.7, w * 0.4, short * 0.16);
+  const size = Math.round(Math.max(ORB_MIN, base * { sunrise: 1.1, day: 1, sunset: 1.25, night: 0.9 }[sceneName]));
+  if (sceneName === 'sunrise' || sceneName === 'sunset') {
+    const at = sceneName === 'sunrise' ? 0.25 : 0.75;
+    const x = band.left + Math.min(Math.max(w * at, size / 2), w - size / 2);
+    return { x: Math.round(x), y: Math.round(band.bottom - size * 0.1), size };
+  }
+  // High: in the middle of the band, kept on screen, and mostly above the cards when the band is short.
+  const y = Math.min(band.top + Math.max(h / 2, size / 2 + 6), band.bottom - size * 0.2);
+  return { x: Math.round(band.left + w / 2), y: Math.round(y), size };
+}
+
+/**
+ * Turns a spot on the screen into the scene's sun values (ox, oy, os). The
+ * scene's SVG fills the screen from the bottom (xMidYMax slice), and the sun
+ * is a circle of radius 62 at scale 1.
+ */
+export function orbValues({ x, y, size }, width, height) {
+  const scale = Math.max(width, height) / 1000;
+  const offX = (width - 1000 * scale) / 2;
+  const offY = height - 1000 * scale;
+  const r1 = (v) => Math.round(v * 10) / 10;
+  return { ox: r1((x - offX) / scale), oy: r1((y - offY) / scale), os: Math.round((size / 2 / (62 * scale)) * 1000) / 1000 };
+}
+
 /** The style for things in the corner pictures seen only by day (Sky's balloon lands for the night). */
 export function cornerDayStyle(v) {
   return `opacity:${v('dayO')};transform:translateY(calc(${v('sink', 'px')} * 0.25));transition:opacity 2.5s ease, transform 2.6s ease-in-out`;
