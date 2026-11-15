@@ -13,6 +13,7 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 | `06-read-aloud.feature` | Button that speaks the time; word-by-word highlight (low priority) |
 | `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
 | `08-set-the-clock.feature` | Dragging the analog hands to set any time; AM/PM switch; every display follows; "back to now" button |
+| `09-calendar.feature` | **Future:** calendar screen for days, weeks, months, years and seasons, using the same ideas as the clock |
 
 Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
 
@@ -83,6 +84,28 @@ So that this works:
    - A set time is kept when the app goes into the background, but a fresh open always shows the real time.
    - The "back to now" button only appears when the clock has been set, and dragging the hands back to the real time doesn't count as going back to now.
 
+## Future: calendar (`09-calendar.feature`)
+
+Not part of the first version. It's written down now so the clock's logic can be built in a way that extends to dates.
+
+### Assumptions
+1. **A separate calendar screen**, reached by a big button from the clock screen, so the clock screen stays uncluttered.
+2. **The same ideas as the clock:** the date shown several ways at once (sentence, month page, week row, year wheel, numbers), a sentence that's also read aloud, a picture that changes, choosing your own date with a "back to today" button, and a chosen date that stays still.
+3. **Wording:** "Today is Sunday, the 15th of November 2026." plus "Yesterday was Saturday. Tomorrow is Monday."
+4. **Date in numbers is day/month/year**, for example 15/11/2026.
+5. **The week starts on Monday**, and Saturday and Sunday look different as the weekend.
+6. **Seasons go by whole months:** in the northern hemisphere, winter is December to February, spring is March to May, summer is June to August and autumn is September to November. They're the other way round in the southern hemisphere.
+7. **The hemisphere is a preference** a parent sets once, because the app never uses location.
+8. **The year wheel** shows the 12 months round a circle, January at the top, with each season in its own colour.
+9. **The clock and calendar share one date and time.** Dragging the clock past midnight changes the date. The AM/PM switch doesn't.
+
+### Open questions
+- Which hemisphere should be the default?
+- Day/month/year for the date in numbers, or another format?
+- Should the week start on Monday or Sunday?
+- Should the year wheel put each month at its clock number (January at the 1, December at the 12), to link it with the clock face?
+- Should the calendar show special days, such as birthdays and holidays?
+
 ## Open questions
 
-None at the moment.
+None at the moment for the first version. See the calendar section above for future questions.
