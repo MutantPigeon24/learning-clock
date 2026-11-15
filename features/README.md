@@ -80,6 +80,8 @@ So that this works:
 21. **The helpers can be switched off.** The grown-up setting "Hour and minute helpers" (on by default) removes the minutes ring and the colours once the child can read minutes. The hands and numbers take the clock's ink, and the digits and words are plain text (`11-hour-and-minute-colours.feature`).
 22. **The grown-up check is one times-table question** from the 6 to 9 tables ("What is 7 × 8?") on a big number pad. There's a new question each time, and a wrong answer just clears it (`07-preferences.feature`).
 23. **The settings are in the first version**: how the time is said, hour and minute helpers, talking speed, whether children can change the look, and reset. Part-of-day times, the voice and the hemisphere come later (`07-preferences.feature`).
+24. **"Reset to defaults" leaves the child's look and colour pair alone**, because they're the child's own choice. It only resets the grown-up settings (`07-preferences.feature`).
+25. **In the "quarter, half, past and to" wording, "quarter" and "half" take the minute colour**, and the hour after "to" takes the hour colour (`07-preferences.feature`).
 
 ## Assumptions (change any of these if they're wrong)
 
@@ -98,14 +100,12 @@ So that this works:
    - A set time is kept when the app goes into the background, but a fresh open always shows the real time.
    - The "back to now" button only appears when the clock has been set, and dragging the hands back to the real time doesn't count as going back to now.
 8. **Hour and minute colours** (`11-hour-and-minute-colours.feature`):
-   - In the "quarter, half, past and to" wording, "quarter" and "half" take the minute colour, and the hour after "to" takes the hour colour.
    - The colon, AM or PM and the other words of the sentence stay in the look's ink.
    - Looks with dark cards (Space) use lighter versions of the hour and minute colours on the cards. The clock face is always light, so the hands and numbers use the ordinary ones.
    - With the helpers off, the look picker shows no colour pairs. The child's picked pair is kept and comes back when the helpers are switched on again.
 9. **Grown-up check and settings** (`07-preferences.feature`):
    - The 6 to 9 tables are both numbers, so every answer has two digits (36 to 81) and the check answers as soon as two digits are typed.
    - "A new question each time" means a different answer from last time, so an answer seen over a grown-up's shoulder doesn't work twice.
-   - **"Reset to defaults" leaves the child's look and colour pair alone.** They're the child's own choice. (The prototype resets them too. Change this if you'd rather it did.)
    - The default talking speed is "Slower" (0.8 × normal), matching "a little slower than normal speech" in `06-read-aloud.feature`.
    - Settings that can't be read from the tablet take their defaults.
    - The hemisphere setting only appears once the calendar is built, like every other feature that isn't built yet.

@@ -161,3 +161,8 @@ for (const row of examples(FEATURE, 'Colouring the hour and minutes in the other
     assert.equal(parts.filter((p) => p.kind === 'minute').map((p) => p.text).join(''), row['minute words']);
   });
 }
+
+test("reset never touches the child's look or colour pair, because they aren't grown-up settings", () => {
+  const keys = Object.keys(defaultSettings());
+  for (const childChoice of ['look', 'pair', 'theme', 'hands']) assert.ok(!keys.includes(childChoice));
+});
