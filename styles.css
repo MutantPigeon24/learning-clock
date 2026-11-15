@@ -359,7 +359,16 @@ button:focus-visible,
   font-size: max(14px, calc(var(--btn) * 0.22));
 }
 
-/* --- The look's pictures ---------------------------------------------------- */
+/* --- The scene and the look's pictures -------------------------------------- */
+
+/* The time-of-day scene (src/scene-art.js). Its values are CSS variables
+   (--sc-*) set by src/app.js, and each change is a transition. */
+.scene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 
 .decor {
   position: fixed;
@@ -372,6 +381,17 @@ button:focus-visible,
   width: var(--corner);
   height: var(--corner);
   overflow: visible;
+  /* The corner pictures darken with the scene, like the landscape. */
+  filter: brightness(var(--sc-lumP, 1));
+  transition: filter var(--sc-dur, 0s);
+}
+
+/* Less motion: the new scene appears straight away. */
+@media (prefers-reduced-motion: reduce) {
+  .scene *,
+  .decor * {
+    transition: none !important;
+  }
 }
 .corner-top {
   right: calc(var(--corner) * 0.02);
