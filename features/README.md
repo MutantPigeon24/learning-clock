@@ -33,8 +33,9 @@ The app is an **installable offline web app (PWA)** for an **Android tablet runn
 
 The repo stays **private** during development. To install or update the app:
 
-1. Make the repo public and turn on GitHub Pages.
+1. Make the repo public and turn on GitHub Pages (Settings → Pages → Deploy from a branch → `main`, `/ (root)`). Wait for the Pages build to finish.
 2. On the tablet, open the Pages address in Chrome and choose "Install app". Open the app once so it stores its files.
+   - **For an update:** open the installed app once while online, so it downloads the new version in the background. Then close it fully (swipe it away in Recents) and open it again. The new version only takes over when the app starts fresh, not when it comes back from the background, so nothing changes while a child is using it.
 3. Make the repo private again. This takes the Pages site offline.
 
 So that this works:
@@ -43,6 +44,7 @@ So that this works:
 - The app asks Chrome for persistent storage, so the tablet doesn't clear its files to free up space.
 - If Chrome's data for the app is ever cleared, or the app is uninstalled, it can't be reinstalled until the repo is made public again.
 - Every update means repeating steps 1–3.
+- An empty `.nojekyll` file in the repo root stops GitHub Pages running Jekyll, so files are published exactly as they are.
 
 ## Decisions (answered by the owner)
 
