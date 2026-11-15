@@ -4,7 +4,9 @@
 Learning Clock is a small offline web app (PWA) for an Android tablet. It helps a young child (about 7 years old) learn to tell time from analog and digital clocks.
 
 ## Current state
-- **Requirements are written in BDD** in [`features/`](features/). No app code exists yet.
+- **Requirements are written in BDD** in [`features/`](features/).
+- **Time logic is built and tested** in [`src/time.js`](src/time.js): time in words (both wording styles), part of day, scene, 12- and 24-hour clocks, analog hand angles. There's no screen yet.
+- **Tests read the `Examples` tables straight from the `.feature` files** ([`test/support/gherkin-examples.js`](test/support/gherkin-examples.js)), so changing an example changes the test. Run them with `npm test` (Node 22+, no dependencies). A GitHub Action runs them on every PR.
 - [`features/README.md`](features/README.md) has the file index, platform notes, hosting and install steps, **assumptions** and **open questions**. Read it first.
 
 | Feature file | Covers |
@@ -28,10 +30,11 @@ Learning Clock is a small offline web app (PWA) for an Android tablet. It helps 
 None at the moment.
 
 ## Likely next steps
-1. Choose a stack. Plain HTML/CSS/JS or a light build (such as Vite) is enough. Bundle every asset locally.
-2. Build the time-in-words logic first, test-driven from the Examples tables in `04-time-in-words.feature` and `05-time-of-day-scene.feature`. Keep the wording style and the part-of-day times as inputs, so the future preferences in `07-preferences.feature` don't need a rewrite.
-3. Then the clock faces, the scene, read-aloud and offline install. Leave `@low-priority` and `@future` until the rest works.
-4. More ideas may come (quizzes, setting the clock, rewards). Add each as a new `features/NN-*.feature`.
+1. Build the clock screen: plain HTML/CSS/JS with ES modules, no build step, every asset bundled locally. Draw the analog clock with SVG using `handAngles`. Update all displays together once a minute and on `visibilitychange`.
+2. Add the four scenes, then the read-aloud button (`speechSynthesis`, a local voice, `cancel()` before `speak()`).
+3. Make it an installable offline PWA: manifest, icons, a cache-first service worker that never overwrites the cache with error responses, and `navigator.storage.persist()`.
+4. Leave `@low-priority` and `@future` until the rest works.
+5. More ideas may come (quizzes, setting the clock, rewards). Add each as a new `features/NN-*.feature`.
 
 ## Repo rules
 - No personal details (names, emails, home-folder paths) in files or git metadata. Commits use the repo-local GitHub noreply identity.
@@ -40,6 +43,6 @@ None at the moment.
 - **`main` must always be installable.** GitHub Pages builds from `main`, and that's what goes on the tablet.
 - Use one **short-lived branch per change**, then a **PR**, then the owner **squash-merges** it and the branch is deleted. Only trivial fixes such as typos go straight to `main`.
 - **Tag each installed version** (`v1`, `v2`, …) so it's clear what's on the tablet.
-- Once there's code, a GitHub Action runs the unit tests on every PR. The tests come from the `Examples` tables in the feature files.
+- A GitHub Action ([`.github/workflows/test.yml`](.github/workflows/test.yml)) runs `npm test` on every PR and on `main`. The tests come from the `Examples` tables in the feature files.
 - Keep this file up to date in the same PR as the work it describes.
 - **Test the logic, check the visuals by eye:** time maths and wording live in plain, unit-tested functions.
