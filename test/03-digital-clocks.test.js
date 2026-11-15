@@ -6,7 +6,8 @@ import { twelveHourClock, twentyFourHourClock } from '../src/time.js';
 for (const row of examples('03-digital-clocks.feature', 'Writing the time on the 12-hour clock')) {
   test(`12-hour clock at ${row.time}`, () => {
     const { hours, minutes } = parseTime(row.time);
-    assert.deepEqual(twelveHourClock(hours, minutes), { display: row.display, period: row.label });
+    const clock = twelveHourClock(hours, minutes);
+    assert.deepEqual({ display: clock.display, period: clock.period }, { display: row.display, period: row.label });
   });
 }
 

@@ -3,6 +3,10 @@ Feature: 12-hour and 24-hour digital clocks
   I want to see the time on both a 12-hour and a 24-hour digital clock
   So that I can read the kinds of clock I see at home, at school and on screens
 
+  # The hour digits take the hour colour and the minute digits the minute
+  # colour while the hour and minute helpers are on
+  # (11-hour-and-minute-colours.feature).
+
   Rule: The 12-hour clock shows whether it is AM or PM
 
     # Only the AM/PM switch on the analog clock shows "AM" and "PM" side by

@@ -4,23 +4,24 @@ Each `.feature` file describes one part of the Learning Clock in Gherkin.
 
 | File | Covers |
 |------|--------|
-| `00-learning-clock.feature` | Overall goal, offline use, what's on the clock screen, portrait and landscape |
+| `00-learning-clock.feature` | Overall goal, offline use, what's on the clock screen, the layout picked from the screen's shape (tablet, phone or desktop window) |
 | `01-current-time.feature` | Getting the device's time and keeping it current |
 | `02-analog-clock.feature` | Analog clock face and hands |
 | `03-digital-clocks.feature` | 12-hour (AM/PM) and 24-hour digital clocks |
 | `04-time-in-words.feature` | The written sentence, e.g. "It is 45 minutes past 9 in the morning." |
 | `05-time-of-day-scene.feature` | Sunrise / day / sunset / night background |
 | `06-read-aloud.feature` | Button that speaks the time; word-by-word highlight (low priority) |
-| `07-preferences.feature` | **Future:** parent preferences for wording style, part-of-day and scene times, voice |
+| `07-preferences.feature` | Grown-up check (a times-table question) and settings: wording style, hour and minute helpers, talking speed, whether children can change the look, reset. **Future:** part-of-day and scene times, voice, hemisphere |
 | `08-set-the-clock.feature` | Dragging the analog hands to set any time; AM/PM switch; every display follows; "back to now" button |
 | `09-calendar.feature` | **Future:** calendar screen for days, weeks, months, years and seasons, using the same ideas as the clock |
 | `10-looks.feature` | Six looks children can pick; each look's own world, its own version of each scene and its own way of changing between them |
+| `11-hour-and-minute-colours.feature` | Hour colour and minute colour on the same parts of every display, the minutes ring, each look's own pair, pairs a child can pick, contrast, and the helpers switched off |
 
-Tags: `@future` means not in the first version. `@low-priority` means build it after everything else works.
+Tags: `@future` means not in the first version (on a whole feature, or on one `Rule:`). `@low-priority` means build it after everything else works.
 
 ## Platform
 
-The app is an **installable offline web app (PWA)** for an **Android tablet running Chrome**:
+The app is an **installable offline web app (PWA)** for an **Android tablet running Chrome**. The same app also works on a phone and in a desktop browser window, because its layout comes from the screen's shape (`00-learning-clock.feature`):
 
 - It's installed once from an HTTPS web address with Chrome's "Add to Home screen" or "Install app". After that it opens full screen from its own icon.
 - A service worker stores every file on the tablet, so after the first visit it needs no internet.
@@ -62,7 +63,7 @@ So that this works:
 4. **Each word lights up as it's spoken.** This is low priority.
 5. **Portrait and landscape** are both supported. The layout rearranges when the tablet is turned.
 6. **The analog clock is the largest display** in both portrait and landscape.
-7. **Voice and wording preferences** come later (`07-preferences.feature`).
+7. **Voice and wording preferences** come later (`07-preferences.feature`). *Updated by decision 23: the wording style and talking speed are now first-version settings.*
 8. **The clock can be set by dragging the analog hands** (`08-set-the-clock.feature`). Both digital clocks, the words, the voice and the scene follow the set time. A button goes back to the real time.
 9. **A set time is static.** It doesn't tick. Pressing "back to now" returns to the real time, which ticks again.
 10. **Setting the time never speaks by itself.** The time is only read aloud when the read-aloud button is pressed.
@@ -74,6 +75,13 @@ So that this works:
 16. **The time picks the scene, the look paints it.** Each look has its own world and its own sunrise, day, sunset and night, and changes between them in its own way (lights coming on one by one, balloons landing, lava glowing). The scenes still change at the same times in every look, so the picture always agrees with the words (`10-looks.feature`, `05-time-of-day-scene.feature`).
 17. **One "Now" sign shows the real time.** It has a green dot and is not a button. When the clock is set by hand, the same sign turns into the "back to now" button in the same place, with a turn-back arrow and an outline (`08-set-the-clock.feature`).
 18. **The Storybook tags stay tilted.** The slight tilt is fine for reading.
+19. **Any screen.** Tablet and phone in both orientations, plus a desktop window. The layout is picked from width ÷ height: wide (1.2 or more), tall (0.85 or less) or in between. Nothing scrolls (`00-learning-clock.feature`).
+20. **Hours and minutes linked by colour everywhere.** The hour colour is on the short hand, the 1–12 numbers, the hour digits and the hour in the sentence. The minute colour is on the long hand, a 0–55 minutes ring, the minute digits and "N minutes" in the sentence. Each look has its own pair. A child can pick another pair (red/blue, orange/purple, pink/teal, purple/orange) in the look picker. Every pair is at least 4.5 : 1 on the face, the cards and the ring. Colour is never the only clue: the hour hand is short and thick, the minute hand long and thin (`11-hour-and-minute-colours.feature`).
+21. **The helpers can be switched off.** The grown-up setting "Hour and minute helpers" (on by default) removes the minutes ring and the colours once the child can read minutes. The hands and numbers take the clock's ink, and the digits and words are plain text (`11-hour-and-minute-colours.feature`).
+22. **The grown-up check is one times-table question** from the 6 to 9 tables ("What is 7 × 8?") on a big number pad. There's a new question each time, and a wrong answer just clears it (`07-preferences.feature`).
+23. **The settings are in the first version**: how the time is said, hour and minute helpers, talking speed, whether children can change the look, and reset. Part-of-day times, the voice and the hemisphere come later (`07-preferences.feature`).
+24. **"Reset to defaults" leaves the child's look and colour pair alone**, because they're the child's own choice. It only resets the grown-up settings (`07-preferences.feature`).
+25. **In the "quarter, half, past and to" wording, "quarter" and "half" take the minute colour**, and the hour after "to" takes the hour colour (`07-preferences.feature`).
 
 ## Assumptions (change any of these if they're wrong)
 
@@ -91,6 +99,17 @@ So that this works:
    - Each time a hand goes past the 12, the time moves between morning and evening (AM and PM). Going forward from 11:50 gives 12:10 PM, going backward from 00:05 gives 11:55 PM.
    - A set time is kept when the app goes into the background, but a fresh open always shows the real time.
    - The "back to now" button only appears when the clock has been set, and dragging the hands back to the real time doesn't count as going back to now.
+8. **Hour and minute colours** (`11-hour-and-minute-colours.feature`):
+   - The colon, AM or PM and the other words of the sentence stay in the look's ink.
+   - Looks with dark cards (Space) use lighter versions of the hour and minute colours on the cards. The clock face is always light, so the hands and numbers use the ordinary ones.
+   - With the helpers off, the look picker shows no colour pairs. The child's picked pair is kept and comes back when the helpers are switched on again.
+9. **Grown-up check and settings** (`07-preferences.feature`):
+   - The 6 to 9 tables are both numbers, so every answer has two digits (36 to 81) and the check answers as soon as two digits are typed.
+   - "A new question each time" means a different answer from last time, so an answer seen over a grown-up's shoulder doesn't work twice.
+   - The default talking speed is "Slower" (0.8 × normal), matching "a little slower than normal speech" in `06-read-aloud.feature`.
+   - Settings that can't be read from the tablet take their defaults.
+   - The hemisphere setting only appears once the calendar is built, like every other feature that isn't built yet.
+10. **A short side under 480 pixels is a small screen** (like a phone), with smaller type and buttons that never go below the minimum sizes.
 
 ## Future: calendar (`09-calendar.feature`)
 

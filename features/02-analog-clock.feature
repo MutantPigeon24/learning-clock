@@ -8,10 +8,13 @@ Feature: Analog clock display
     Then they see the numbers 1 to 12 around the face
     And they see 60 minute marks, with every fifth mark bolder
 
+  # The hour and minute colours on the hands, the numbers and the minutes
+  # ring are in 11-hour-and-minute-colours.feature.
+
   Scenario: Telling the hands apart
     When my child looks at the analog clock
     Then the hour hand is shorter and thicker than the minute hand
-    And the two hands are different colours
+    And while the hour and minute helpers are on, the two hands are different colours
 
   Scenario: Showing only the hour and minute hands
     When my child looks at the analog clock

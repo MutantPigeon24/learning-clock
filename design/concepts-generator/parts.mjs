@@ -1,50 +1,34 @@
 // Shared pieces for the Learning Clock concept artboards.
 import { MOTIFS, PAINT, LIGHT, ringDress, landscape, badge } from './theme-art.mjs';
+import { LOOKS, PAIRS, hiddenPairs } from '../../src/colours.js';
 
-// Each theme is a kit (see theme-art.mjs for the pictures). Tokens:
-// card/ink/sub/soft/softInk: surfaces and text. accent/onAccent: buttons and the
-// selected state; it must never look like the hour or minute colour.
-// ctl: outline of controls on cards (3 : 1 or better against the card).
-// hc/mc (hcT/mcT on dark cards): hour and minute colours. face/rim/tick/num: clock.
+export { PAIRS };
+
+// Each theme is a kit (see theme-art.mjs for the pictures). Its name and colours
+// (surfaces, text, buttons, clock, hour and minute colours) come from
+// src/colours.js, which the app uses too. The tokens here are the decoration:
+// deco/edge/body: picture colours.
 // cardFx: extra card styling (border, texture, shadow). cardTex: texture only, for
 // layouts that draw their own borders. btnFx: extra style on the main button.
 // dfont: display font for small labels and look names (never the sentence or digits).
 export const THEMES = [
-  { id: 'sky', name: 'Sky', card: '#FFFFFF', ink: '#0B2545', sub: '#3D5A80', accent: '#1A64C8', onAccent: '#FFFFFF', ctl: '#1A64C8', soft: '#DCEBFF', softInk: '#0B2545', face: '#FFFFFF', rim: '#1A64C8', tick: '#0B2545', num: '#0B2545', hc: '#B23B0B', mc: '#6741D9', deco: '#FFFFFF', edge: '#0F4A99', body: '#5AA9F2',
+  { id: 'sky', deco: '#FFFFFF', edge: '#0F4A99', body: '#5AA9F2',
     cardFx: 'border:3px solid #CFE2FB;background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', cardTex: 'background-image:linear-gradient(180deg,#FFFFFF 55%,#EDF5FF)', btnFx: 'box-shadow:0 5px 0 #0F4A99', dfont: "'Baloo 2', sans-serif" },
-  { id: 'blossom', name: 'Blossom', card: '#FFFFFF', ink: '#4A0D2E', sub: '#7A2E55', accent: '#C2185B', onAccent: '#FFFFFF', ctl: '#C2185B', soft: '#FFE1EE', softInk: '#4A0D2E', face: '#FFF7FB', rim: '#E0457B', tick: '#4A0D2E', num: '#4A0D2E', hc: '#6A2BB5', mc: '#0A6B66', deco: '#FF8FB8', edge: '#8E1243', body: '#F48FB1',
+  { id: 'blossom', deco: '#FF8FB8', edge: '#8E1243', body: '#F48FB1',
     cardFx: 'border:3px solid #FFC2D9;background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', cardTex: 'background-image:radial-gradient(circle at 100% 0,#FFE1EE 0 22px,transparent 23px),radial-gradient(circle at 0 100%,#FFF0F6 0 30px,transparent 31px)', btnFx: 'box-shadow:0 5px 0 #8E1243', dfont: "'Grandstander', sans-serif" },
-  { id: 'unicorn', name: 'Unicorn', card: '#FFFFFF', ink: '#35155D', sub: '#5B3A8C', accent: '#7C3AED', onAccent: '#FFFFFF', ctl: '#7C3AED', soft: '#EFE5FF', softInk: '#35155D', face: '#FFFFFF', rim: '#B48CF2', tick: '#35155D', num: '#35155D', hc: '#C2255C', mc: '#1864AB', deco: '#FFE066', edge: '#5B21B6', body: '#F3EDFF',
+  { id: 'unicorn', deco: '#FFE066', edge: '#5B21B6', body: '#F3EDFF',
     cardFx: 'border:4px solid transparent;background-image:linear-gradient(#FFFFFF,#FFFFFF),linear-gradient(90deg,#FF8FA3,#FFB86B,#FFE16B,#8FE3A8,#8EC5FF,#C8A2FF);background-origin:border-box;background-clip:padding-box,border-box', cardTex: 'background-image:radial-gradient(circle at 92% 14%,#FFF4C2 0 5px,transparent 6px),radial-gradient(circle at 8% 88%,#F3E8FF 0 7px,transparent 8px)', btnFx: 'background-image:linear-gradient(135deg,#7C3AED,#B62BC9);box-shadow:0 5px 0 #5B21B6', dfont: "'Sniglet', sans-serif" },
-  { id: 'hero', name: 'Hero', card: '#FFFFFF', ink: '#111C3A', sub: '#34416B', accent: '#FFC21A', onAccent: '#111C3A', ctl: '#111C3A', soft: '#FFF0C2', softInk: '#111C3A', face: '#FFFFFF', rim: '#111C3A', tick: '#111C3A', num: '#111C3A', hc: '#C92A2A', mc: '#1D4ED8', deco: '#FFC21A', edge: '#111C3A', body: '#3B6FE0',
+  { id: 'hero', deco: '#FFC21A', edge: '#111C3A', body: '#3B6FE0',
     cardFx: 'border:4px solid #111C3A;box-shadow:6px 6px 0 #111C3A;background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', cardTex: 'background-image:radial-gradient(rgba(29,78,216,.10) 1.6px,transparent 2.1px);background-size:9px 9px', btnFx: 'border:3px solid #111C3A;box-shadow:4px 4px 0 #111C3A', dfont: "'Bangers', Impact, sans-serif" },
-  { id: 'dino', name: 'Dino', card: '#FFFFFF', ink: '#173A1E', sub: '#2F5D36', accent: '#2E7D32', onAccent: '#FFFFFF', ctl: '#2E7D32', soft: '#E2F3D5', softInk: '#173A1E', face: '#FFFDF5', rim: '#5FAE4E', tick: '#173A1E', num: '#173A1E', hc: '#B23B0B', mc: '#1D4ED8', deco: '#7CC46A', edge: '#1B5E20', body: '#6CC05C',
+  { id: 'dino', deco: '#7CC46A', edge: '#1B5E20', body: '#6CC05C',
     cardFx: 'border:3px solid #A5D16E;background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', cardTex: 'background-color:#FFFDF5;background-image:radial-gradient(circle,#EEF6E2 2.2px,transparent 2.8px);background-size:18px 18px', btnFx: 'box-shadow:0 5px 0 #1B5E20', dfont: "'Chewy', sans-serif" },
-  { id: 'space', name: 'Space', dark: true, card: '#1E1B4B', ink: '#FFFFFF', sub: '#C7C9F5', accent: '#FFC93C', onAccent: '#1E1B4B', ctl: '#FFC93C', soft: '#312E81', softInk: '#FFFFFF', face: '#FFFFFF', rim: '#6D63FF', tick: '#1E1B4B', num: '#1E1B4B', hc: '#B23B0B', mc: '#3B5BDB', hcT: '#FFA94D', mcT: '#A5B4FF', deco: '#FFC93C', edge: '#0F0C33', body: '#8E87FF',
+  { id: 'space', deco: '#FFC93C', edge: '#0F0C33', body: '#8E87FF',
     cardFx: 'border:2px solid rgba(165,180,255,.5);box-shadow:0 0 0 4px rgba(109,99,255,.22),0 12px 30px rgba(0,0,0,.35);background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),radial-gradient(1.6px 1.6px at 88% 18%,rgba(255,255,255,.6),transparent),radial-gradient(1.2px 1.2px at 40% 86%,rgba(255,255,255,.5),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', cardTex: 'background-image:radial-gradient(1.6px 1.6px at 18% 28%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 64%,rgba(255,255,255,.6),transparent),linear-gradient(160deg,#2A2672,#1E1B4B 60%)', btnFx: 'box-shadow:0 0 0 3px rgba(255,201,60,.35),0 0 22px rgba(255,201,60,.45)', dfont: "'Audiowide', sans-serif" },
-].map((t) => ({ ...t, motif: MOTIFS[t.id] }));
-
-// Hour and minute colour pairs a child can pick instead of the theme's own.
-// h/m sit on light cards and the clock face; hL/mL are for dark cards.
-export const PAIRS = [
-  { id: 'theme', name: 'Match the look' },
-  { id: 'red-blue', name: 'Red and blue', h: '#C92A2A', m: '#1D4ED8', hL: '#FF8787', mL: '#91A7FF' },
-  { id: 'orange-purple', name: 'Orange and purple', h: '#B23B0B', m: '#6741D9', hL: '#FFA94D', mL: '#B197FC' },
-  { id: 'pink-teal', name: 'Pink and teal', h: '#C2255C', m: '#0A6B66', hL: '#F783AC', mL: '#63E6BE' },
-  { id: 'purple-orange', name: 'Purple and orange', h: '#6741D9', m: '#B23B0B', hL: '#B197FC', mL: '#FFA94D' },
-];
+].map((t) => ({ id: t.id, ...LOOKS[t.id], ...t, motif: MOTIFS[t.id] }));
 
 // Pairs whose hour or minute colour looks like a look's accent (button) colour.
 // The picker hides them for that look, so "blue" never means both "minutes" and "press me".
-function looksAlike(a, b) {
-  const hx = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
-  const hueOf = (h) => { const [r, g, b] = hx(h), mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); if (!d) return 0; const k = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return (k * 60 + 360) % 360; };
-  const lum = (h) => { const [r, g, b] = hx(h).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-  const d = Math.abs(hueOf(a) - hueOf(b)), gap = Math.min(d, 360 - d);
-  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
-  return gap < 25 && (x + 0.05) / (y + 0.05) < 1.6;
-}
-export const CLASH = Object.fromEntries(THEMES.map((t) => [t.id, PAIRS.filter((p) => p.h && (looksAlike(t.accent, p.h) || looksAlike(t.accent, p.m))).map((p) => p.id)]));
+export const CLASH = Object.fromEntries(THEMES.map((t) => [t.id, hiddenPairs(t.id)]));
 
 export const SCENES = {
   sunrise: { top: '#FF9E8A', bot: '#FFE1B0', orb: '#FF7A3D', ox: 290, oy: 800, os: 1.1, h1: '#F2A65A', h2: '#E07A4F', stars: 0, moon: 0, cloud: 0.5 },
@@ -65,7 +49,7 @@ export function sizes(W, H) {
   const S = Math.min(W, H) / 800;
   const r = (v) => Math.round(v);
   return {
-    W, H, S, wide: W / H >= 1.2, phone: Math.min(W, H) < 500,
+    W, H, S, wide: W / H >= 1.2, phone: Math.min(W, H) < 480,
     pad: r(Math.max(14, 32 * S)), gap: r(Math.max(10, 22 * S)), btn: r(Math.max(52, 84 * S)),
     small: r(Math.max(48, 60 * S)), fs: r(Math.max(18, 36 * S)), fd: r(Math.max(30, 72 * S)),
     fl: r(Math.max(14, 20 * S)), r: r(Math.max(16, 28 * S)), ampH: r(Math.max(48, 64 * S)),

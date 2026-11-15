@@ -7,7 +7,8 @@ Feature: Learning to tell time
   I want the app to work fully offline on my child's tablet
   So that it is safe, distraction-free and usable anywhere
 
-  # Platform: an installable offline web app (PWA) on an Android tablet using Chrome.
+  # Platform: an installable offline web app (PWA) on an Android tablet using
+  # Chrome. The same app also works on a phone and in a desktop browser.
 
   Rule: The app is installed once from a web address, then lives on the home screen
 
@@ -113,19 +114,50 @@ Feature: Learning to tell time
       And a button can show only its picture when the picture alone makes the meaning clear
       And every button has a full spoken label for screen readers
 
-    Scenario Outline: Fitting the tablet screen
-      Given the tablet is held in <orientation>
+  Rule: The app fits any screen, picking its layout from the screen's shape
+
+    # The app is made for an Android tablet, but the same app also runs on a
+    # phone and in a desktop browser window. The layout comes from width ÷
+    # height, not from the kind of device:
+    #   wide (1.2 or more): the clock on one side, everything else beside it
+    #   tall (0.85 or less): the clock on top, everything else below it
+    #   in between: the clock beside a strip of two rows
+    # A short side under 480 pixels is a small screen, like a phone: type and
+    # buttons get smaller, but never below the minimum sizes.
+
+    Scenario Outline: Picking the layout from the screen's shape
+      Given the app is showing on a <screen> of <width> × <height>
+      When my child looks at the clock screen
+      Then the layout is <shape>
+      And it <small> a small screen
+
+      Examples:
+        | screen                     | width | height | shape      | small  |
+        | tablet held in landscape   | 1280  | 800    | wide       | is not |
+        | tablet held in portrait    | 800   | 1280   | tall       | is not |
+        | phone held in landscape    | 915   | 412    | wide       | is     |
+        | phone held in portrait     | 412   | 915    | tall       | is     |
+        | desktop browser window     | 1440  | 900    | wide       | is not |
+        | desktop window made narrow | 1000  | 900    | in between | is not |
+        | window exactly 1.2 wide    | 1200  | 1000   | wide       | is not |
+        | window exactly 0.85 tall   | 850   | 1000   | tall       | is not |
+        | small square window        | 470   | 470    | in between | is     |
+
+    Scenario: Fitting the screen
+      Given the app is showing on any screen
       When my child looks at the clock screen
       Then every display fits on screen without scrolling
       And the analog clock is the largest display
 
-      Examples:
-        | orientation |
-        | landscape   |
-        | portrait    |
-
-    Scenario: Turning the tablet
+    Scenario: Turning the tablet or resizing the window
       Given the clock screen is showing
-      When my child turns the tablet between portrait and landscape
+      When the screen changes shape, because the tablet is turned or a desktop window is resized
       Then the layout rearranges to fit the new shape
       And the clocks keep showing the current time without restarting
+      And a set time, the look and an open panel all stay as they were
+
+    Scenario: Using a mouse and keyboard on a desktop
+      Given the app is open in a desktop browser
+      When someone uses a mouse
+      Then they can drag the clock's hands just like a finger can
+      And every button can also be reached and pressed with the keyboard
