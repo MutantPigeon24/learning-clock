@@ -1,0 +1,48 @@
+/* Placeholder styles until the Clock Hub clock screen is built. Colours are
+   Sky's, from src/colours.js. */
+
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  color: #0B2545;
+  background: #DCEBFF;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+.shell {
+  box-sizing: border-box;
+  min-height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  text-align: center;
+}
+
+.shell-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #3D5A80;
+}
+
+.shell-time {
+  margin: 0;
+  font-size: clamp(3rem, 14vmin, 8rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.shell-words {
+  margin: 0;
+  font-size: clamp(1.25rem, 4vmin, 2rem);
+}

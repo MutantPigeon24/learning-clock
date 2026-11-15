@@ -4,7 +4,10 @@
   "type": "module",
   "description": "Offline tablet app that helps a young child learn to tell the time.",
   "scripts": {
-    "test": "node --test \"test/*.test.js\""
+    "test": "node --test \"test/*.test.js\"",
+    "stamp": "node tools/stamp-sw.mjs",
+    "icons": "node tools/make-icons.mjs",
+    "serve": "python3 -m http.server 8123"
   },
   "engines": {
     "node": ">=22"
